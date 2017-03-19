@@ -7,9 +7,11 @@
 	<deviceEndianness value="little"/>
 	<codegenToolVersion value="16.9.1.LTS"/>
 	<isElfFormat value="true"/>
+	<connection value="common/targetdb/connections/TIXDS100v2_Connection.xml"/>
 	<linkerCommandFile value="DM3730.cmd"/>
 	<rts value="libc.a"/>
 	<createSlaveProjects value=""/>
 	<templateProperties value="id=com.ti.ccstudio.project.templates.helloWorld,"/>
 	<filesToOpen value="hello.c,"/>
+	<isTargetManual value="false"/>
 </projectOptions>
