@@ -2,18 +2,6 @@
 #include "GPIO-Driver.h"
 
 
-//f.ex gpioPinNumber=GPIO_149, outputMode=0 (input), on=1 (turn on) Interface for IO-Handler, calls the following functions
-int writeGPIO(int gpioPinNumber, int outputMode, int on){
-    int* regionShift = calcGPIORegionAndShift(gpioPinNumber);
-    int gpioRegion = regionShift[0];
-    int shift = regionShift[1];
-
-    setupSystem(gpioRegion);
-    setMuxMode(gpioPinNumber);
-    setGPIO(gpioRegion, outputMode, on, shift);
-    return 1;
-}
-
 /**
  * returns the number of the GPIO Region, f.ex 5 for GPIO_5 and the shift of the gpioPin f.ex 21 for GPIO_149 (1 << 21)
  */
@@ -89,4 +77,14 @@ int setGPIO(int gpioRegion, int outputMode, int on, int shift){
     }
     return 1;
 }
+//f.ex gpioPinNumber=GPIO_149, outputMode=0 (input), on=1 (turn on) Interface for IO-Handler, calls the following functions
+int writeGPIO(int gpioPinNumber, int outputMode, int on){
+    int* regionShift = calcGPIORegionAndShift(gpioPinNumber);
+    int gpioRegion = regionShift[0];
+    int shift = regionShift[1];
 
+    setupSystem(gpioRegion);
+    setMuxMode(gpioPinNumber);
+    setGPIO(gpioRegion, outputMode, on, shift);
+    return 1;
+}
