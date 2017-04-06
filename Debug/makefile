@@ -2,12 +2,17 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
-CG_TOOL_ROOT := /home/mod/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS
+SHELL = cmd.exe
+
+CG_TOOL_ROOT := C:/ti/ccs710/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS
 
 GEN_OPTS__FLAG := 
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
+"./src/Drivers/GPIO-Driver.obj" \
+"./src/HAL/GPIO-HAL.obj" \
+"./src/IO-Handler/IO-Handler.obj" \
 "./src/hello.obj" \
 "../DM3730.cmd" \
 $(GEN_CMDS__FLAG) \
@@ -15,14 +20,20 @@ $(GEN_CMDS__FLAG) \
 
 -include ../makefile.init
 
-RM := rm -rf
-RMDIR := rm -rf
+RM := DEL /F
+RMDIR := RMDIR /S/Q
 
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir_vars.mk
+-include src/Drivers/subdir_vars.mk
+-include src/HAL/subdir_vars.mk
+-include src/IO-Handler/subdir_vars.mk
 -include src/subdir_vars.mk
 -include subdir_rules.mk
+-include src/Drivers/subdir_rules.mk
+-include src/HAL/subdir_rules.mk
+-include src/IO-Handler/subdir_rules.mk
 -include src/subdir_rules.mk
 -include objects.mk
 
@@ -140,21 +151,21 @@ all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 MonkeyOS.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: ARM Linker'
-	"/home/mod/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/bin/armcl" -mv7A8 --code_state=32 -me --define=dm3730 -g --diag_warning=225 --diag_wrap=off --display_error_number -z -m"MonkeyOS.map" --heap_size=0x800 --stack_size=0x800 -i"/home/mod/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/lib" -i"/home/mod/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="MonkeyOS_linkInfo.xml" --rom_model -o "MonkeyOS.out" $(ORDERED_OBJS)
+	"C:/ti/ccs710/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/bin/armcl" -mv7A8 --code_state=32 -me --define=dm3730 -g --diag_warning=225 --diag_wrap=off --display_error_number -z -m"MonkeyOS.map" --heap_size=0x800 --stack_size=0x800 -i"C:/ti/ccs710/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/lib" -i"C:/ti/ccs710/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="MonkeyOS_linkInfo.xml" --rom_model -o "MonkeyOS.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 MonkeyOS.hex: $(EXE_OUTPUTS)
 	@echo 'Invoking: ARM Hex Utility'
-	"/home/mod/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/bin/armhex"  -o "MonkeyOS.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccs710/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/bin/armhex"  -o "MonkeyOS.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "src/hello.obj" 
-	-$(RM) "src/hello.d" 
+	-$(RM) "src\Drivers\GPIO-Driver.obj" "src\HAL\GPIO-HAL.obj" "src\IO-Handler\IO-Handler.obj" "src\hello.obj" 
+	-$(RM) "src\Drivers\GPIO-Driver.d" "src\HAL\GPIO-HAL.d" "src\IO-Handler\IO-Handler.d" "src\hello.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
