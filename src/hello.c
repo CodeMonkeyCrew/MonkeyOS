@@ -1,14 +1,12 @@
 #include <stdio.h>
-#include "IO-Handler/IO-Handler.h"
-#include "HAL/GPIO-HAL.h"
+#include "FileSystem/fs.h"
 
 /*
  * hello.c
  */
 void main(void) {
 	printf("Hello World!\n");
-	initHAL();
-	mos_io_handler_write(149, 1, 1);
-
 	
+	mos_fs_write_GPIO(149, 1, 1);
+
 }

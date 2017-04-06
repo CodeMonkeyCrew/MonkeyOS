@@ -1,4 +1,3 @@
-
 #ifndef SRC_FILESYSTEM_FS_H_
 #define SRC_FILESYSTEM_FS_H_
 
@@ -18,6 +17,8 @@ typedef struct {
     char data[];
 } file_type ;
 
+
+int mos_fs_write_GPIO (int GPIO_Number, int IO, int State);
 
 //source: http://codewiki.wikidot.com/system-calls
 int mos_fs_create (const char* file_name, file_ext_type file_type); //creates a file with the given file_name and type

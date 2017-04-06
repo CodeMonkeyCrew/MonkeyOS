@@ -1,8 +1,12 @@
 #include "fs.h"
+#include "../HAL/GPIO-HAL.h"
+#include "../IO-Handler/IO-Handler.h"
 
 
 int mos_fs_write_GPIO (int GPIO_Number, int IO, int State) {
-    //call caros function
+    //TODO properly init HAL in bootfile?
+    initHAL();
+    mos_io_handler_write(GPIO_Number, IO, State);
     return 0;
 }
 
@@ -10,23 +14,16 @@ int mos_fs_write_GPIO (int GPIO_Number, int IO, int State) {
 //as we do not have to worry about growing files and running out of space between blocks (if we have blocks at all...)
 int mos_fs_create(const char* file_name, file_ext_type file_type) {
 
-    int fn_length = strlen(file_name);
-    //at least x.ext
-    if (fn_length <= 4) {
-       //return error
-       return 0;
-    }
-
-    char*
+    //TODO read file type from filename
 
     switch (file_type) {
         case LED:
             //create LED-sized file
             break;
-        case BUTTON:
+        case BTN:
             //create BUTTON-sized file
             break;
-        case TIMER:
+        case TMR:
             //create TIMER-sized file
             break;
         default:
@@ -47,13 +44,10 @@ int mos_fs_close(int file_descriptor) {
     return 0;
 }
 
-
-
 #define BUFFER_SIZE 512
 char buffer[BUFFER_SIZE];
 
 int mos_fs_read(int file_descriptor) {
-
     //read from file
     int bytes_read;
     int bytes_written;
