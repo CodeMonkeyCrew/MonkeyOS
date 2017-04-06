@@ -1,1 +1,0 @@
-"./src/Drivers/GPIO-Driver.obj" "./src/HAL/GPIO-HAL.obj" "./src/IO-Handler/IO-Handler.obj" "./src/hello.obj" "../DM3730.cmd" -llibc.a 
