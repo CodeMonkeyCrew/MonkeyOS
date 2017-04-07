@@ -1,0 +1,4 @@
+	.global _ISR_ABORT
+
+_ISR_ABORT:
+	B _ISR_ABORT

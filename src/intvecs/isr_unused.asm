@@ -1,0 +1,4 @@
+	.global _ISR_UNUSED
+
+_ISR_UNUSED:
+	B _ISR_UNUSED
