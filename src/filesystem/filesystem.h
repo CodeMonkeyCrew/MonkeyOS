@@ -1,5 +1,5 @@
-#ifndef SRC_FILESYSTEM_FS_H_
-#define SRC_FILESYSTEM_FS_H_
+#ifndef SRC_FILESYSTEM_FILESYSTEM_H_
+#define SRC_FILESYSTEM_FILESYSTEM_H_
 
 #define FILE_NAME_SIZE 16
 
@@ -29,4 +29,4 @@ int mos_fs_close (int file_descriptor);   //closes a file, returns 0 on success,
 int mos_fs_read(int file_descriptor);
 int mos_fs_write (int file_descriptor, const char* data); //writes the content of the buffer into the file with the correct file_descriptor
 
-#endif /* SRC_FILESYSTEM_FS_H_ */
+#endif /* SRC_FILESYSTEM_FILESYSTEM_H_ */

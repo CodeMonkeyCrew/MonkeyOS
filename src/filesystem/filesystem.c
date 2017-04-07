@@ -1,6 +1,6 @@
-#include "fs.h"
-#include "../HAL/GPIO-HAL.h"
-#include "../IO-Handler/IO-Handler.h"
+#include <src/filesystem/filesystem.h>
+#include <src/hal/gpio-hal.h>
+#include <src/io-handler/io-handler.h>
 
 
 int mos_fs_write_GPIO (int GPIO_Number, int IO, int State) {
