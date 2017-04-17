@@ -5,10 +5,6 @@ int init_gptimer(const uint8_t gptimer){
 
 }
 
-int set_mode_for_gptimer(const uint8_t gptimer, enum mode){
-
-}
-
 
 
 static uint32_t* getBaseAddress(const uint8_t gptimer){
