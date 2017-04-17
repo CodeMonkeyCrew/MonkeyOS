@@ -5,6 +5,7 @@
 	    .else
 	    .asg _openISR, C_PUT_ISR
 	    .asg _closeISR, C_CLOSE_ISR
+	    .asg _writeISR, C_WRITE_ISR
 	    .endif
 
 	.global _ISR_SWI
