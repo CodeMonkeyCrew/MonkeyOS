@@ -1,12 +1,12 @@
-	   	.if __TI_EABI_ASSEMBLER
+   		.if __TI_EABI_ASSEMBLER
 		.asg openISR, C_OPEN_ISR
 		.asg closeISR, C_CLOSE_ISR
 		.asg writeISR, C_WRITE_ISR
-	    .else
-	    .asg _openISR, C_PUT_ISR
-	    .asg _closeISR, C_CLOSE_ISR
-	    .asg _writeISR, C_WRITE_ISR
-	    .endif
+    	.else
+    	.asg _openISR, C_PUT_ISR
+    	.asg _closeISR, C_CLOSE_ISR
+    	.asg _writeISR, C_WRITE_ISR
+		.endif
 
 	.global _ISR_SWI
 	.global C_OPEN_ISR
