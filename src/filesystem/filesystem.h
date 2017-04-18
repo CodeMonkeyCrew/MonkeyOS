@@ -10,12 +10,23 @@ typedef struct {
     char name[FILE_NAME_SIZE];
     file_ext_type type;
     int size;
-} file_header_type;
+} FileDescriptorHeader_t;
 
 typedef struct {
-    file_header_type header;
-    char data[];
-} file_type ;
+    FileDescriptorHeader_t header;
+    int gpioPinNumber; //149
+    int gpioPort; //5
+
+} FileDescriptorGPIO_t;
+
+typedef struct{
+    FileDescriptorHeader_t header;
+
+} FileDescriptor_t;
+
+//app:
+write(numberOfPointerOfGPIO149DirectionFile, p, count);
+write(numberOfPointerOfGPIO149File, p, count);
 
 
 int mos_fs_write_GPIO (int GPIO_Number, int IO, int State);

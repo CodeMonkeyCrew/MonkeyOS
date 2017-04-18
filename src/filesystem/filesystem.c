@@ -1,7 +1,7 @@
 #include "filesystem.h"
-#include "../drivers/gpio-driver/gpio-driver.h"
-#include "../io-handler/io-handler.h"
+#include "src/drivers/gpio-driver/lowLevelGPIO/gpio-driver.h"
 
+static FileDescriptor_t DESCRIPTORS[];
 
 int mos_fs_write_GPIO (int GPIO_Number, int IO, int State) {
     //TODO properly init HAL in bootfile?
@@ -34,10 +34,14 @@ int mos_fs_create(const char* file_name, file_ext_type file_type) {
     return 0;
 }
 
-int mos_fs_open(const char* file_name) {
+/**fileDescriptor_t mos_fs_open(const file_ext_type type) {
 
-    return 0;
-}
+    fileDescriptor_t newFD;
+    newFD.type = type;
+    newFD.state = 1;
+
+    return newFD;
+}*/
 
 int mos_fs_close(int file_descriptor) {
 
