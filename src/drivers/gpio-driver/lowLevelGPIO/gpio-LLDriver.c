@@ -1,11 +1,11 @@
-#include "gpio-driver.h"
+#include <src/drivers/gpio-driver/lowLevelGPIO/gpio-LLDriver.h>
 
-void setMuxMode(uint32_t* muxModeAddr, int startBit){
+void mos_gpio_LLD_set_mux_mode(uint32_t* muxModeAddr, int startBit){
     *muxModeAddr &= ~(1 << startBit);
     *muxModeAddr &= ~(1 << (startBit + 1));
     *muxModeAddr |= (1 << (startBit + 2));
 }
-void setPowerModeClock(int gpioRegion){
+void mos_gpio_LLD_set_power_clock(int gpioRegion){
 
     //turn on Powermode
     *PM_PWSTCTRL_PER |= (1 << 1) | (1 << 0);
@@ -19,12 +19,12 @@ void setPowerModeClock(int gpioRegion){
     }
 
 }
-void mos_gpioLLD_init(int gpioPinNumber, int gpioPort, uint32_t* muxModeAddr, int startBit){
-    setPowerModeClock(gpioPort);
-    setMuxMode(muxModeAddr, startBit);
+void mos_gpio_LLD_init(int gpioPinNumber, int gpioPort, uint32_t* muxModeAddr, int startBit){
+    mos_gpio_LLD_set_power_clock(gpioPort);
+    mos_gpio_LLD_set_mux_mode(muxModeAddr, startBit);
 }
 
-void mos_gpio_LLD_setDirection(uint32_t* gpioOE, int shift, int direction){
+void mos_gpio_LLD_set_direction(uint32_t* gpioOE, int shift, int direction){
     if(direction > 0){
         //input Pin
         *gpioOE |= (1 << shift);
@@ -34,7 +34,7 @@ void mos_gpio_LLD_setDirection(uint32_t* gpioOE, int shift, int direction){
       }
 }
 
-void mos_gpio_LLD_write(uint32_t* gpioDataOut, int shift, int mode){
+void mos_gpio_LLD_set_value(uint32_t* gpioDataOut, int shift, int mode){
     if(mode > 0){
          //turn on
         *gpioDataOut |= (1 << shift);
@@ -43,7 +43,7 @@ void mos_gpio_LLD_write(uint32_t* gpioDataOut, int shift, int mode){
         *gpioDataOut &= ~(1 << shift);
      }
 }
-int mos_gpio_LLD_read(int gpioPinNumber);
+int mos_gpio_LLD_get_value(int gpioPinNumber);
 
 /**
  * returns the number of the GPIO Region, f.ex 5 for GPIO_5 and the shift of the gpioPin f.ex 21 for GPIO_149 (1 << 21)
