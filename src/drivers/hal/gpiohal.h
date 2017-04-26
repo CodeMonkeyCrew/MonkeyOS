@@ -1,7 +1,7 @@
 #ifndef GPIO_DRIVER_H
 #define GPIO_DRIVER_H
-#include "gpio-hal.h"
 
+#include <inttypes.h>
 
 void mos_gpio_LLD_init(int gpioPinNumber, int gpioPort, uint32_t* muxModeAddr, int startBit);
 //direction: IN=1, OUT=0

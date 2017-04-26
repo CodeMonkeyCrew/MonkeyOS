@@ -1,24 +1,34 @@
-#include <src/drivers/gpio-driver/lowLevelGPIO/gpio-LLDriver.h>
+#include "gpiohal.h"
+#include "../register/cm_register.h"
+#include "../register/pw_register.h"
+#include "../register/gpioregister.h"
+#include "../util/registerutil.h"
+#include <inttypes.h>
+
+#define CM_CLOCK_WKUP_BIT 13
+#define CM_CLOCK_PER_OFFSET 11
 
 void mos_gpio_LLD_set_mux_mode(uint32_t* muxModeAddr, int startBit){
-    *muxModeAddr &= ~(1 << startBit);
-    *muxModeAddr &= ~(1 << (startBit + 1));
-    *muxModeAddr |= (1 << (startBit + 2));
+    clear_bit(muxModeAddr, startBit);
+    clear_bit(muxModeAddr, startBit + 1);
+    set_bit(muxModeAddr, startBit + 2);
 }
 void mos_gpio_LLD_set_power_clock(int gpioRegion){
 
     //turn on Powermode
-    *PM_PWSTCTRL_PER |= (1 << 1) | (1 << 0);
+    set_bit((uint32_t*)PM_PWSTCTRL_PER, 0);
+    set_bit((uint32_t*)PM_PWSTCTRL_PER, 1);
 
     //turn on Clocks
     if(gpioRegion == 1){
-      *CM_FCLKEN_WKUP |= (1 << CM_CLOCK_WKUP_BIT);
-      *CM_ICLKEN_WKUP |= (1 << CM_CLOCK_WKUP_BIT);
-    }else{
-      *CM_ICLKEN_PER |= (1 << (gpioRegion + CM_CLOCK_PER_OFFSET));
-    }
+        set_bit((uint32_t*)CM_FCLKEN_WKUP, CM_CLOCK_WKUP_BIT);
+        set_bit((uint32_t*)CM_ICLKEN_WKUP, CM_CLOCK_WKUP_BIT);
 
+    }else{
+        set_bit((uint32_t*)CM_ICLKEN_PER, (gpioRegion + CM_CLOCK_PER_OFFSET));
+    }
 }
+
 void mos_gpio_LLD_init(int gpioPinNumber, int gpioPort, uint32_t* muxModeAddr, int startBit){
     mos_gpio_LLD_set_power_clock(gpioPort);
     mos_gpio_LLD_set_mux_mode(muxModeAddr, startBit);
@@ -27,22 +37,25 @@ void mos_gpio_LLD_init(int gpioPinNumber, int gpioPort, uint32_t* muxModeAddr, i
 void mos_gpio_LLD_set_direction(uint32_t* gpioOE, int shift, int direction){
     if(direction){
         //output Pin
-        *gpioOE &= ~(1 << shift);
+        clear_bit(gpioOE, shift);
       }else{
         //input Pin
-        *gpioOE |= (1 << shift);
+        set_bit(gpioOE, shift);
       }
 }
 
 void mos_gpio_LLD_set_value(uint32_t* gpioDataOut, int shift, int mode){
     if(mode > 0){
          //turn on
-        *gpioDataOut |= (1 << shift);
+        set_bit(gpioDataOut, shift);
      }else{
          //turn off
-        *gpioDataOut &= ~(1 << shift);
+        uint32_t* ptr = (uint32_t*)(get_base_address(5) + GPIO_CLEARDATAOUT);
+        //*ptr |= (1 << shift);
+        set_bit(ptr, shift);
      }
 }
+
 int mos_gpio_LLD_get_value(int gpioPinNumber);
 
 /**

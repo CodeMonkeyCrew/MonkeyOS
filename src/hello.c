@@ -1,5 +1,5 @@
-#include "src/Drivers/gpio-driver/gpio-driver.h"
-#include "src/FileSystem/filesystem.h"
+#include "filesystem/filesystem.h"
+#include "drivers/gpio-driver/gpiodriver.h"
 
 #pragma SWI_ALIAS(put, 0);
 int put(int value);

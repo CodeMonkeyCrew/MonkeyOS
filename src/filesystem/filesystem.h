@@ -1,9 +1,9 @@
 #ifndef SRC_FILESYSTEM_FILESYSTEM_H_
 #define SRC_FILESYSTEM_FILESYSTEM_H_
 
-#include "FileTypes.h"
-#include "src/Drivers/DriverTypes.h"
 #include "filesystemregister.h"
+#include "filetypes.h"
+#include "src/Drivers/DriverTypes.h"
 
 #define MAX_NO_OF_FILES 64
 #define MAX_NO_OF_OPEN_FILES 32

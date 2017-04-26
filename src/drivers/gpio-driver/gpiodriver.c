@@ -1,10 +1,8 @@
-
-#include <src/drivers/gpio-driver/gpiodriver.h>
-
-#include "src/drivers/gpio-driver/lowLevelGPIO/gpio-LLDriver.h"
-#include "src/Drivers/DriverTypes.h"
-#include "src/FileSystem/FileTypes.h"
-#include "src/FileSystem/filesystemregister.h"
+#include "gpiodriver.h"
+#include "../hal/gpiohal.h"
+#include "../drivertypes.h"
+#include "../../filesystem/filetypes.h"
+#include "../../filesystem/filesystemregister.h"
 #include <stdlib.h>
 
 
@@ -58,7 +56,6 @@ static int mos_gpio_driver_write(const void* buffer, int bufSize, generic_file_t
         default:
             return -1;
     }
-
     return 0;
 }
 
@@ -69,6 +66,9 @@ static int mos_gpio_driver_read(const void* buffer, int bufSize, generic_file_t*
 
 //should be called at boot time
 void mos_gpio_driver_init(void){
+    //use malloc as it would otherwise be put on the stack,
+    //which will be freed when the functions ends.
+    //new data will then maybe override the driver
     driver_t* gpioDriver = (driver_t*) malloc(sizeof(driver_t));
     gpioDriver->driver_read = mos_gpio_driver_read;
     gpioDriver->driver_write = mos_gpio_driver_write;
