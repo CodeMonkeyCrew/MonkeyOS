@@ -1,7 +1,7 @@
 #include "drivers/hal/includes/register_util.h"
 #include <inttypes.h>
 #include "drivers/hal/timer_hal/timer_hal.h"
-#include "drivers/hal/includes/intcps_register.h"
+#include "drivers/hal/register/intcps_register.h"
 
 #define PM_PWSTCTRL_PER (volatile uint32_t*)0x483070E0
 

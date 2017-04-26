@@ -1,7 +1,7 @@
 #include "timer_hal.h"
-#include "../includes/cm_register.h"
+#include "../register/cm_register.h"
 #include "../includes/register_util.h"
-#include "../includes/intcps_register.h"
+#include "../register/intcps_register.h"
 
 uint32_t init_gptimer(const uint8_t gptimer)
 {

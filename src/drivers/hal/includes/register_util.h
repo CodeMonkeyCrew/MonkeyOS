@@ -1,10 +1,3 @@
-/*
- * register_util.h
- *
- *  Created on: Apr 12, 2017
- *      Author: mod
- */
-
 #ifndef SRC_DRIVERS_HAL_INCLUDES_REGISTER_UTIL_H_
 #define SRC_DRIVERS_HAL_INCLUDES_REGISTER_UTIL_H_
 
