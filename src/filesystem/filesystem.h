@@ -1,11 +1,9 @@
 #ifndef SRC_FILESYSTEM_FILESYSTEM_H_
 #define SRC_FILESYSTEM_FILESYSTEM_H_
 
-#include "filesystemregister.h"
-#include "filetypes.h"
-#include "src/Drivers/DriverTypes.h"
+#include "FileTypes.h"
 
-#define MAX_NO_OF_FILES 64
+#define MAX_NO_OF_FILES 256
 #define MAX_NO_OF_OPEN_FILES 32
 
 
@@ -13,8 +11,6 @@
  * https://linuxmeerkat.wordpress.com/2011/12/02/file-descriptors-explained/
  * http://stackoverflow.com/questions/5256599/what-are-file-descriptors-explained-in-simple-terms
  */
-
-int mos_fs_init(void);
 
 //for testing purposes...
 int mos_fs_write_GPIO (int GPIO_Number, int IO, int State);
@@ -28,9 +24,20 @@ int mos_fs_read (int file_descriptor, const void* buf, int buffer_size);
 int mos_fs_write (int file_descriptor, const void* buf, int buffer_size);
 
 
+//drivers
+typedef struct {
+    int (*driver_write) (const void*, int);
+    int (*driver_read) (const void*, int);
+} driver_type;
+
+//size depending on number of elements in file_ext_type enum in FileTypes.h!
+driver_type* drivers[NO_OF_DRIVER_TYPES];
+
+int register_driver(driver_type_enum type, driver_type* driver);
+
 
 //util
-static int create_entry(generic_file_t* file);
-int add_new_file(generic_file_t* file);
+static int create_entry(generic_file_type* file);
+int add_new_file(generic_file_type* file);
 
 #endif /* SRC_FILESYSTEM_FILESYSTEM_H_ */
