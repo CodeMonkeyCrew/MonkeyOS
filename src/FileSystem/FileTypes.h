@@ -2,43 +2,40 @@
 #define SRC_FILESYSTEM_FILETYPES_H_
 #include <inttypes.h>
 
-
-typedef enum {GPIO, LEDM} driver_type_enum;
-#define NO_OF_DRIVER_TYPES 2
-
 //Direction, Value
-typedef enum {DIR, VAL} gpio_file_type_t;
+typedef enum {GPIO_DIR, GPIO_VAL} file_types_t;
+#define NO_OF_FILE_TYPES 2
 
 #define FILE_NAME_SIZE 16
 
 typedef enum { false, true } bool;
 
 typedef struct {
-    char name[FILE_NAME_SIZE];
-    driver_type_enum d_type;
+    file_types_t f_type;
     bool is_open;
     int size;
-} generic_file_type;
+    char name[FILE_NAME_SIZE];
+} generic_file_t;
 
 typedef struct {
-    generic_file_type header;
-    gpio_file_type_t f_type;
     int number;
     int port;
     int start_bit;
     int shift;
-    uint32_t mux_mode_addr;
-} gpio_file_type;
+    uint32_t* mux_mode_addr;
+} gpio_info_t;
 
 typedef struct {
-    gpio_file_type gpio_file;
-    uint32_t OE;
-} gpio_direction_file_type;
+    generic_file_t header;
+    gpio_info_t* gpio_info;
+    uint32_t* OE;
+} gpio_direction_file_t;
 
 typedef struct {
-    gpio_file_type gpio_file;
-    uint32_t data_out;
-} gpio_value_file_type;
+    generic_file_t header;
+    gpio_info_t* gpio_info;
+    uint32_t* data_out;
+} gpio_value_file_t;
 
 
 #endif /* SRC_FILESYSTEM_FILETYPES_H_ */
