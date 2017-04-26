@@ -1,7 +1,7 @@
-#include <src/drivers/timer_driver/hal/timer_hal.h>
-#include "../../register/cm_register.h"
-#include "../../util/registerutil.h"
-#include "../../register/intcps_register.h"
+#include <kernel/drivers/register/cm_register.h>
+#include <kernel/drivers/register/intcps_register.h>
+#include <kernel/drivers/timer_driver/hal/timer_hal.h>
+#include <kernel/drivers/util/registerutil.h>
 
 uint32_t init_gptimer(const uint8_t gptimer)
 {

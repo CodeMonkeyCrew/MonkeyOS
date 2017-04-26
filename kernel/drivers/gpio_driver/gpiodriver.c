@@ -1,8 +1,8 @@
-#include "gpiodriver.h"
-#include "hal/gpiohal.h"
-#include "../drivertypes.h"
+#include <kernel/drivers/drivertypes.h>
+#include <kernel/drivers/gpio_driver/gpiodriver.h>
+#include <kernel/drivers/gpio_driver/hal/gpiohal.h>
+#include <kernel/filesystem/filesystemregister.h>
 #include "../../filesystem/filetypes.h"
-#include "../../filesystem/filesystemregister.h"
 #include <stdlib.h>
 
 

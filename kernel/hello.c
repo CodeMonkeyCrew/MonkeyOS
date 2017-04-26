@@ -1,9 +1,9 @@
-#include "filesystem/filesystem.h"
-#include "drivers/util/registerutil.h"
-#include "drivers/gpio_driver/gpiodriver.h"
-#include "drivers/timer_driver/hal/timer_hal.h"
-#include "drivers/register/intcps_register.h"
 #include <inttypes.h>
+#include <kernel/drivers/gpio_driver/gpiodriver.h>
+#include <kernel/drivers/register/intcps_register.h>
+#include <kernel/drivers/timer_driver/hal/timer_hal.h>
+#include <kernel/drivers/util/registerutil.h>
+#include <kernel/filesystem/filesystem.h>
 
 
 #define PM_PWSTCTRL_PER (volatile uint32_t*)0x483070E0
