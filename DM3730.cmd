@@ -14,7 +14,7 @@ MEMORY /* ARM memory map */
 
 SECTIONS
 {
-#ifndef DSP_CORE   /* ARM memory map */
+DSP_CORE   /* ARM memory map */
 
 	.intvecs       >  INTVECS
     .text          >  SRAM
@@ -42,4 +42,5 @@ SECTIONS
     .rodata        >  SRAM
     .c6xabi.exidx  >  SRAM
     .c6xabi.extab  >  SRAM
+
 }

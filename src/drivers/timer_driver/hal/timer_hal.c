@@ -1,7 +1,7 @@
-#include "timer_hal.h"
-#include "../register/cm_register.h"
-#include "../includes/register_util.h"
-#include "../register/intcps_register.h"
+#include <src/drivers/timer_driver/hal/timer_hal.h>
+#include "../../register/cm_register.h"
+#include "../../util/registerutil.h"
+#include "../../register/intcps_register.h"
 
 uint32_t init_gptimer(const uint8_t gptimer)
 {
@@ -13,10 +13,10 @@ uint32_t init_gptimer(const uint8_t gptimer)
     }
     else if (gptimer > 1 && gptimer < 10)
     {
-        response = setBit(CM_ICLKEN_PER, 3);
-        response = setBit(CM_FCLKEN_PER, 3);
+        response = set_bit(CM_ICLKEN_PER, 3);
+        response = set_bit(CM_FCLKEN_PER, 3);
     }
-    response = clearBit(
+    response = clear_bit(
             (GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCLR ), 0);
     response = clear_32(
             (GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCRR ));
@@ -28,18 +28,18 @@ uint32_t enable_compare_mode(const uint8_t gptimer,
                              const uint32_t value)
 {
     uint32_t response = 1;
-    response = setBit((GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCLR ),
+    response = set_bit((GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCLR ),
                       6);
-    response = setBit((GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TIER ),
+    response = set_bit((GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TIER ),
                       2);
     if (compareregister)
     {
-        response = setBit(
+        response = set_bit(
                 (GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCLR ), 13); //set TCAR2
     }
-    response = clearBit(
+    response = clear_bit(
             (GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCLR ), 13); //set TCAR1
-    response = setValue_32(
+    response = set_value_32(
             (GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TMAR ), value);
     return response;    //compare mode enable
 }
@@ -56,15 +56,15 @@ uint32_t enable_interrupt(const uint8_t gptimer)
 
 uint32_t gptimer_start(const uint8_t gptimer)
 {
-    clearBit((GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCLR ), 0);
+    clear_bit((GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCLR ), 0);
 
-    setBit((GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCLR ), 0);
+    set_bit((GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCLR ), 0);
     return 1;
 }
 uint32_t gptimer_stop(const uint8_t gptimer)
 {
     clear_32((GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCRR ));
-    clearBit((GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCLR ), 0);
+    clear_bit((GPTIMER_GENERAL_BASE + (0x2000 * (gptimer - 2)) + TCLR ), 0);
     return 1;
 }
 

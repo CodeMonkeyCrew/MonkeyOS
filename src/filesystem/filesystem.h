@@ -1,32 +1,32 @@
 #ifndef SRC_FILESYSTEM_FILESYSTEM_H_
 #define SRC_FILESYSTEM_FILESYSTEM_H_
 
-#define FILE_NAME_SIZE 16
+#include "filetypes.h"
+#include "../drivers/drivertypes.h"
 
-//LED, Button, Timer
-typedef enum {LED, BTN, TMR} file_ext_type;
-
-typedef struct {
-    char name[FILE_NAME_SIZE];
-    file_ext_type type;
-    int size;
-} file_header_type;
-
-typedef struct {
-    file_header_type header;
-    char data[];
-} file_type ;
+#define MAX_NO_OF_FILES 256
+#define MAX_NO_OF_OPEN_FILES 32
 
 
-int mos_fs_write_GPIO (int GPIO_Number, int IO, int State);
+/* File Descriptors explained:
+ * https://linuxmeerkat.wordpress.com/2011/12/02/file-descriptors-explained/
+ * http://stackoverflow.com/questions/5256599/what-are-file-descriptors-explained-in-simple-terms
+ */
 
-//source: http://codewiki.wikidot.com/system-calls
-int mos_fs_create (const char* file_name, file_ext_type file_type); //creates a file with the given file_name and type
-int mos_fs_open (const char* file_name);  //opens a file and returns a file descriptor (simple integer which is increased with each new opened file)
-int mos_fs_close (int file_descriptor);   //closes a file, returns 0 on success, -1 on error
+int mos_fs_init(void);
 
-//int mos_fs_read (int file_descriptor, char* buf, int buffer_size); //returns the number of bytes that were read. If negative an error occurred
-int mos_fs_read(int file_descriptor);
-int mos_fs_write (int file_descriptor, const char* data); //writes the content of the buffer into the file with the correct file_descriptor
+//actual system calls
+//int mos_fs_create (const char* file_name, file_ext_type file_type);
+int mos_fs_open (const char* file_name);
+int mos_fs_close (int file_descriptor);
+
+int mos_fs_read (int file_descriptor, const void* buf, int buffer_size);
+int mos_fs_write (int file_descriptor, const void* buf, int buffer_size);
+
+int register_driver(file_types_t type, driver_t* driver);
+
+//util
+static int create_entry(generic_file_t* file);
+int add_new_file(generic_file_t* file);
 
 #endif /* SRC_FILESYSTEM_FILESYSTEM_H_ */

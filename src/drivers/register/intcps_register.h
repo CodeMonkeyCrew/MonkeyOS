@@ -1,10 +1,3 @@
-/*
- * intcps_register.h
- *
- *  Created on: Apr 20, 2017
- *      Author: mod
- */
-
 #ifndef SRC_DRIVERS_HAL_INCLUDES_INTCPS_REGISTER_H_
 #define SRC_DRIVERS_HAL_INCLUDES_INTCPS_REGISTER_H_
 
