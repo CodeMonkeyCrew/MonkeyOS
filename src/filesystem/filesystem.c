@@ -1,6 +1,5 @@
 #include "filesystem.h"
 #include <string.h>
-#include <stdio.h>
 
 static int currentFileNo = 0;
 static generic_file_t* files[MAX_NO_OF_FILES];
@@ -115,7 +114,6 @@ int mos_fs_open(const char* file_name) {
             return create_entry(files[i]); //returns the file descriptor
         }
     }
-    printf("hello");
     //file not found
     return -2;
 }

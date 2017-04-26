@@ -1,7 +1,7 @@
 #ifndef SRC_DRIVERS_DRIVERTYPES_H_
 #define SRC_DRIVERS_DRIVERTYPES_H_
 
-#include "src/FileSystem/FileTypes.h"
+#include "../filesystem/filetypes.h"
 
 typedef struct {
     int (*driver_write) (const void*, int, generic_file_t*);

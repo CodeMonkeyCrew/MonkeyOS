@@ -1,14 +1,35 @@
 #include "filesystem/filesystem.h"
-#include "drivers/gpio-driver/gpiodriver.h"
+#include "drivers/util/registerutil.h"
+#include "drivers/gpio_driver/gpiodriver.h"
+#include "drivers/timer_driver/hal/timer_hal.h"
+#include "drivers/register/intcps_register.h"
+#include <inttypes.h>
 
-#pragma SWI_ALIAS(put, 0);
-int put(int value);
 
-int putISR(int value) {
-    return 4711;
+#define PM_PWSTCTRL_PER (volatile uint32_t*)0x483070E0
+
+openISR(){
+
+}
+closeISR(){
+
 }
 
+writeISR(){
+
+}
+
+void testFromFSToDrivers();
+void testTimer();
+
 void main(void) {
+
+    testFromFSToDrivers();
+
+    //testTimer();
+}
+
+void testFromFSToDrivers() {
     mos_fs_init();
     mos_gpio_driver_init();
 
@@ -35,5 +56,20 @@ void main(void) {
         {
         }
     }
-//	int res = put(10);
+}
+
+void testTimer() {
+    *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
+
+    init_gptimer(2);
+    enable_compare_mode(2, 0, 0xffff);
+    uint32_t* unmusk_i2c = (uint32_t*)MIRn(1);
+    *unmusk_i2c |= (1 << 25);
+    enable_interrupt(2);
+
+    _enable_interrupts();
+    gptimer_start(2);
+    while(1){
+
+    }
 }

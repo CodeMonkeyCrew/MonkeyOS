@@ -28,4 +28,14 @@ inline int set_bit(uint32_t* address, uint8_t pos){
      return 0;
 }
 
+inline uint32_t set_value_32(uint32_t* address, uint32_t value)
+{
+    *address = value;
+    if (*address == value)
+    {
+        return 1;
+    }
+    return 0;
+}
+
 #endif /* SRC_DRIVERS_GPIO_DRIVER_UTIL_REGISTERUTIL_H_ */
