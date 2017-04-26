@@ -57,9 +57,9 @@ _ISR_IRQ:
 	.word IRQDefaultHandler				; for IRQ34
 	.word IRQDefaultHandler				; for IRQ35
 	.word IRQDefaultHandler				; for IRQ36
-	.word IRQDefaultHandler				; for IRQ37
-	.word IRQDefaultHandler				; for IRQ38
-	.word IRQDefaultHandler				; for IRQ39
+	.word IRQGPTIMER2					; for IRQ37
+	.word IRQGPTIMER2					; for IRQ38
+	.word IRQGPTIMER2					; for IRQ39
 	.word IRQDefaultHandler				; for IRQ40
 	.word IRQDefaultHandler				; for IRQ41
 	.word IRQDefaultHandler				; for IRQ42
@@ -119,6 +119,9 @@ _ISR_IRQ:
 
 IRQDefaultHandler:
 	B IRQDefaultHandler
+
+IRQGPTIMER2:
+	B IRQGPTIMER2
 
 GPIO_IRQSTATUS1 .word 0x48310018
 
