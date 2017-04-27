@@ -5,7 +5,7 @@ static int currentFileNo = 0;
 static generic_file_t* files[MAX_NO_OF_FILES];
 static generic_file_t* open_files[MAX_NO_OF_OPEN_FILES];
 
-//size depending on number of elements in file_types_t enum in FileTypes.h!
+//size depending on number of elements in file_types_t enum in fileTypes.h!
 static driver_t* drivers[NO_OF_FILE_TYPES];
 
 int mos_fs_init(void) {
@@ -103,7 +103,7 @@ int mos_fs_create(const char* file_name, file_ext_type file_type) {
 
 int mos_fs_open(const char* file_name) {
     int i;
-    for (i = 0; i < MAX_NO_OF_FILES; ++i) {
+    for (i = 0; i < currentFileNo; ++i) {
         if (strcmp(files[i] -> name, file_name) == 0) {
             //open file only once for now..
             if (files[i]->is_open) {
