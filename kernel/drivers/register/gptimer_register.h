@@ -5,6 +5,7 @@
 
 #define GPTIMER1                0x48318000
 #define GPTIMER_GENERAL_BASE    0x49032000
+#define GPTIMER(n) (GPTIMER_GENERAL_BASE + (0x2000 * (n - 2)))
 
 
 #define TIDR        (uint32_t) 0x0     //This register contains the IP revision code.
