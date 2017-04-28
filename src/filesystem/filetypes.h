@@ -27,13 +27,13 @@ typedef struct {
 
 typedef struct {
     generic_file_t header;
-    gpio_info_t* gpio_info;
+    gpio_info_t gpio_info;
     uint32_t* OE;
 } gpio_direction_file_t;
 
 typedef struct {
     generic_file_t header;
-    gpio_info_t* gpio_info;
+    gpio_info_t gpio_info;
     uint32_t* data_out;
 } gpio_value_file_t;
 
