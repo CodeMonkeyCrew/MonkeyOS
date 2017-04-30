@@ -24,9 +24,11 @@ void testTimer();
 
 void main(void) {
 
-    testFromFSToDrivers();
+    //testFromFSToDrivers();
 
-    //testTimer();
+
+
+    testTimer();
 }
 
 void testFromFSToDrivers() {
@@ -59,15 +61,15 @@ void testFromFSToDrivers() {
 }
 
 void testTimer() {
+    _disable_interrupts();
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
     init_gptimer(2);
-    enable_compare_mode(2, 0, 0xffff);
-    uint32_t* unmusk_i2c = (uint32_t*)MIRn(1);
-    *unmusk_i2c |= (1 << 25);
+    enable_compare_mode(2, 0, 0xfffff);
     enable_interrupt(2);
 
     _enable_interrupts();
+    _enable_IRQ();
     gptimer_start(2);
     while(1){
 
