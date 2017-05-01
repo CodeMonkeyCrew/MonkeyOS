@@ -74,8 +74,10 @@ uint32_t enable_interrupt(const uint8_t nr, const uint8_t autoreload)
         response = clear_bit((uint32_t*) MIRn(1), 7);
         break;
     case 3:
+        response = clear_bit((uint32_t*)MIRn(1),8);
         break;
     case 4:
+        response = clear_bit((uint32_t*)MIRn(1),9);
         break;
     case 5:
         break;
