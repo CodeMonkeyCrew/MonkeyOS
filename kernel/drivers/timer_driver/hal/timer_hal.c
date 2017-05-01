@@ -39,18 +39,58 @@ uint32_t enable_compare_mode(const uint8_t nr, const uint8_t compareregister,
     return response;    //compare mode enable
 }
 
-uint32_t enable_interrupt(const uint8_t nr)
+uint32_t set_interrupt_mode(const uint8_t nr, const uint8_t mode)
+{
+    uint8_t response = 1;
+    if (mode < 3)
+    {
+        clear_bit(get_address(GPTIMER(nr), TIER), 0);
+        clear_bit(get_address(GPTIMER(nr), TIER), 1);
+        clear_bit(get_address(GPTIMER(nr), TIER), 2);
+        response = set_bit(get_address(GPTIMER(nr), TIER), mode);
+        return response;
+    }
+    return 0;
+}
+
+uint32_t enable_interrupt(const uint8_t nr, const uint8_t autoreload)
 {
     uint8_t response = 1;
     //96 possible interrups, 0 - Bit0-31, 1 - Bit 32-63 -> n = 1
-    //only for gtimer 2 atm
-    response = set_bit(get_address(GPTIMER(nr), TIER), 1);
-    response = set_bit(get_address(GPTIMER(nr), TIER), 0);
+
+    //clear interrupt bits
+    response = set_bit(get_address(GPTIMER(nr), TISR), 0);
     response = set_bit(get_address(GPTIMER(nr), TISR), 1);
-    response = set_bit(get_address(GPTIMER(nr), TCLR), 1);
-    if (nr == 2)
+    response = set_bit(get_address(GPTIMER(nr), TISR), 2);
+
+    if (autoreload)
     {
+        response = set_bit(get_address(GPTIMER(nr), TCLR), 1);
+    }
+    switch(nr){
+    case 1:
+        break;
+    case 2:
         response = clear_bit((uint32_t*) MIRn(1), 7);
+        break;
+    case 3:
+        break;
+    case 4:
+        break;
+    case 5:
+        break;
+    case 6:
+        break;
+    case 7:
+        break;
+    case 8:
+        break;
+    case 9:
+        break;
+    case 10:
+        break;
+    case 11:
+        break;
     }
 
     return response;

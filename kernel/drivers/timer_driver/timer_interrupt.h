@@ -1,0 +1,8 @@
+#ifndef KERNEL_DRIVERS_TIMER_DRIVER_TIMER_INTERRUPT_H_
+#define KERNEL_DRIVERS_TIMER_DRIVER_TIMER_INTERRUPT_H_
+/**
+ * Interrupt routine for gptimer 2 on lane 38/96
+ */
+extern void INTERRUPT_GPTIMER2(void);
+
+#endif /* KERNEL_DRIVERS_TIMER_DRIVER_TIMER_INTERRUPT_H_ */

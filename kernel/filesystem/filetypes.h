@@ -3,7 +3,7 @@
 #include <inttypes.h>
 
 //Direction, Value
-typedef enum {GPIO_DIR, GPIO_VAL} file_types_t;
+typedef enum {GPIO_DIR, GPIO_VAL, TIMER} file_types_t;
 #define NO_OF_FILE_TYPES 2
 
 #define FILE_NAME_SIZE 16
@@ -37,5 +37,9 @@ typedef struct {
     uint32_t* data_out;
 } gpio_value_file_t;
 
+typedef struct{
+    int gtimernumber;
+
+}timer_info_t;
 
 #endif /* KERNEL_FILESYSTEM_FILETYPES_H_ */
