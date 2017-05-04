@@ -15,6 +15,18 @@ uint32_t init_gptimer(const uint8_t nr)
     else if (nr > 1 && nr < 10)
     {
         response = set_bit((uint32_t*) CM_FCLKEN_PER, 3);
+        response = set_bit((uint32_t*) CM_ICLKEN_PER, 3);
+    }
+
+
+    //this is needed as it takes a few CPU-Cycles(?) until CM_FCLKEN_PER & CM_ICLKEN_PER
+    //are active. If we do not wait, we cannot read/write into the adresses of GPTimer2
+    //which will lead to isr_abort when running the statesments after the for-loop.
+    //This is also the reason why it does work when stepping through the function and doesn't work
+    //when running the program.
+    volatile int i;
+    for (i = 0; i < 20000; ++i) {
+
     }
 
     response = clear_bit(get_address(GPTIMER(nr), TCLR), 0);
@@ -22,6 +34,7 @@ uint32_t init_gptimer(const uint8_t nr)
 
     return response;
 }
+
 
 uint32_t enable_compare_mode(const uint8_t nr, const uint8_t compareregister,
                              const uint32_t value)
@@ -64,10 +77,10 @@ uint32_t gptimer_start(const uint8_t nr)
 
     return respone;
 }
+
 uint32_t gptimer_stop(const uint8_t nr)
 {
     clear_32(get_address(GPTIMER(nr), TCRR));
     clear_bit(get_address(GPTIMER(nr), TCLR), 0);
     return 1;
 }
-

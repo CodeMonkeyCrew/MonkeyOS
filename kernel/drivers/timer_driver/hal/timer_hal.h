@@ -2,10 +2,7 @@
 #define SRC_DRIVERS_HAL_TIMER_HAL_TIMER_HAL_H_
 
 #include "../../../../kernel/drivers/register/gptimer_register.h"
-
-typedef enum mode{
-    CAPTURE, COMPARE
-}Mode_t;
+#include "../timermodes.h"
 
 /*      Methode Definition           */
 

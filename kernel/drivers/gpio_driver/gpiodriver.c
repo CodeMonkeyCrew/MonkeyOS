@@ -2,7 +2,7 @@
 #include "gpiodriver.h"
 #include "hal/gpiohal.h"
 #include "../../filesystem/filesystemregister.h"
-#include "../../filesystem/filetypes.h"
+#include "../../filesystem/filetypes/gpiotypes.h"
 #include <stdlib.h>
 
 
@@ -64,15 +64,68 @@ static int mos_gpio_driver_read(const void* buffer, int bufSize, generic_file_t*
     return 0;
 }
 
+static void add_drivers();
+static void add_files();
+
 //should be called at boot time
 void mos_gpio_driver_init(void){
+
+    add_drivers();
+    add_files();
+}
+
+static void add_drivers() {
     //use malloc as it would otherwise be put on the stack,
     //which will be freed when the functions ends.
     //new data will then maybe override the driver
-    driver_t* gpioDriver = (driver_t*) malloc(sizeof(driver_t));
-    gpioDriver->driver_read = mos_gpio_driver_read;
-    gpioDriver->driver_write = mos_gpio_driver_write;
-    gpioDriver->driver_open = mos_gpio_driver_open;
-    register_driver(GPIO_VAL, gpioDriver);
-    register_driver(GPIO_DIR, gpioDriver);
+    driver_t* pGpioDriver = (driver_t*) malloc(sizeof(driver_t));
+    if (pGpioDriver != NULL) {
+        pGpioDriver->driver_read = mos_gpio_driver_read;
+        pGpioDriver->driver_write = mos_gpio_driver_write;
+        pGpioDriver->driver_open = mos_gpio_driver_open;
+        register_driver(GPIO_VAL, pGpioDriver);
+        register_driver(GPIO_DIR, pGpioDriver);
+    }
+}
+
+static void add_gpio_149();
+
+static void add_files() {
+
+    add_gpio_149();
+
+}
+
+static void add_gpio_149() {
+    gpio_direction_file_t* pGpio149_dir = (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
+    if (pGpio149_dir != NULL) {
+       strcpy(pGpio149_dir->header.name, "gpio149_dir");
+       pGpio149_dir->header.is_open = false;
+       pGpio149_dir->header.f_type = GPIO_DIR;
+       pGpio149_dir->header.size = 0;
+
+       pGpio149_dir->gpio_info.number = 149;
+       pGpio149_dir->gpio_info.port = 5;
+       pGpio149_dir->gpio_info.start_bit = 16;
+       pGpio149_dir->gpio_info.shift = 21;
+       pGpio149_dir->gpio_info.mux_mode_addr = (uint32_t*) 0x4800217C;
+
+       pGpio149_dir->OE = (uint32_t*) 0x49056034;
+    }
+
+    gpio_value_file_t* pGpio149_val = (gpio_value_file_t*) mos_fs_create_file(GPIO_VAL);
+    if (pGpio149_val != NULL) {
+       strcpy(pGpio149_val->header.name, "gpio149_val");
+       pGpio149_val->header.is_open = false;
+       pGpio149_val->header.f_type = GPIO_VAL;
+       pGpio149_val->header.size = 0;
+
+       pGpio149_val->gpio_info.number = 149;
+       pGpio149_val->gpio_info.port = 5;
+       pGpio149_val->gpio_info.start_bit = 16;
+       pGpio149_val->gpio_info.shift = 21;
+       pGpio149_val->gpio_info.mux_mode_addr = (uint32_t*) 0x4800217C;
+
+       pGpio149_val->data_out = (uint32_t*) 0x49056094;
+    }
 }
