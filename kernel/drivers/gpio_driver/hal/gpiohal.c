@@ -1,9 +1,9 @@
-#include "../../register/cm_register.h"
-#include "../../register/pw_register.h"
-#include "../../register/gpioregister.h"
-#include "../../util/registerutil.h"
 #include <inttypes.h>
-#include <src/drivers/gpio_driver/hal/gpiohal.h>
+#include <kernel/drivers/gpio_driver/hal/gpiohal.h>
+#include <kernel/drivers/register/cm_register.h>
+#include <kernel/drivers/register/gpioregister.h>
+#include <kernel/drivers/register/pw_register.h>
+#include <kernel/drivers/util/registerutil.h>
 
 #define CM_CLOCK_WKUP_BIT 13
 #define CM_CLOCK_PER_OFFSET 11

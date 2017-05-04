@@ -1,5 +1,5 @@
-#ifndef SRC_DRIVERS_DRIVERTYPES_H_
-#define SRC_DRIVERS_DRIVERTYPES_H_
+#ifndef KERNEL_DRIVERS_DRIVERTYPES_H_
+#define KERNEL_DRIVERS_DRIVERTYPES_H_
 
 #include "../filesystem/filetypes.h"
 
@@ -10,4 +10,4 @@ typedef struct {
 } driver_t;
 
 
-#endif /* SRC_DRIVERS_DRIVERTYPES_H_ */
+#endif /* KERNEL_DRIVERS_DRIVERTYPES_H_ */

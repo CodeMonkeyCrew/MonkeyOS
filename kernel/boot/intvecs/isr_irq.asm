@@ -49,7 +49,7 @@ _ISR_IRQ:
 	.word IRQDefaultHandler				; for IRQ26
 	.word IRQDefaultHandler				; for IRQ27
 	.word IRQDefaultHandler				; for IRQ28
-	.word IRQ29Handler					; for IRQ29
+	.word IRQDefaultHandler					; for IRQ29
 	.word IRQDefaultHandler				; for IRQ30
 	.word IRQDefaultHandler				; for IRQ31
 	.word IRQDefaultHandler				; for IRQ32
@@ -57,9 +57,9 @@ _ISR_IRQ:
 	.word IRQDefaultHandler				; for IRQ34
 	.word IRQDefaultHandler				; for IRQ35
 	.word IRQDefaultHandler				; for IRQ36
-	.word IRQGPTIMER2					; for IRQ37
+	.word IRQDefaultHandler				; for IRQ37
 	.word IRQGPTIMER2					; for IRQ38
-	.word IRQGPTIMER2					; for IRQ39
+	.word IRQDefaultHandler				; for IRQ39
 	.word IRQDefaultHandler				; for IRQ40
 	.word IRQDefaultHandler				; for IRQ41
 	.word IRQDefaultHandler				; for IRQ42
@@ -121,7 +121,7 @@ IRQDefaultHandler:
 	B IRQDefaultHandler
 
 IRQGPTIMER2:
-	B IRQGPTIMER2
+	B IRQGPTIMER2 ; call c methode from sceduluer instead
 
 GPIO_IRQSTATUS1 .word 0x48310018
 

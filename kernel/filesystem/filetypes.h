@@ -1,5 +1,5 @@
-#ifndef SRC_FILESYSTEM_FILETYPES_H_
-#define SRC_FILESYSTEM_FILETYPES_H_
+#ifndef KERNEL_FILESYSTEM_FILETYPES_H_
+#define KERNEL_FILESYSTEM_FILETYPES_H_
 #include <inttypes.h>
 
 //Direction, Value
@@ -37,4 +37,5 @@ typedef struct {
     uint32_t* data_out;
 } gpio_value_file_t;
 
-#endif /* SRC_FILESYSTEM_FILETYPES_H_ */
+
+#endif /* KERNEL_FILESYSTEM_FILETYPES_H_ */

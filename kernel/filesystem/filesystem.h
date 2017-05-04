@@ -1,8 +1,8 @@
-#ifndef SRC_FILESYSTEM_FILESYSTEM_H_
-#define SRC_FILESYSTEM_FILESYSTEM_H_
+#ifndef KERNEL_FILESYSTEM_FILESYSTEM_H_
+#define KERNEL_FILESYSTEM_FILESYSTEM_H_
 
-#include "filetypes.h"
-#include "../drivers/drivertypes.h"
+#include "../../kernel/drivers/drivertypes.h"
+#include "../../kernel/filesystem/filetypes.h"
 
 #define MAX_NO_OF_FILES 256
 #define MAX_NO_OF_OPEN_FILES 32
@@ -30,4 +30,4 @@ static int create_entry(int fileIndex);
 static int add_new_file(generic_file_t* file);
 static generic_file_t* get_open_file(int file_descriptor);
 
-#endif /* SRC_FILESYSTEM_FILESYSTEM_H_ */
+#endif /* KERNEL_FILESYSTEM_FILESYSTEM_H_ */
