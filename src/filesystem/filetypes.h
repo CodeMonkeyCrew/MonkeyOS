@@ -37,5 +37,4 @@ typedef struct {
     uint32_t* data_out;
 } gpio_value_file_t;
 
-
 #endif /* SRC_FILESYSTEM_FILETYPES_H_ */

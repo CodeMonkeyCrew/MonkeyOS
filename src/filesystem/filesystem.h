@@ -16,7 +16,7 @@
 int mos_fs_init(void);
 
 //actual system calls
-//int mos_fs_create (const char* file_name, file_ext_type file_type);
+generic_file_t* mos_fs_create (file_types_t file_type);
 int mos_fs_open (const char* file_name);
 int mos_fs_close (int file_descriptor);
 
@@ -26,7 +26,8 @@ int mos_fs_write (int file_descriptor, const void* buf, int buffer_size);
 int register_driver(file_types_t type, driver_t* driver);
 
 //util
-static int create_entry(generic_file_t* file);
-int add_new_file(generic_file_t* file);
+static int create_entry(int fileIndex);
+static int add_new_file(generic_file_t* file);
+static generic_file_t* get_open_file(int file_descriptor);
 
 #endif /* SRC_FILESYSTEM_FILESYSTEM_H_ */
