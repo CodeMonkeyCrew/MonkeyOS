@@ -1,4 +1,4 @@
-#include "timer_hal.h"
+#include <kernel/drivers/timer_driver/hal/timer_hal.h>
 #include "../../register/cm_register.h"
 #include "../../register/intcps_register.h"
 
@@ -66,7 +66,7 @@ uint32_t set_interrupt_mode(const uint8_t nr, const uint8_t mode)
     return 0;
 }
 
-uint32_t enable_interrupt(const uint8_t nr, const uint8_t autoreload)
+uint32_t enable_timer_interrupt(const uint8_t nr, const uint8_t autoreload)
 {
     uint8_t response = 1;
     //96 possible interrups, 0 - Bit0-31, 1 - Bit 32-63 -> n = 1
@@ -109,6 +109,38 @@ uint32_t enable_interrupt(const uint8_t nr, const uint8_t autoreload)
     }
 
     return response;
+}
+uint32_t disable_timer_interrupt(const uint8_t nr){
+    uint32_t response = 1;
+    switch(nr){
+        case 1:
+            break;
+        case 2:
+            response = set_bit((uint32_t*) MIRn(1), 7);
+            break;
+        case 3:
+            response = set_bit((uint32_t*)MIRn(1),8);
+            break;
+        case 4:
+            response = set_bit((uint32_t*)MIRn(1),9);
+            break;
+        case 5:
+            break;
+        case 6:
+            break;
+        case 7:
+            break;
+        case 8:
+            break;
+        case 9:
+            break;
+        case 10:
+            break;
+        case 11:
+            break;
+        }
+
+        return response;
 }
 
 uint32_t gptimer_start(const uint8_t nr)

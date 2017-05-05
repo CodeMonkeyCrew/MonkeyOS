@@ -1,8 +1,8 @@
 #include <inttypes.h>
 #include <kernel/drivers/gpio_driver/gpiodriver.h>
-#include <kernel/drivers/timer_driver/timer-driver.h>
 #include <kernel/drivers/register/intcps_register.h>
 #include <kernel/drivers/timer_driver/hal/timer_hal.h>
+#include <kernel/drivers/timer_driver/timer_driver.h>
 #include <kernel/drivers/util/registerutil.h>
 #include <kernel/filesystem/filesystem.h>
 
@@ -67,7 +67,7 @@ void testTimer() {
     init_gptimer(2);
     enable_compare_mode(2, 0, 0xfffff);
     set_interrupt_mode(2, 1);
-    enable_interrupt(2,1);
+    enable_timer_interrupt(2,1);
 
     _enable_interrupts();
     _enable_IRQ();
@@ -83,6 +83,8 @@ void testTimerFromFS() {
 
     mos_fs_init();
     mos_timer_driver_init(); //creates and registers drivers and files
+
+
 
     int fd_timer2_int = mos_fs_open("GPTimer_2_INT");
     mos_fs_write(fd_timer2_int, 0, 0); //enables interrupt

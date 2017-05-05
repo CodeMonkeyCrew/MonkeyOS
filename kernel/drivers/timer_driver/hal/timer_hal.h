@@ -2,7 +2,7 @@
 #define SRC_DRIVERS_HAL_TIMER_HAL_TIMER_HAL_H_
 
 #include "../../../../kernel/drivers/register/gptimer_register.h"
-#include "../timermodes.h"
+#include "../timer_modes.h"
 
 /*      Methode Definition           */
 
@@ -39,13 +39,19 @@ uint32_t enable_compare_mode(const uint8_t nr, const uint8_t compareregister, co
  */
 uint32_t set_interrupt_mode(const uint8_t nr, const uint8_t mode);
 /**
+ * Disable interrupt for gtimer
+ * @param nr number of the gptimer
+ */
+
+uint32_t disable_timer_interrupt(const uint8_t nr);
+/**
  * Enable the interrupt for a GPTimer
  * @param nr number of the gptimer
  * @param autoreload
  *  0 - not reset the internal counter
  *  1 - set internal counter to 0
  */
-uint32_t enable_interrupt(const uint8_t nr, const uint8_t autoreload);
+uint32_t enable_timer_interrupt(const uint8_t nr, const uint8_t autoreload);
 
 /**
  * Start GPTimer
