@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 	   	.if __TI_EABI_ASSEMBLER
 		.asg scheduler_run, C_SCHEDULER_RUN
 	    .else
