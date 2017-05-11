@@ -73,6 +73,9 @@ generic_file_t* mos_fs_create_file(file_types_t file_type) {
         case TIMER_MODE:
             pNewFile = (generic_file_t*)malloc(sizeof(timer_mode_file_t));
             break;
+        case UART:
+            pNewFile = (generic_file_t*)malloc(sizeof(uart_file_t));
+            break;
     }
     return check_if_file_is_valid(pNewFile, file_type);
 }
