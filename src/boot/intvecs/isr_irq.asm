@@ -1,4 +1,11 @@
+	   	.if __TI_EABI_ASSEMBLER
+		.asg scheduler_run, C_SCHEDULER_RUN
+	    .else
+	    .asg _scheduler_run, C_SCHEDULER_RUN
+	    .endif
+
 	.global _ISR_IRQ
+	.global C_SCHEDULER_RUN
 
 ; INTCPS_SIR_IRQ register address
 INTCPS_SIR_IRQ_ADDR .word 0x48200040
@@ -6,6 +13,8 @@ INTCPS_SIR_IRQ_ADDR .word 0x48200040
 ACTIVEIRQ_MASK .equ 0x7F
 
 _ISR_IRQ:
+	; calculate return address
+	SUB LR, LR, #4
 	; Save the critical context
 	STMFD SP!, {R0-R12, LR}				; Save working registers and the Link register
 	MRS R11, SPSR						; Save the SPSR into R11
@@ -14,6 +23,8 @@ _ISR_IRQ:
 	LDR R10, INTCPS_SIR_IRQ_ADDR
 	LDR R10, [R10] 						; Get the INTCPS_SIR_IRQ register
 	AND R10, R10, #ACTIVEIRQ_MASK		; Apply the mask to get the active IRQ number
+
+	ADR LR, ISR_IRQ_end					; Set LR to return to ISR_IRQ_end after subroutine handler
 
     ; Jump to relevant subroutine handler
     LDR PC, [PC, R10, lsl #2]			; PC base address points this instruction + 8
@@ -49,7 +60,7 @@ _ISR_IRQ:
 	.word IRQDefaultHandler				; for IRQ26
 	.word IRQDefaultHandler				; for IRQ27
 	.word IRQDefaultHandler				; for IRQ28
-	.word IRQ29Handler					; for IRQ29
+	.word C_SCHEDULER_RUN				; for IRQ29
 	.word IRQDefaultHandler				; for IRQ30
 	.word IRQDefaultHandler				; for IRQ31
 	.word IRQDefaultHandler				; for IRQ32
@@ -120,26 +131,6 @@ _ISR_IRQ:
 IRQDefaultHandler:
 	B IRQDefaultHandler
 
-GPIO_IRQSTATUS1 .word 0x48310018
-
-IRQ29Handler:
-	; Save working registers
-    STMFD SP!, {R0-R1}
-
-    ; Now read-modify-write the peripheral module status register
-    ; to de-assert the M_IRQ_29 interrupt signal
-
-    ; De-Assert the peripheral interrupt
-    MOV R0, #0x10                		; Mask for flag
-   	LDR R1, GPIO_IRQSTATUS1				; Get the address of the module Status Register
-   	STR R0, [R1]                    	; Clear the flag
-
-    ; Restore working registers
-    LDMFD SP!, {R0-R1}
-
-    ; Jump to the end part of the ISR
-	B ISR_IRQ_end
-
 ; INTCPS_CONTROL register address
 INTCPS_CONTROL_ADDR .word 0x48200048;
 ; NEWIRQAGR bit mask to set only the NEWIRQAGR bit
@@ -162,4 +153,4 @@ ISR_IRQ_end:
     LDMFD SP!, {R0-R12, LR}				; Restore working registers and Link register
 
     ; Return after handling the interrupt
-    SUBS PC, LR, #4
+    MOVS PC, LR
