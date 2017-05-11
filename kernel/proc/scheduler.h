@@ -5,6 +5,7 @@
 
 void scheduler_init(void);
 void scheduler_run(void);
-int scheduler_initProc(ProcEntryPoint_t entryPoint);
+void scheduler_start(void);
+int scheduler_initProc(ProcEntryPoint_t entryPoint, Priority_t priority);
 
 #endif

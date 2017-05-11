@@ -60,7 +60,7 @@ _ISR_IRQ:
 	.word IRQDefaultHandler				; for IRQ26
 	.word IRQDefaultHandler				; for IRQ27
 	.word IRQDefaultHandler				; for IRQ28
-	.word C_SCHEDULER_RUN				; for IRQ29
+	.word IRQDefaultHandler				; for IRQ29
 	.word IRQDefaultHandler				; for IRQ30
 	.word IRQDefaultHandler				; for IRQ31
 	.word IRQDefaultHandler				; for IRQ32
@@ -69,7 +69,7 @@ _ISR_IRQ:
 	.word IRQDefaultHandler				; for IRQ35
 	.word IRQDefaultHandler				; for IRQ36
 	.word IRQDefaultHandler				; for IRQ37
-	.word GPTIMER2				; for IRQ38
+	.word C_SCHEDULER_RUN				; for IRQ38
 	.word IRQDefaultHandler				; for IRQ39
 	.word IRQDefaultHandler				; for IRQ40
 	.word IRQDefaultHandler				; for IRQ41

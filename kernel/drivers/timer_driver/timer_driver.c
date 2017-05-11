@@ -8,7 +8,7 @@
 
 static int mos_timer_driver_open(generic_file_t* file) {
     timer_file_t* pTimer_file = (timer_file_t*)file;
-    return init_gptimer(pTimer_file->info.timer_number);
+    return timer_init(pTimer_file->info.timer_number);
 }
 
 static int mos_timer_driver_write(const void* buffer, int bufSize, generic_file_t* file){
@@ -18,10 +18,11 @@ static int mos_timer_driver_write(const void* buffer, int bufSize, generic_file_
             timer_file_t* pTimerFile = (timer_file_t*)file;
             int state = *((int*)buffer); //0 or 1 // off or on
             if (state) {
-                gptimer_start(pTimerFile->info.timer_number);
+                timer_start(pTimerFile->info.timer_number);
             } else {
-                gptimer_stop(pTimerFile->info.timer_number);
+                timer_stop(pTimerFile->info.timer_number);
             }
+            break;
         }
 
         case TIMER_INT: {
@@ -29,7 +30,7 @@ static int mos_timer_driver_write(const void* buffer, int bufSize, generic_file_
 
             //TODO it should be possible to disable interrupts depending on content (0 or 1) in buffer
             //TODO now its possible to autoreload it
-            enable_timer_interrupt(pTimerIntFile->info.timer_number,1);
+            timer_enable_interrupt(pTimerIntFile->info.timer_number,1);
             break;
         }
 
@@ -41,7 +42,7 @@ static int mos_timer_driver_write(const void* buffer, int bufSize, generic_file_
                     //TODO
                     break;
                 case COMPARE:
-                    enable_compare_mode(pTimerModeFile->info.timer_number, *((int*)buffer));
+                    timer_enable_compare_mode(pTimerModeFile->info.timer_number, *((int*)buffer));
                     break;
                 case OVERFLOW:
                     //TODO

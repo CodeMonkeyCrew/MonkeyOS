@@ -3,7 +3,10 @@
 
 #include <inttypes.h>
 
-typedef enum {
+#define INVALID_ID_THREAD 0xFF
+
+typedef enum
+{
     PROC_STATE_INVALID,
     PROC_STATE_NEW,
     PROC_STATE_READY,
@@ -11,8 +14,15 @@ typedef enum {
     PROC_STATE_BLOCKED,
     PROC_STATE_EXIT
 } ProcState_t;
+typedef enum
+{
+    PROC_PRIO_HIGH,
+    PROC_PRIO_MIDDLE,
+    PROC_PRIO_LOW
+} Priority_t;
 
-typedef struct {
+typedef struct
+{
     uint32_t cpsr;
     uint32_t restartAddress;
     uint32_t r0;
@@ -34,9 +44,11 @@ typedef struct {
 
 typedef void (*ProcEntryPoint_t)(void);
 
-typedef struct {
+typedef struct
+{
     uint8_t pid;
     uint8_t parentPid;
+    Priority_t priority;
     ProcState_t state;
     ProcContext_t context;
     ProcEntryPoint_t entryPoint;

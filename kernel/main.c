@@ -7,29 +7,59 @@
 #include <kernel/drivers/timer_driver/timer_driver.h>
 #include <kernel/drivers/util/registerutil.h>
 #include <kernel/filesystem/filesystem.h>
-
+#include <stdio.h>
 
 #define PM_PWSTCTRL_PER (volatile uint32_t*)0x483070E0
 
 void testFromFSToDrivers();
-void testTimer();
 void testTimerFromFS();
 
-void main(void) {
-    scheduler_init();
+int dir_fd;
+int val_fd;
+int val_1 = 1;
+void* pVal_1 = &val_1;
 
+int val_0 = 0;
+void* pVal_0 = &val_0;
+
+void process1()
+{
+    volatile int i = 0;
+    while (1)
+    {
+        printf("process %i \n",i);
+        ++i;
+    }
+}
+void main(void)
+{
+
+    *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
+
+    /*Blink LED*/
+    mos_fs_init();
+    mos_gpio_driver_init();
+
+    dir_fd = mos_fs_open("gpio149_dir");
+    val_fd = mos_fs_open("gpio149_val");
+    mos_fs_write(dir_fd, pVal_1, 1);
+
+    /*Scheduler*/
+    scheduler_init();
+    scheduler_initProc(process1, 1);
+    scheduler_start();
     // set user mode and enable interrupts
     mode_setUserMode();
 
     // idle loop
-    while(1) {
-        volatile int i = 0;
-        for(i = 0; i < 10000; ++i) {
-        }
+    while (1)
+    {
+        mos_fs_write(val_fd, pVal_1, 1);
     }
 }
 
-void testFromFSToDrivers() {
+void testFromFSToDrivers()
+{
     mos_fs_init();
     mos_gpio_driver_init();
 
@@ -45,7 +75,8 @@ void testFromFSToDrivers() {
     void* pVal_0 = &val_0;
 
     volatile int i;
-    while(1){
+    while (1)
+    {
         mos_fs_write(val_fd, pVal_1, 1);
         for (i = 0; i < 20000; i++)
         {
@@ -57,31 +88,31 @@ void testFromFSToDrivers() {
         }
     }
 }
+/*
+ void testTimer() {
+ _disable_interrupts();
+ *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
-void testTimer() {
-    _disable_interrupts();
-    *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
+ init_gptimer(2);
+ enable_compare_mode(2, 0xfffff);
+ //set_interrupt_mode(2, 0);
+ enable_timer_interrupt(2,0);
 
-    init_gptimer(2);
-    enable_compare_mode(2, 0xfffff);
-    //set_interrupt_mode(2, 0);
-    enable_timer_interrupt(2,0);
+ _enable_interrupts();
+ _enable_IRQ();
+ gptimer_start(2);
+ while(1){
 
-    _enable_interrupts();
-    _enable_IRQ();
-    gptimer_start(2);
-    while(1){
-
-    }
-}
-
-void testTimerFromFS() {
+ }
+ }
+ */
+void testTimerFromFS()
+{
     _disable_interrupts();
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
     mos_fs_init();
     mos_timer_driver_init(); //creates and registers drivers and files
-
 
     int fd_timer2_int = mos_fs_open("GPTimer_2_INT");
     mos_fs_write(fd_timer2_int, 0, 0); //enables interrupt
@@ -98,5 +129,7 @@ void testTimerFromFS() {
 
     mos_fs_write(fd_timer2, &state, 1); //start gptimer2
 
-    while(1){}
+    while (1)
+    {
+    }
 }
