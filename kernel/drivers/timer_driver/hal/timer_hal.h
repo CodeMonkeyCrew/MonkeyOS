@@ -26,7 +26,7 @@ uint32_t init_gptimer(const uint8_t nr);
  *      0 - a value was not set correctly
  *      1 - everything worked fine
  */
-uint32_t enable_compare_mode(const uint8_t nr, const uint8_t compareregister, const uint32_t value);
+uint32_t enable_compare_mode(const uint8_t nr, const uint32_t value);
 /**
  * Set the mode of the interrupt
  * mode:

@@ -36,19 +36,12 @@ uint32_t init_gptimer(const uint8_t nr)
 }
 
 
-uint32_t enable_compare_mode(const uint8_t nr, const uint8_t compareregister,
-                             const uint32_t value)
+uint32_t enable_compare_mode(const uint8_t nr, const uint32_t value)
 {
     uint32_t response = 1;
-    response = clear_bit(get_address(GPTIMER(nr), TCLR), 6);
-    response = set_bit(get_address(GPTIMER(nr), TIER), 2);
-
-    if (compareregister)
-    {
-        response = set_bit(get_address(GPTIMER(nr), TCLR), 13); //set TCAR2
-    }
-    response = clear_bit(get_address(GPTIMER(nr), TCLR), 13); //set TCAR1
-    response = set_value_32(get_address(GPTIMER(nr), TMAR), value);
+    response = set_bit(get_address(GPTIMER(nr), TCLR), 6); //compare enable
+    response = set_bit(get_address(GPTIMER(nr), TIER), 0); //enable Compare (Match) Interrupt
+    response = set_value_32(get_address(GPTIMER(nr), TMAR), value); //set value to which the timer is compared
     return response;    //compare mode enable
 }
 
@@ -84,13 +77,13 @@ uint32_t enable_timer_interrupt(const uint8_t nr, const uint8_t autoreload)
     case 1:
         break;
     case 2:
-        response = clear_bit((uint32_t*) MIRn(1), 7);
+        response = clear_bit((uint32_t*) MIRn(1), 6);
         break;
     case 3:
-        response = clear_bit((uint32_t*)MIRn(1),8);
+        response = clear_bit((uint32_t*)MIRn(1),7);
         break;
     case 4:
-        response = clear_bit((uint32_t*)MIRn(1),9);
+        response = clear_bit((uint32_t*)MIRn(1),8);
         break;
     case 5:
         break;
@@ -107,9 +100,9 @@ uint32_t enable_timer_interrupt(const uint8_t nr, const uint8_t autoreload)
     case 11:
         break;
     }
-
     return response;
 }
+
 uint32_t disable_timer_interrupt(const uint8_t nr){
     uint32_t response = 1;
     switch(nr){

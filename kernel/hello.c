@@ -27,8 +27,9 @@ void testTimerFromFS();
 void main(void) {
 
     //testFromFSToDrivers();
-    //testTimer();
-    testTimerFromFS();
+    testTimer();
+    //testTimerFromFS();
+
 }
 
 void testFromFSToDrivers() {
@@ -65,9 +66,9 @@ void testTimer() {
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
     init_gptimer(2);
-    enable_compare_mode(2, 0, 0xfffff);
-    set_interrupt_mode(2, 1);
-    enable_timer_interrupt(2,1);
+    enable_compare_mode(2, 0xfffff);
+    //set_interrupt_mode(2, 0);
+    enable_timer_interrupt(2,0);
 
     _enable_interrupts();
     _enable_IRQ();
@@ -83,7 +84,6 @@ void testTimerFromFS() {
 
     mos_fs_init();
     mos_timer_driver_init(); //creates and registers drivers and files
-
 
 
     int fd_timer2_int = mos_fs_open("GPTimer_2_INT");

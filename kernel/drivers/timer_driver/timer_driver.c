@@ -41,7 +41,7 @@ static int mos_timer_driver_write(const void* buffer, int bufSize, generic_file_
                     //TODO
                     break;
                 case COMPARE:
-                    enable_compare_mode(pTimerModeFile->info.timer_number, pTimerModeFile->compareregister, *((int*)buffer));
+                    enable_compare_mode(pTimerModeFile->info.timer_number, *((int*)buffer));
                     break;
                 case OVERFLOW:
                     //TODO
@@ -107,7 +107,6 @@ static void add_gptimer_2() {
     if (pTimerModeFile != NULL) {
         strcpy(pTimerModeFile->header.name, "GPTimer_2_MODE");
         pTimerModeFile->info.timer_number = 2;
-        pTimerModeFile->compareregister = 0;
         pTimerModeFile->timer_mode = COMPARE;
     }
 }
