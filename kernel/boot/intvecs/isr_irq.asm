@@ -69,7 +69,7 @@ _ISR_IRQ:
 	.word IRQDefaultHandler				; for IRQ35
 	.word IRQDefaultHandler				; for IRQ36
 	.word IRQDefaultHandler				; for IRQ37
-	.word IRQGPTIMER2					; for IRQ38
+	.word IRQDefaultHandler				; for IRQ38
 	.word IRQDefaultHandler				; for IRQ39
 	.word IRQDefaultHandler				; for IRQ40
 	.word IRQDefaultHandler				; for IRQ41

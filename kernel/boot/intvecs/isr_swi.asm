@@ -1,17 +1,17 @@
    		.if __TI_EABI_ASSEMBLER
-		.asg openISR, C_OPEN_ISR
-		.asg closeISR, C_CLOSE_ISR
-		.asg writeISR, C_WRITE_ISR
+		.asg mos_fs_open, C_FS_OPEN
+		.asg mos_fs_close, C_FS_CLOSE
+		.asg mos_fs_write, C_FS_WRITE
     	.else
-    	.asg _openISR, C_PUT_ISR
-    	.asg _closeISR, C_CLOSE_ISR
-    	.asg _writeISR, C_WRITE_ISR
+    	.asg _mos_fs_open, C_FS_OPEN
+    	.asg _mos_fs_close, C_FS_CLOSE
+    	.asg _mos_fs_write, C_FS_WRITE
 		.endif
 
 	.global _ISR_SWI
-	.global C_OPEN_ISR
-	.global C_CLOSE_ISR
-	.global C_WRITE_ISR
+	.global C_FS_OPEN
+	.global C_FS_CLOSE
+	.global C_FS_WRITE
 
 ; ACTIVESWI bit field mask to get only the bit field
 ACTIVESWI_MASK .equ 0x3F
@@ -33,9 +33,9 @@ _ISR_SWI:
     NOP                             	; To index the table by the PC
 
 	; Table of handler start addresses
-	.word C_OPEN_ISR					; for SWI0
-	.word C_CLOSE_ISR					; for SWI1
-	.word C_WRITE_ISR					; for SWI2
+	.word C_FS_OPEN						; for SWI0
+	.word C_FS_CLOSE					; for SWI1
+	.word C_FS_WRITE					; for SWI2
 	.word SWIDefaultHandler				; for SWI3
 	.word SWIDefaultHandler				; for SWI4
 	.word SWIDefaultHandler				; for SWI5

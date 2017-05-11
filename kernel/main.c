@@ -1,4 +1,6 @@
 #include <inttypes.h>
+#include "proc/scheduler.h"
+#include "proc/mode.h"
 #include <kernel/drivers/gpio_driver/gpiodriver.h>
 #include <kernel/drivers/timer_driver/timer-driver.h>
 #include <kernel/drivers/register/intcps_register.h>
@@ -9,26 +11,22 @@
 
 #define PM_PWSTCTRL_PER (volatile uint32_t*)0x483070E0
 
-openISR(){
-
-}
-closeISR(){
-
-}
-
-writeISR(){
-
-}
-
 void testFromFSToDrivers();
 void testTimer();
 void testTimerFromFS();
 
 void main(void) {
+    scheduler_init();
 
-    //testFromFSToDrivers();
-    //testTimer();
-    testTimerFromFS();
+    // set user mode and enable interrupts
+    mode_setUserMode();
+
+    // idle loop
+    while(1) {
+        volatile int i = 0;
+        for(i = 0; i < 10000; ++i) {
+        }
+    }
 }
 
 void testFromFSToDrivers() {
