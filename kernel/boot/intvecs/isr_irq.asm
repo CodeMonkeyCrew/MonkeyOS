@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 	   	.if __TI_EABI_ASSEMBLER
 		.asg scheduler_run, C_SCHEDULER_RUN
 	    .else
@@ -69,7 +70,7 @@ _ISR_IRQ:
 	.word IRQDefaultHandler				; for IRQ35
 	.word IRQDefaultHandler				; for IRQ36
 	.word IRQDefaultHandler				; for IRQ37
-	.word IRQDefaultHandler				; for IRQ38
+	.word GPTIMER2				; for IRQ38
 	.word IRQDefaultHandler				; for IRQ39
 	.word IRQDefaultHandler				; for IRQ40
 	.word IRQDefaultHandler				; for IRQ41
@@ -130,6 +131,9 @@ _ISR_IRQ:
 
 IRQDefaultHandler:
 	B IRQDefaultHandler
+
+GPTIMER2:
+	B GPTIMER2
 
 ; INTCPS_CONTROL register address
 INTCPS_CONTROL_ADDR .word 0x48200048;

@@ -2,7 +2,7 @@
 #define KERNEL_FILESYSTEM_FILETYPES_TIMERTYPES_H_
 
 #include "generictype.h"
-#include "../../drivers/timer_driver/timermodes.h"
+#include "../../drivers/timer_driver/timer_modes.h"
 #include <inttypes.h>
 
 typedef struct {
@@ -24,7 +24,6 @@ typedef struct {
     generic_file_t header;
     timer_info_t info;
     timer_mode_t timer_mode;
-    uint8_t compareregister;
 } timer_mode_file_t;
 
 #endif /* KERNEL_FILESYSTEM_FILETYPES_TIMERTYPES_H_ */
