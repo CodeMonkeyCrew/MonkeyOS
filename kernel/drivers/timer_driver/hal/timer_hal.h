@@ -63,4 +63,15 @@ uint32_t gptimer_start(const uint8_t nr);
  * @param nr number of the gptimer
  */
 uint32_t gptimer_stop(const uint8_t nr);
+
+/**
+ * Set the internal clock for a gptimer
+ * @param nr number of the gptimer
+ * @param clock_mode
+ *          0 - 32k
+ *          1 - Sys-Clock
+ */
+
+uint32_t gptimer_set_clock(const uint8_t nr, const uint8_t clock_mode);
+
 #endif /* SRC_DRIVERS_HAL_TIMER_HAL_TIMER_HAL_H_ */

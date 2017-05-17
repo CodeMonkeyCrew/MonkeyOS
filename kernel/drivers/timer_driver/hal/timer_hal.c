@@ -18,14 +18,14 @@ uint32_t init_gptimer(const uint8_t nr)
         response = set_bit((uint32_t*) CM_ICLKEN_PER, 3);
     }
 
-
     //this is needed as it takes a few CPU-Cycles(?) until CM_FCLKEN_PER & CM_ICLKEN_PER
     //are active. If we do not wait, we cannot read/write into the adresses of GPTimer2
     //which will lead to isr_abort when running the statesments after the for-loop.
     //This is also the reason why it does work when stepping through the function and doesn't work
     //when running the program.
     volatile int i;
-    for (i = 0; i < 20000; ++i) {
+    for (i = 0; i < 20000; ++i)
+    {
 
     }
 
@@ -34,7 +34,6 @@ uint32_t init_gptimer(const uint8_t nr)
 
     return response;
 }
-
 
 uint32_t enable_compare_mode(const uint8_t nr, const uint32_t value)
 {
@@ -73,17 +72,18 @@ uint32_t enable_timer_interrupt(const uint8_t nr, const uint8_t autoreload)
     {
         response = set_bit(get_address(GPTIMER(nr), TCLR), 1);
     }
-    switch(nr){
+    switch (nr)
+    {
     case 1:
         break;
     case 2:
         response = clear_bit((uint32_t*) MIRn(1), 6);
         break;
     case 3:
-        response = clear_bit((uint32_t*)MIRn(1),7);
+        response = clear_bit((uint32_t*) MIRn(1), 7);
         break;
     case 4:
-        response = clear_bit((uint32_t*)MIRn(1),8);
+        response = clear_bit((uint32_t*) MIRn(1), 8);
         break;
     case 5:
         break;
@@ -103,37 +103,39 @@ uint32_t enable_timer_interrupt(const uint8_t nr, const uint8_t autoreload)
     return response;
 }
 
-uint32_t disable_timer_interrupt(const uint8_t nr){
+uint32_t disable_timer_interrupt(const uint8_t nr)
+{
     uint32_t response = 1;
-    switch(nr){
-        case 1:
-            break;
-        case 2:
-            response = set_bit((uint32_t*) MIRn(1), 7);
-            break;
-        case 3:
-            response = set_bit((uint32_t*)MIRn(1),8);
-            break;
-        case 4:
-            response = set_bit((uint32_t*)MIRn(1),9);
-            break;
-        case 5:
-            break;
-        case 6:
-            break;
-        case 7:
-            break;
-        case 8:
-            break;
-        case 9:
-            break;
-        case 10:
-            break;
-        case 11:
-            break;
-        }
+    switch (nr)
+    {
+    case 1:
+        break;
+    case 2:
+        response = set_bit((uint32_t*) MIRn(1), 7);
+        break;
+    case 3:
+        response = set_bit((uint32_t*) MIRn(1), 8);
+        break;
+    case 4:
+        response = set_bit((uint32_t*) MIRn(1), 9);
+        break;
+    case 5:
+        break;
+    case 6:
+        break;
+    case 7:
+        break;
+    case 8:
+        break;
+    case 9:
+        break;
+    case 10:
+        break;
+    case 11:
+        break;
+    }
 
-        return response;
+    return response;
 }
 
 uint32_t gptimer_start(const uint8_t nr)
@@ -150,4 +152,19 @@ uint32_t gptimer_stop(const uint8_t nr)
     clear_32(get_address(GPTIMER(nr), TCRR));
     clear_bit(get_address(GPTIMER(nr), TCLR), 0);
     return 1;
+}
+uint32_t gptimer_set_clock(const uint8_t nr, const uint8_t clock_mode)
+{
+    if (nr >= 2 && nr <= 9)
+    {
+        if (clock_mode)
+        {
+            return set_bit(CM_CLKSEL_PER, (nr - 2));
+        }
+        else
+        {
+            return clear_bit(CM_CLKSEL_PER, (nr - 2));
+        }
+    }
+    return 0;
 }
