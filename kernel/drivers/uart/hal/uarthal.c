@@ -7,6 +7,7 @@
 #define UART3_BASE_ADDRESS 0x49020000
 #define UART4_BASE_ADDRESS 0x49042000
 #define DLL_REG 0x0
+#define RHR_REG 0x0
 #define THR_REG 0x0
 #define DLH_REG 0x4
 #define IER_REG 0x4
@@ -45,6 +46,7 @@ typedef struct
     uint32_t* TCR;
     uint32_t* LSR;
     uint32_t* THR;
+    uint32_t* RHR;
     uint32_t EN;
 } UART_T;
 
@@ -66,7 +68,8 @@ typedef struct
     (uint32_t*) (baseAddress + TCR_REG),\
     (uint32_t*) (baseAddress + LSR_REG),\
     (uint32_t*) (baseAddress + THR_REG),\
-    (uint32_t*) (enBit)\
+    (uint32_t*) (baseAddress + RHR_REG),\
+    (uint32_t) (enBit)\
 }
 
 static UART_T uarts[UART_NUM] =
@@ -76,6 +79,31 @@ static UART_T uarts[UART_NUM] =
           createUart(CM_FCLKEN_PER, CM_ICLKEN_PER, UART3_BASE_ADDRESS, EN_UART3),
           createUart(CM_FCLKEN_PER, CM_ICLKEN_PER, UART4_BASE_ADDRESS, EN_UART4) };
 
+int uarthal_receive(char* buffer, int bufferSize, int uartNumber){
+
+     UART_T uart = uarts[uartNumber];
+    // uint32_t lcr_reg_before = *uart.LCR;
+     //*uart.LCR = 0x00BF;
+    uint32_t lsr = *uart.LSR & (1 << 0);
+
+    if(lsr > 0){
+       // printf("there is data to read\n");
+      //  buffer = *uart.RHR;
+     //   memcpy(buffer, (void*)*uart.RHR, bufferSize);
+
+        //read as long as there is no \n and i < bufferSize
+        int i = 0;
+        for(i = 0; i < bufferSize; i++){
+            buffer[i] = *uart.RHR;
+        }
+        printf(buffer);
+        printf("\n");
+
+    }
+  //  *uart.LCR = lcr_reg_before;
+    return 1;
+
+}
 void uarthal_transmit(const char* buffer, int bufferSize, int uartNumber)
 {
     UART_T uart = uarts[uartNumber];
@@ -116,7 +144,7 @@ void fifoDMASettings(UART_T uart)
     uint32_t mcr_reg_before = *uart.MCR & MCR_MASK;
     *uart.MCR |= (1 << 6);
 
-    *uart.FCR |= (1 << 0);
+    *uart.FCR &= ~(1 << 0);      //changed!!
     *uart.FCR |= (1 << 3);
     *uart.FCR |= (1 << 4);
     *uart.FCR |= (1 << 5);
@@ -195,15 +223,15 @@ void connectionSettings(UART_T uart)
     *uart.DLL &= ~(1 << 7);
 
     *uart.LCR = 0x0000;
-    //enable all interrupts
-    *uart.IER |= (1 << 0);
-    *uart.IER |= (1 << 1);    //THR interrupt
-    *uart.IER |= (1 << 2);
-    *uart.IER |= (1 << 3);
-    *uart.IER |= (1 << 4);
-    *uart.IER |= (1 << 5);
-    *uart.IER |= (1 << 6);
-    *uart.IER |= (1 << 7);
+    //disable all interrupts
+    *uart.IER &= ~(1 << 0);
+    *uart.IER &= ~(1 << 1);    //THR interrupt
+    *uart.IER &= ~(1 << 2);
+    *uart.IER &= ~(1 << 3);
+    *uart.IER &= ~(1 << 4);
+    *uart.IER &= ~(1 << 5);
+    *uart.IER &= ~(1 << 6);
+    *uart.IER &= ~(1 << 7);
 
     *uart.LCR = 0x00BF;
     //restore

@@ -121,8 +121,13 @@ int mos_fs_close(int file_descriptor) {
     return 0;
 }
 
-int mos_fs_read(int file_descriptor, const void* buf, int buffer_size) {
-    return 0;
+int mos_fs_read(int file_descriptor, void* buf, int buffer_size) {
+    generic_file_t* pFile = get_open_file(file_descriptor);
+       if (pFile != NULL) {
+           return drivers[pFile->f_type]->driver_read(buf, buffer_size, pFile);
+       }
+       //no valid file_descriptor
+       return -1;
 }
 
 int mos_fs_write(int file_descriptor, const void* buf, int buffer_size) {

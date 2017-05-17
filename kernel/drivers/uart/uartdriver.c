@@ -18,8 +18,10 @@ static int uartdriver_write(const void* buffer, int bufSize, generic_file_t* fil
     return 1;
 }
 
-static int uartdriver_read(const void* buffer, int bufSize, generic_file_t* file){
-    return 0;
+static int uartdriver_read(void* buffer, int bufSize, generic_file_t* file){
+    uart_file_t* uartfile = (uart_file_t*)file;
+    uarthal_receive(buffer, bufSize, uartfile->uartNumber);
+    return 1;
 }
 
 static void registerDriver(void){

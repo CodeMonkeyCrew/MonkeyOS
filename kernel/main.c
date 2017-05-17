@@ -153,4 +153,10 @@ void testUARTDriverFromFS()
     int uart_fd = mos_fs_open("uart3");
 
     mos_fs_write(uart_fd, monkey, strlen(monkey));
+    char readBuff[1];
+    while(1){
+        mos_fs_read(uart_fd, readBuff, 1);
+        volatile int i;
+
+    }
 }
