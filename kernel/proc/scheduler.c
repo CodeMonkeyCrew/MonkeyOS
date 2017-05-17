@@ -32,39 +32,16 @@ static int scheduler_getFreeProcSlot(void)
 static uint8_t scheduler_findNextProc(void)
 {
     uint8_t pid = runningPid;
-    uint8_t next_pid = INVALID_ID_THREAD;
-    do
-    {
+    do {
         pid = (pid + 1) % MAX_PROC_COUNT;
-        if (procs[pid].state == PROC_STATE_READY)
-        {
-            if (next_pid == INVALID_ID_THREAD)
-            {
-                next_pid = pid;
-            }
-            else
-            {
-                if (procs[pid].priority < procs[next_pid].priority)
-                {
-                    next_pid = pid;
-                }
-            }
+        if (procs[pid].state == PROC_STATE_READY) {
+            // found next ready process
+            return pid;
         }
-    }
-    while (pid != runningPid);
+    } while (pid != runningPid);
 
-    if (next_pid == INVALID_ID_THREAD)
-    {
-        return runningPid;
-    }
-    else if ((procs[runningPid].priority < procs[next_pid].priority)
-            && ((procs[runningPid].state == PROC_STATE_RUNNING)
-                    || (procs[runningPid].state == PROC_STATE_RUNNING)))
-    {
-        return runningPid;
-    }
-    //return next process
-    return next_pid;
+    // no other ready process
+    return runningPid;
 }
 
 static int scheduler_runNextProc(void)
@@ -105,14 +82,13 @@ static int scheduler_runNextProc(void)
 
 void scheduler_init(void)
 {
-    //init scheduler
-    scheduler_timer_init();
     // initialize empty PCBs
     uint8_t pid;
     for (pid = 0; pid < MAX_PROC_COUNT; ++pid)
     {
         procs[pid].pid = pid;
         procs[pid].state = PROC_STATE_INVALID;
+        procs[pid].priority = PROC_PRIO_MIDDLE;
     }
 
     // setup idle process
@@ -120,17 +96,20 @@ void scheduler_init(void)
     procs[runningPid].parentPid = 0;
     procs[runningPid].state = PROC_STATE_RUNNING;
     procs[runningPid].priority = PROC_PRIO_LOW;
+
+    // initialize timer
+    scheduler_timer_init();
 }
 
 void scheduler_start(void)
 {
     scheduler_timer_start();
 }
+
 void scheduler_run(void)
 {
-
     // clear interrupt status flag
-    schedulter_timer_clear_interrupt();
+    scheduler_timer_clear_interrupt();
     // set new interrupt agreement flag
     *INTCPS_CONTROL |= (1 << 0);
 
@@ -153,7 +132,7 @@ int scheduler_initProc(ProcEntryPoint_t entryPoint, Priority_t priority)
         procs[pid].context.cpsr = 0x10;
         procs[pid].context.restartAddress = (uint32_t) entryPoint;
         // TODO: set proper stack pointer
-        procs[pid].context.sp = 0x90000000 + ((pid - 1) * 0xFFFF);
+        procs[pid].context.sp = 0x90000000 - ((pid - 1) * 0xFF);
         procs[pid].priority = priority;
         return pid;
     }

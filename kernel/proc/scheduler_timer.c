@@ -15,7 +15,7 @@ void scheduler_timer_start(void)
     timer_start(2);
 }
 
-void schedulter_timer_clear_interrupt(void)
+void scheduler_timer_clear_interrupt(void)
 {
     timer_clear_interrupt(2);
 }

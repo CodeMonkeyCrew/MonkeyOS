@@ -1,4 +1,5 @@
 #include <inttypes.h>
+#include "proc/proc.h"
 #include "proc/scheduler.h"
 #include "proc/mode.h"
 #include <kernel/drivers/gpio_driver/gpiodriver.h>
@@ -27,10 +28,19 @@ void process1()
     volatile int i = 0;
     while (1)
     {
-        printf("process %i \n",i);
-        ++i;
+        printf("process 1: %i \n", ++i);
     }
 }
+
+void process2()
+{
+    volatile int i = 0;
+    while (1)
+    {
+        printf("process 2: %i \n", ++i);
+    }
+}
+
 void main(void)
 {
 
@@ -46,7 +56,8 @@ void main(void)
 
     /*Scheduler*/
     scheduler_init();
-    scheduler_initProc(process1, 1);
+    scheduler_initProc(process1, PROC_PRIO_MIDDLE);
+    //scheduler_initProc(process2, PROC_PRIO_MIDDLE);
     scheduler_start();
     // set user mode and enable interrupts
     mode_setUserMode();
@@ -54,7 +65,7 @@ void main(void)
     // idle loop
     while (1)
     {
-        mos_fs_write(val_fd, pVal_1, 1);
+        printf("idle loop\n");
     }
 }
 
