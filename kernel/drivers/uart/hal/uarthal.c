@@ -46,7 +46,7 @@ typedef struct
     uint32_t* TCR;
     uint32_t* LSR;
     uint32_t* THR;
-    uint32_t* RHR;
+    char* RHR;
     uint32_t EN;
 } UART_T;
 
@@ -68,7 +68,7 @@ typedef struct
     (uint32_t*) (baseAddress + TCR_REG),\
     (uint32_t*) (baseAddress + LSR_REG),\
     (uint32_t*) (baseAddress + THR_REG),\
-    (uint32_t*) (baseAddress + RHR_REG),\
+    (char*) (baseAddress + RHR_REG),\
     (uint32_t) (enBit)\
 }
 
@@ -78,31 +78,59 @@ static UART_T uarts[UART_NUM] =
           createUart(CM_FCLKEN1_CORE, CM_ICLKEN1_CORE, UART2_BASE_ADDRESS,EN_UART2),
           createUart(CM_FCLKEN_PER, CM_ICLKEN_PER, UART3_BASE_ADDRESS, EN_UART3),
           createUart(CM_FCLKEN_PER, CM_ICLKEN_PER, UART4_BASE_ADDRESS, EN_UART4) };
+static const char *keyWords[] = { "execute", "pc" };
 
-int uarthal_receive(char* buffer, int bufferSize, int uartNumber){
+int uarthal_receive(char* buffer, int bufferSize, int uartNumber)
+{
 
-     UART_T uart = uarts[uartNumber];
-    // uint32_t lcr_reg_before = *uart.LCR;
-     //*uart.LCR = 0x00BF;
-    uint32_t lsr = *uart.LSR & (1 << 0);
+    UART_T uart = uarts[uartNumber];
+    int end = 0;
+    char startSign[1] = ">";
 
-    if(lsr > 0){
-       // printf("there is data to read\n");
-      //  buffer = *uart.RHR;
-     //   memcpy(buffer, (void*)*uart.RHR, bufferSize);
-
-        //read as long as there is no \n and i < bufferSize
-        int i = 0;
-        for(i = 0; i < bufferSize; i++){
-            buffer[i] = *uart.RHR;
+    int i;
+    for (i = 0; ((i < bufferSize - 1) && (!end)); i++)
+    {
+        while (!(*uart.LSR & (1 << 0)))
+        {
+            //wait until there is something to read
         }
-        printf(buffer);
-        printf("\n");
+
+        buffer[i] = *uart.RHR;
+        if (buffer[i] == '\n' || buffer[i] == '\r')
+        {
+            end = 1;
+
+        }
 
     }
-  //  *uart.LCR = lcr_reg_before;
-    return 1;
 
+    buffer[i] = '\0';
+    if (end)
+    {
+        uarthal_transmit(startSign, 1, uartNumber);
+    }
+    printf(buffer);
+    printf("\n");
+    return i;
+
+}
+
+int interpretMessage(char* buffer, int bufferSize)
+{
+    //split message
+    char* split = strtok(buffer, " ");
+    printf(split);
+  /*  switch (split[0])
+    {
+    case "execute":
+        printf("execute");
+        break;
+    case "pc":
+        printf("pc");
+        break;
+    }*/
+
+    return 1;
 }
 void uarthal_transmit(const char* buffer, int bufferSize, int uartNumber)
 {

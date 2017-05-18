@@ -3,6 +3,7 @@
 #define KERNEL_DRIVERS_UART_HAL_UARTHAL_H_
 #include <inttypes.h>
 #include <stdio.h>
+#include <string.h>
 
 int uarthal_init(int uartNumber);
 void uarthal_transmit(const char* buffer, int bufferSize, int uartNumber);
