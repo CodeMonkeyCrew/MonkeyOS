@@ -78,15 +78,12 @@ static UART_T uarts[UART_NUM] =
           createUart(CM_FCLKEN1_CORE, CM_ICLKEN1_CORE, UART2_BASE_ADDRESS,EN_UART2),
           createUart(CM_FCLKEN_PER, CM_ICLKEN_PER, UART3_BASE_ADDRESS, EN_UART3),
           createUart(CM_FCLKEN_PER, CM_ICLKEN_PER, UART4_BASE_ADDRESS, EN_UART4) };
-static const char *keyWords[] = { "execute", "pc" };
 
 int uarthal_receive(char* buffer, int bufferSize, int uartNumber)
 {
 
     UART_T uart = uarts[uartNumber];
     int end = 0;
-    char startSign[1] = ">";
-
     int i;
     for (i = 0; ((i < bufferSize - 1) && (!end)); i++)
     {
@@ -105,33 +102,13 @@ int uarthal_receive(char* buffer, int bufferSize, int uartNumber)
     }
 
     buffer[i] = '\0';
-    if (end)
-    {
-        uarthal_transmit(startSign, 1, uartNumber);
-    }
+
     printf(buffer);
     printf("\n");
     return i;
 
 }
 
-int interpretMessage(char* buffer, int bufferSize)
-{
-    //split message
-    char* split = strtok(buffer, " ");
-    printf(split);
-  /*  switch (split[0])
-    {
-    case "execute":
-        printf("execute");
-        break;
-    case "pc":
-        printf("pc");
-        break;
-    }*/
-
-    return 1;
-}
 void uarthal_transmit(const char* buffer, int bufferSize, int uartNumber)
 {
     UART_T uart = uarts[uartNumber];

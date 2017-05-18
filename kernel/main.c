@@ -9,48 +9,14 @@
 #include <kernel/drivers/timer_driver/hal/timer_hal.h>
 #include <kernel/drivers/util/registerutil.h>
 #include <kernel/filesystem/filesystem.h>
+#include "console/console.h"
 #include <stdio.h>
 
 #define PM_PWSTCTRL_PER (volatile uint32_t*)0x483070E0
 
-    char monkey[] = "                 __,__\r\n"
-            "        .--.  .-\"     \"-.  .--.\r\n"
-            "       / .. \\/  .-. .-.  \\/ .. \\\r\n"
-            "      | |  '|  /   Y   \\  |'  | |\r\n"
-            "      | |  '|  /   Y   \\  |'  | |\r\n"
-            "      | \\   \\  \\ 0 | 0 /  /   / |\r\n"
-            "       \\ '- ,\\.-\"`` ``\"-./, -' /\r\n"
-            "        `'-' /_   ^ ^   _\\ '-'`\r\n"
-            "        .--'|  \\._ _ _./  |'--. \r\n"
-            "      /`    \\   \\.-.  /   /    `\\\r\n"
-            "     /       '._/  |-' _.'       \\\r\n"
-            "    /          ;  /--~'   |       \\\r\n"
-            "   /        .'\\|.-\\--.     \\       \\\r\n"
-            "   /   .'-. /.-.;\\  |\\|'~'-.|\\       \\\r\n"
-            "  \\       -./`|_\\_/      `\\'.      \\\r\n"
-            "   '.      ;     ___)        '.`;    /\r\n"
-            "     '-.,_ ;     ___)          \\/   /\r\n"
-            "      \\   `'------'\\       \\     /\r\n"
-            "       '.    \\       '.      |   ;/_\r\n"
-            "     ___>     '.       \\_ _ _/   ,  '--.\r\n"
-            "   .'   '.   .-~~~~~-. /     |--'`~~-.  \\\r\n"
-            "  // / .---'/  .-~~-._/ / / /---..__.'  /\r\n"
-            " ((_(_/    /  /      (_(_(_(---.__    .'\r\n"
-            "           | |     _              `~~`\r\n"
-            "           | |     \\'.\r\n"
-            "            \\ '....' |\r\n"
-            "             '.,___.'\r\n"
-            "\r\n"
-            " ____    ____                  __                        ___     ______   \r\n"
-            "|_   \\  /   _|                [  |  _                  .'   `. .' ____ \\  \r\n"
-            "  |   \\/   |   .--.   _ .--.   | | / ] .---.   _   __ /  .-.  \\| (___ \\_| \r\n"
-            "  | |\\  /| | / .'`\\ \\[ .-. |  | '' < / /__\\\\ [ \\ [  ]| |   | | _.____.  \r\n"
-            " _| |_\\/_| |_| \\__. | | | | |  | |`\\ \\| \\__.,  \\ '/ / \\  `-'  /| \\____) | \r\n"
-            "|_____||_____|'.__.' [___||__][__|  \\_]'.__.'[\\_:  /   `.___.'  \\______.' \r\n"
-            "                                              \\__.'                       \r\n";
-
 void testFromFSToDrivers();
 void testTimerFromFS();
+void testUARTDriverFromFS();
 
 int dir_fd;
 int val_fd;
@@ -80,11 +46,11 @@ void process2()
 
 void main(void)
 {
-
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
+    testUARTDriverFromFS();
 
     /*Blink LED*/
-    mos_fs_init();
+  /*  mos_fs_init();
     mos_gpio_driver_init();
 
     dir_fd = mos_fs_open("gpio149_dir");
@@ -92,7 +58,7 @@ void main(void)
     mos_fs_write(dir_fd, pVal_1, 1);
 
     /*Scheduler*/
-    scheduler_init();
+   /* scheduler_init();
     scheduler_initProc(process1, PROC_PRIO_MIDDLE);
     //scheduler_initProc(process2, PROC_PRIO_MIDDLE);
     scheduler_start();
@@ -103,7 +69,7 @@ void main(void)
     while (1)
     {
         printf("idle loop\n");
-    }
+    }*/
 }
 
 void testFromFSToDrivers()
@@ -187,17 +153,6 @@ void testUARTDriverFromFS()
 {
     mos_fs_init();
     uartdriver_init();
+    console_run();
 
-    int uart_fd = mos_fs_open("uart3");
-
-    char writeSign[1] = ">";
-    mos_fs_write(uart_fd, monkey, strlen(monkey));
-    mos_fs_write(uart_fd, writeSign, 1);
-
-    char readBuff[50];
-    while(1){
-        mos_fs_read(uart_fd, readBuff, 50);
-        volatile int i;
-
-    }
 }
