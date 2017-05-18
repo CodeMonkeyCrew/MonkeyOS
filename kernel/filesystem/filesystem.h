@@ -35,7 +35,7 @@ int mos_fs_close (int file_descriptor);
 /*
  * Calls the read function of the driver, which is responsible for handling given file (determined by file_descriptor).
  */
-int mos_fs_read (int file_descriptor, const void* buf, int buffer_size);
+int mos_fs_read (int file_descriptor, void* buf, int buffer_size);
 
 /*
  * Calls the write function of the driver, which is responsible for handling given file (determined by file_descriptor).
