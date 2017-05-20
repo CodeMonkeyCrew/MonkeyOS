@@ -6,6 +6,7 @@
 #include <kernel/drivers/register/intcps_register.h>
 #include <kernel/drivers/timer_driver/hal/timer_hal.h>
 #include <kernel/drivers/timer_driver/timer_driver.h>
+#include <kernel/drivers/matrix_driver/matrix_driver.h>
 #include <kernel/drivers/util/registerutil.h>
 #include <kernel/filesystem/filesystem.h>
 #include <stdio.h>
@@ -41,32 +42,36 @@ void process2()
     }
 }
 
+void matrixDriverTest(void);
+
 void main(void)
 {
 
-    *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
+//    *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
+//
+//    /*Blink LED*/
+//    mos_fs_init();
+//    mos_gpio_driver_init();
+//
+//    dir_fd = mos_fs_open("gpio149_dir");
+//    val_fd = mos_fs_open("gpio149_val");
+//    mos_fs_write(dir_fd, pVal_1, 1);
+//
+//    /*Scheduler*/
+//    scheduler_init();
+//    scheduler_initProc(process1, PROC_PRIO_MIDDLE);
+//    //scheduler_initProc(process2, PROC_PRIO_MIDDLE);
+//    scheduler_start();
+//    // set user mode and enable interrupts
+//    mode_setUserMode();
+//
+//    // idle loop
+//    while (1)
+//    {
+//        printf("idle loop\n");
+//    }
 
-    /*Blink LED*/
-    mos_fs_init();
-    mos_gpio_driver_init();
-
-    dir_fd = mos_fs_open("gpio149_dir");
-    val_fd = mos_fs_open("gpio149_val");
-    mos_fs_write(dir_fd, pVal_1, 1);
-
-    /*Scheduler*/
-    scheduler_init();
-    scheduler_initProc(process1, PROC_PRIO_MIDDLE);
-    //scheduler_initProc(process2, PROC_PRIO_MIDDLE);
-    scheduler_start();
-    // set user mode and enable interrupts
-    mode_setUserMode();
-
-    // idle loop
-    while (1)
-    {
-        printf("idle loop\n");
-    }
+    matrixDriverTest();
 }
 
 void testFromFSToDrivers()
@@ -74,8 +79,8 @@ void testFromFSToDrivers()
     mos_fs_init();
     mos_gpio_driver_init();
 
-    int dir_fd = mos_fs_open("gpio149_dir");
-    int val_fd = mos_fs_open("gpio149_val");
+    int dir_fd = mos_fs_open("gpio130_dir");
+    int val_fd = mos_fs_open("gpio130_val");
 
     int val_1 = 1;
     void* pVal_1 = &val_1;
@@ -89,12 +94,12 @@ void testFromFSToDrivers()
     while (1)
     {
         mos_fs_write(val_fd, pVal_1, 1);
-        for (i = 0; i < 20000; i++)
+        for (i = 0; i < 200000; i++)
         {
 
         }
         mos_fs_write(val_fd, pVal_0, 1);
-        for (i = 0; i < 20000; i++)
+        for (i = 0; i < 200000; i++)
         {
         }
     }
@@ -143,4 +148,28 @@ void testTimerFromFS()
     while (1)
     {
     }
+}
+
+
+#define BUFFER_SIZE 512
+static uint8_t buffer[BUFFER_SIZE];
+
+void matrixDriverTest(void) {
+    mos_fs_init();
+    mos_gpio_driver_init();
+    matrix_driver_init();
+
+    int matrix0Fd = mos_fs_open("matrix0");
+
+    int i;
+    for(i = 0; i < BUFFER_SIZE; ++i) {
+        buffer[i] = 0xFF;
+    }
+
+    mos_fs_write(matrix0Fd, buffer, BUFFER_SIZE);
+
+    matrix_driver_update();
+    matrix_driver_update();
+
+    while(1) {}
 }

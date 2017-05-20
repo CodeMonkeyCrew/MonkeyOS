@@ -44,13 +44,13 @@ void mos_gpio_LLD_set_direction(uint32_t* gpioOE, int shift, int direction){
       }
 }
 
-void mos_gpio_LLD_set_value(uint32_t* gpioDataOut, int shift, int mode){
+void mos_gpio_LLD_set_value(uint32_t* gpioDataOut, int port, int shift, int mode){
     if(mode > 0){
          //turn on
         set_bit(gpioDataOut, shift);
      }else{
          //turn off
-        uint32_t* ptr = (uint32_t*)(get_base_address(5) + GPIO_CLEARDATAOUT);
+        uint32_t* ptr = (uint32_t*)(get_base_address(port) + GPIO_CLEARDATAOUT);
         //*ptr |= (1 << shift);
         set_bit(ptr, shift);
      }

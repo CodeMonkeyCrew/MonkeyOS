@@ -55,7 +55,7 @@ static int mos_timer_driver_write(const void* buffer, int bufSize, generic_file_
     return 0;
 }
 
-static int mos_timer_driver_read(const void* buffer, int bufSize, generic_file_t* file) {
+static int mos_timer_driver_read(void* buffer, int bufSize, generic_file_t* file) {
 
     return 0;
 }
