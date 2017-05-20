@@ -3,5 +3,6 @@
 
 #include "gpiotypes.h"
 #include "timertypes.h"
+#include "uarttype.h"
 
 #endif /* KERNEL_FILESYSTEM_FILETYPES_H_ */

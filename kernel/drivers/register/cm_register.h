@@ -5,6 +5,9 @@
 #define CM_ICLKEN_PER       0x48005010
 #define CM_FCLKEN_PER       0x48005000
 
+#define CM_ICLKEN1_CORE     0x48004A10
+#define CM_FCLKEN1_CORE     0x48004A00
+
 #define CM_FCLKEN_WKUP      0x48004C00
 #define CM_ICLKEN_WKUP      0x48004C10
 
