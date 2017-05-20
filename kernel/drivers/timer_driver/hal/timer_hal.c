@@ -1,8 +1,6 @@
 #include <kernel/drivers/timer_driver/hal/timer_hal.h>
-#include "../../register/cm_register.h"
-#include "../../register/intcps_register.h"
-
 #include "../../util/registerutil.h"
+#include "timer_register.h"
 
 uint32_t timer_init(const uint8_t nr)
 {
@@ -169,11 +167,11 @@ uint32_t timer_set_clock(const uint8_t nr, const uint8_t clock_mode)
     {
         if (clock_mode)
         {
-            return set_bit(CM_CLKSEL_PER, (nr - 2));
+            return set_bit((uint32_t*)CM_CLKSEL_PER, (nr - 2));
         }
         else
         {
-            return clear_bit(CM_CLKSEL_PER, (nr - 2));
+            return clear_bit((uint32_t*)CM_CLKSEL_PER, (nr - 2));
         }
     }
     return 0;

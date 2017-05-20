@@ -2,10 +2,9 @@
 #include "proc/proc.h"
 #include "proc/scheduler.h"
 #include "proc/mode.h"
-#include <kernel/drivers/gpio_driver/gpiodriver.h>
+#include "kernel/drivers/gpio_driver/gpiodriver.h"
 #include <kernel/drivers/uart/uartdriver.h>
 #include <kernel/drivers/timer_driver/timer_driver.h>
-#include <kernel/drivers/register/intcps_register.h>
 #include <kernel/drivers/timer_driver/hal/timer_hal.h>
 #include <kernel/drivers/util/registerutil.h>
 #include <kernel/filesystem/filesystem.h>
@@ -85,7 +84,7 @@ void main(void)
 
     /*Blink LED*/
     mos_fs_init();
-    mos_gpio_driver_init();
+    //gpiodriver_init();
 
     dir_fd = mos_fs_open("gpio149_dir");
     val_fd = mos_fs_open("gpio149_val");
@@ -109,7 +108,7 @@ void main(void)
 void testFromFSToDrivers()
 {
     mos_fs_init();
-    mos_gpio_driver_init();
+    //gpiodriver_init();
 
     int dir_fd = mos_fs_open("gpio149_dir");
     int val_fd = mos_fs_open("gpio149_val");

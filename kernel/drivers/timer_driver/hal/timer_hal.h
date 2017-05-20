@@ -1,7 +1,6 @@
 #ifndef SRC_DRIVERS_HAL_TIMER_HAL_TIMER_HAL_H_
 #define SRC_DRIVERS_HAL_TIMER_HAL_TIMER_HAL_H_
-
-#include "../../../../kernel/drivers/register/gptimer_register.h"
+#include <inttypes.h>
 #include "../timer_modes.h"
 
 /*      Methode Definition           */
