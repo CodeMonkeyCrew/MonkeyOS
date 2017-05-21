@@ -59,7 +59,7 @@ static int gpiodriver_write(const void* buffer, int bufSize,
     return 0;
 }
 
-static int gpiodriver_read(const void* buffer, int bufSize,
+static int gpiodriver_read(void* buffer, int bufSize,
                            generic_file_t* file)
 {
     //cast generic file type to gpio file
