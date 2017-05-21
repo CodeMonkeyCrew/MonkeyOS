@@ -1,7 +1,6 @@
 #ifndef SRC_DRIVERS_HAL_TIMER_HAL_TIMER_HAL_H_
 #define SRC_DRIVERS_HAL_TIMER_HAL_TIMER_HAL_H_
-
-#include "../../../../kernel/drivers/register/gptimer_register.h"
+#include <inttypes.h>
 #include "../timer_modes.h"
 
 /*      Methode Definition           */
@@ -68,4 +67,15 @@ uint32_t timer_start(const uint8_t nr);
  * @param nr number of the gptimer
  */
 uint32_t timer_stop(const uint8_t nr);
+
+
+/**
+ * Set the internal clock for a gptimer
+ * @param nr number of the gptimer
+ * @param clock_mode
+ *          0 - 32k
+ *          1 - Sys-Clock
+ */
+uint32_t timer_set_clock(const uint8_t nr, const uint8_t clock_mode);
+
 #endif /* SRC_DRIVERS_HAL_TIMER_HAL_TIMER_HAL_H_ */

@@ -1,6 +1,10 @@
 #include <kernel/filesystem/filesystem.h>
+#include "filetypes/generictype.h"
 #include "filesystemregister.h"
 #include <stdlib.h>
+
+#define false 0
+#define true !false
 
 static int currentFileNo = 0;
 static generic_file_t* files[MAX_NO_OF_FILES];
@@ -75,6 +79,8 @@ generic_file_t* mos_fs_create_file(file_types_t file_type) {
             break;
         case MATRIX:
             pNewFile = (generic_file_t*)malloc(sizeof(MatrixFile_t));
+        case UART:
+            pNewFile = (generic_file_t*)malloc(sizeof(uart_file_t));
             break;
     }
     return check_if_file_is_valid(pNewFile, file_type);
@@ -122,7 +128,12 @@ int mos_fs_close(int file_descriptor) {
 }
 
 int mos_fs_read(int file_descriptor, void* buf, int buffer_size) {
-    return 0;
+    generic_file_t* pFile = get_open_file(file_descriptor);
+       if (pFile != NULL) {
+           return drivers[pFile->f_type]->driver_read(buf, buffer_size, pFile);
+       }
+       //no valid file_descriptor
+       return -1;
 }
 
 int mos_fs_write(int file_descriptor, const void* buf, int buffer_size) {

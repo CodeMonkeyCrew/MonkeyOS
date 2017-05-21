@@ -2,12 +2,22 @@
 #define GPIO_DRIVER_H
 
 #include <inttypes.h>
+/*
+ *
+ * ATTENTION: ONLY WORKS FOR specific GPIO PINs:
+ *      -130 to 166
+ *
+ *
+ * */
 
-void mos_gpio_LLD_init(int gpioPinNumber, int gpioPort, uint32_t* muxModeAddr, int startBit);
+/*
+ * Set the mux mode of the gpio pin and enable the power and necessary clocks
+ * */
+void gpiohal_pinInit(const uint8_t pinNumber);
 //direction: IN=1, OUT=0
-void mos_gpio_LLD_set_direction(uint32_t* gpioOE, int shift, int direction);
+void gpiohal_pinSetDirection(const uint8_t pinNumber,const uint8_t direction);
 //mode: ON=1, OFF=0
-void mos_gpio_LLD_set_value(uint32_t* gpioDataOut, int port, int shift, int mode);
-int mos_gpio_LLD_get_value(int gpioPinNumber);
+void gpiohal_pinSetValue(const uint8_t pinNumber, const uint8_t value);
+uint8_t gpiohal_pinGetValue(const uint8_t pinNumber);
 
 #endif
