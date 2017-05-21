@@ -218,7 +218,7 @@ static uint8_t buffer[BUFFER_SIZE];
 
 void matrixDriverTest(void) {
     mos_fs_init();
-    gpiodriver_init();
+    //gpiodriver_init();
     matrix_driver_init();
 
     int matrix0Fd = mos_fs_open("matrix0");

@@ -5,7 +5,7 @@
 /*
  *
  * ATTENTION: ONLY WORKS FOR specific GPIO PINs:
- *      -130 to 166
+ *      - Pin130 to Pin166
  *
  *
  * */

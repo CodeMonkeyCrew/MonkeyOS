@@ -146,14 +146,6 @@ static void add_gpio_130()
         pGpioDir->header.is_open = false;
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
-
-        pGpioDir->gpio_info.number = 130;
-        pGpioDir->gpio_info.port = 5;
-        pGpioDir->gpio_info.start_bit = 0;
-        pGpioDir->gpio_info.shift = 2;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x48002158;
-
-        pGpioDir->OE = (uint32_t*) 0x49056034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -164,14 +156,6 @@ static void add_gpio_130()
         pGpioVal->header.is_open = false;
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
-
-        pGpioVal->gpio_info.number = 130;
-        pGpioVal->gpio_info.port = 5;
-        pGpioVal->gpio_info.start_bit = 0;
-        pGpioVal->gpio_info.shift = 2;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x48002158;
-
-        pGpioVal->data_out = (uint32_t*) 0x49056094;
     }
 }
 
@@ -185,14 +169,6 @@ static void add_gpio_131()
         pGpioDir->header.is_open = false;
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
-
-        pGpioDir->gpio_info.number = 131;
-        pGpioDir->gpio_info.port = 5;
-        pGpioDir->gpio_info.start_bit = 16;
-        pGpioDir->gpio_info.shift = 3;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x48002158;
-
-        pGpioDir->OE = (uint32_t*) 0x49056034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -203,14 +179,6 @@ static void add_gpio_131()
         pGpioVal->header.is_open = false;
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
-
-        pGpioVal->gpio_info.number = 131;
-        pGpioVal->gpio_info.port = 5;
-        pGpioVal->gpio_info.start_bit = 16;
-        pGpioVal->gpio_info.shift = 3;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x48002158;
-
-        pGpioVal->data_out = (uint32_t*) 0x49056094;
     }
 }
 
@@ -224,14 +192,6 @@ static void add_gpio_132()
         pGpioDir->header.is_open = false;
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
-
-        pGpioDir->gpio_info.number = 132;
-        pGpioDir->gpio_info.port = 5;
-        pGpioDir->gpio_info.start_bit = 0;
-        pGpioDir->gpio_info.shift = 4;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x4800215C;
-
-        pGpioDir->OE = (uint32_t*) 0x49056034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -242,14 +202,6 @@ static void add_gpio_132()
         pGpioVal->header.is_open = false;
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
-
-        pGpioVal->gpio_info.number = 132;
-        pGpioVal->gpio_info.port = 5;
-        pGpioVal->gpio_info.start_bit = 0;
-        pGpioVal->gpio_info.shift = 4;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x4800215C;
-
-        pGpioVal->data_out = (uint32_t*) 0x49056094;
     }
 }
 
@@ -264,13 +216,6 @@ static void add_gpio_133()
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
 
-        pGpioDir->gpio_info.number = 133;
-        pGpioDir->gpio_info.port = 5;
-        pGpioDir->gpio_info.start_bit = 16;
-        pGpioDir->gpio_info.shift = 5;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x4800215C;
-
-        pGpioDir->OE = (uint32_t*) 0x49056034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -282,13 +227,6 @@ static void add_gpio_133()
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
 
-        pGpioVal->gpio_info.number = 133;
-        pGpioVal->gpio_info.port = 5;
-        pGpioVal->gpio_info.start_bit = 16;
-        pGpioVal->gpio_info.shift = 5;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x4800215C;
-
-        pGpioVal->data_out = (uint32_t*) 0x49056094;
     }
 }
 
@@ -302,14 +240,6 @@ static void add_gpio_134()
         pGpioDir->header.is_open = false;
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
-
-        pGpioDir->gpio_info.number = 134;
-        pGpioDir->gpio_info.port = 5;
-        pGpioDir->gpio_info.start_bit = 0;
-        pGpioDir->gpio_info.shift = 6;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x48002160;
-
-        pGpioDir->OE = (uint32_t*) 0x49056034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -320,14 +250,6 @@ static void add_gpio_134()
         pGpioVal->header.is_open = false;
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
-
-        pGpioVal->gpio_info.number = 134;
-        pGpioVal->gpio_info.port = 5;
-        pGpioVal->gpio_info.start_bit = 0;
-        pGpioVal->gpio_info.shift = 6;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x48002160;
-
-        pGpioVal->data_out = (uint32_t*) 0x49056094;
     }
 }
 
@@ -341,14 +263,6 @@ static void add_gpio_135()
         pGpioDir->header.is_open = false;
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
-
-        pGpioDir->gpio_info.number = 135;
-        pGpioDir->gpio_info.port = 5;
-        pGpioDir->gpio_info.start_bit = 16;
-        pGpioDir->gpio_info.shift = 7;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x48002160;
-
-        pGpioDir->OE = (uint32_t*) 0x49056034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -359,14 +273,6 @@ static void add_gpio_135()
         pGpioVal->header.is_open = false;
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
-
-        pGpioVal->gpio_info.number = 135;
-        pGpioVal->gpio_info.port = 5;
-        pGpioVal->gpio_info.start_bit = 16;
-        pGpioVal->gpio_info.shift = 7;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x48002160;
-
-        pGpioVal->data_out = (uint32_t*) 0x49056094;
     }
 }
 
@@ -381,13 +287,6 @@ static void add_gpio_136()
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
 
-        pGpioDir->gpio_info.number = 136;
-        pGpioDir->gpio_info.port = 5;
-        pGpioDir->gpio_info.start_bit = 0;
-        pGpioDir->gpio_info.shift = 8;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x48002164;
-
-        pGpioDir->OE = (uint32_t*) 0x49056034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -399,13 +298,6 @@ static void add_gpio_136()
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
 
-        pGpioVal->gpio_info.number = 136;
-        pGpioVal->gpio_info.port = 5;
-        pGpioVal->gpio_info.start_bit = 0;
-        pGpioVal->gpio_info.shift = 8;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x48002164;
-
-        pGpioVal->data_out = (uint32_t*) 0x49056094;
     }
 }
 
@@ -420,13 +312,6 @@ static void add_gpio_145()
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
 
-        pGpioDir->gpio_info.number = 145;
-        pGpioDir->gpio_info.port = 5;
-        pGpioDir->gpio_info.start_bit = 16;
-        pGpioDir->gpio_info.shift = 17;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x48002174;
-
-        pGpioDir->OE = (uint32_t*) 0x49056034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -438,13 +323,6 @@ static void add_gpio_145()
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
 
-        pGpioVal->gpio_info.number = 145;
-        pGpioVal->gpio_info.port = 5;
-        pGpioVal->gpio_info.start_bit = 16;
-        pGpioVal->gpio_info.shift = 17;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x48002174;
-
-        pGpioVal->data_out = (uint32_t*) 0x49056094;
     }
 }
 
@@ -459,13 +337,6 @@ static void add_gpio_149()
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
 
-        pGpioDir->gpio_info.number = 149;
-        pGpioDir->gpio_info.port = 5;
-        pGpioDir->gpio_info.start_bit = 16;
-        pGpioDir->gpio_info.shift = 21;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x4800217C;
-
-        pGpioDir->OE = (uint32_t*) 0x49056034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -477,13 +348,6 @@ static void add_gpio_149()
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
 
-        pGpioVal->gpio_info.number = 149;
-        pGpioVal->gpio_info.port = 5;
-        pGpioVal->gpio_info.start_bit = 16;
-        pGpioVal->gpio_info.shift = 21;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x4800217C;
-
-        pGpioVal->data_out = (uint32_t*) 0x49056094;
     }
 }
 
@@ -498,13 +362,6 @@ static void add_gpio_158()
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
 
-        pGpioDir->gpio_info.number = 158;
-        pGpioDir->gpio_info.port = 5;
-        pGpioDir->gpio_info.start_bit = 0;
-        pGpioDir->gpio_info.shift = 30;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x48002190;
-
-        pGpioDir->OE = (uint32_t*) 0x49056034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -516,13 +373,6 @@ static void add_gpio_158()
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
 
-        pGpioVal->gpio_info.number = 158;
-        pGpioVal->gpio_info.port = 5;
-        pGpioVal->gpio_info.start_bit = 0;
-        pGpioVal->gpio_info.shift = 30;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x48002190;
-
-        pGpioVal->data_out = (uint32_t*) 0x49056094;
     }
 }
 
@@ -537,13 +387,6 @@ static void add_gpio_159()
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
 
-        pGpioDir->gpio_info.number = 159;
-        pGpioDir->gpio_info.port = 5;
-        pGpioDir->gpio_info.start_bit = 16;
-        pGpioDir->gpio_info.shift = 31;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x48002190;
-
-        pGpioDir->OE = (uint32_t*) 0x49056034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -555,13 +398,6 @@ static void add_gpio_159()
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
 
-        pGpioVal->gpio_info.number = 159;
-        pGpioVal->gpio_info.port = 5;
-        pGpioVal->gpio_info.start_bit = 16;
-        pGpioVal->gpio_info.shift = 31;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x48002190;
-
-        pGpioVal->data_out = (uint32_t*) 0x49056094;
     }
 }
 
@@ -576,13 +412,6 @@ static void add_gpio_161()
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
 
-        pGpioDir->gpio_info.number = 161;
-        pGpioDir->gpio_info.port = 6;
-        pGpioDir->gpio_info.start_bit = 16;
-        pGpioDir->gpio_info.shift = 1;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x48002194;
-
-        pGpioDir->OE = (uint32_t*) 0x49058034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -594,13 +423,6 @@ static void add_gpio_161()
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
 
-        pGpioVal->gpio_info.number = 161;
-        pGpioVal->gpio_info.port = 6;
-        pGpioVal->gpio_info.start_bit = 16;
-        pGpioVal->gpio_info.shift = 1;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x48002194;
-
-        pGpioVal->data_out = (uint32_t*) 0x49058094;
     }
 }
 
@@ -615,13 +437,6 @@ static void add_gpio_162()
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
 
-        pGpioDir->gpio_info.number = 162;
-        pGpioDir->gpio_info.port = 6;
-        pGpioDir->gpio_info.start_bit = 0;
-        pGpioDir->gpio_info.shift = 2;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x48002198;
-
-        pGpioDir->OE = (uint32_t*) 0x49058034;
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
@@ -633,13 +448,6 @@ static void add_gpio_162()
         pGpioVal->header.f_type = GPIO_VAL;
         pGpioVal->header.size = 0;
 
-        pGpioVal->gpio_info.number = 162;
-        pGpioVal->gpio_info.port = 6;
-        pGpioVal->gpio_info.start_bit = 0;
-        pGpioVal->gpio_info.shift = 2;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x48002198;
-
-        pGpioVal->data_out = (uint32_t*) 0x49058094;
     }
 }
 
@@ -654,45 +462,24 @@ static void add_gpio_183()
         pGpioDir->header.f_type = GPIO_DIR;
         pGpioDir->header.size = 0;
 
-        pGpioDir->gpio_info.number = 183;
-        pGpioDir->gpio_info.port = 6;
-        pGpioDir->gpio_info.start_bit = 0;
-        pGpioDir->gpio_info.shift = 23;
-        pGpioDir->gpio_info.mux_mode_addr = (uint32_t*) 0x480021C0;
-
-        pGpioDir->OE = (uint32_t*) 0x49058034;
-
     }
 
     gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
             GPIO_VAL);
-if (pGpioVal != NULL)
-{
-    strcpy(pGpioVal->header.name, "gpio183_val");
-    pGpioVal->header.is_open = false;
-    pGpioVal->header.f_type = GPIO_VAL;
-    pGpioVal->header.size = 0;
-    gpio_value_file_t* pGpio149_val = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpio149_val != NULL)
+    if (pGpioVal != NULL)
     {
-        strcpy(pGpio149_val->header.name, "gpio149_val");
-        pGpio149_val->header.is_open = false;
-        pGpio149_val->header.f_type = GPIO_VAL;
-        pGpio149_val->header.size = 0;
-
-        pGpioVal->gpio_info.number = 183;
-        pGpioVal->gpio_info.port = 6;
-        pGpioVal->gpio_info.start_bit = 0;
-        pGpioVal->gpio_info.shift = 23;
-        pGpioVal->gpio_info.mux_mode_addr = (uint32_t*) 0x480021C0;
-        pGpio149_val->gpio_info.number = 149;
-        pGpio149_val->gpio_info.port = 5;
-        pGpio149_val->gpio_info.start_bit = 16;
-        pGpio149_val->gpio_info.shift = 21;
-        pGpio149_val->gpio_info.mux_mode_addr = (uint32_t*) 0x4800217C;
-
-        pGpioVal->data_out = (uint32_t*) 0x49058094;
-        pGpio149_val->data_out = (uint32_t*) 0x49056094;
+        strcpy(pGpioVal->header.name, "gpio183_val");
+        pGpioVal->header.is_open = false;
+        pGpioVal->header.f_type = GPIO_VAL;
+        pGpioVal->header.size = 0;
+        gpio_value_file_t* pGpio149_val =
+                (gpio_value_file_t*) mos_fs_create_file(GPIO_VAL);
+        if (pGpio149_val != NULL)
+        {
+            strcpy(pGpio149_val->header.name, "gpio149_val");
+            pGpio149_val->header.is_open = false;
+            pGpio149_val->header.f_type = GPIO_VAL;
+            pGpio149_val->header.size = 0;
+        }
     }
 }
