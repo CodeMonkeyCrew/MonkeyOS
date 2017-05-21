@@ -3,8 +3,9 @@
 #include <inttypes.h>
 #include "../timer_modes.h"
 
-/*      Methode Definition           */
-
+/* ---------------------------------------------------- *
+ * GTIMER - HAL                                         *
+ * ---------------------------------------------------- */
 /**
  * Initialize a timer:
  *  1. Power on gptimer register

@@ -6,12 +6,12 @@
 #include <stdlib.h>
 
 
-static int mos_timer_driver_open(generic_file_t* file) {
+static int timerdriver_open(generic_file_t* file) {
     timer_file_t* pTimer_file = (timer_file_t*)file;
     return timer_init(pTimer_file->info.timer_number);
 }
 
-static int mos_timer_driver_write(const void* buffer, int bufSize, generic_file_t* file){
+static int timerdriver_write(const void* buffer, int bufSize, generic_file_t* file){
 
     switch (file->f_type) {
         case TIMER: {
@@ -55,8 +55,7 @@ static int mos_timer_driver_write(const void* buffer, int bufSize, generic_file_
     return 0;
 }
 
-static int mos_timer_driver_read(void* buffer, int bufSize, generic_file_t* file) {
-
+static int timerdriver_read(void* buffer, int bufSize, generic_file_t* file) {
     return 0;
 }
 
@@ -65,7 +64,7 @@ static void add_drivers();
 static void add_files();
 
 //should be called at boot time
-void mos_timer_driver_init(void){
+void timerdriver_init(void){
     add_drivers();
     add_files();
 }
@@ -76,9 +75,9 @@ static void add_drivers() {
     //new data will then maybe override the driver
     driver_t* pTimerDriver = (driver_t*) malloc(sizeof(driver_t));
     if (pTimerDriver != NULL) {
-        pTimerDriver->driver_read = mos_timer_driver_read;
-        pTimerDriver->driver_write = mos_timer_driver_write;
-        pTimerDriver->driver_open = mos_timer_driver_open;
+        pTimerDriver->driver_read = timerdriver_read;
+        pTimerDriver->driver_write = timerdriver_write;
+        pTimerDriver->driver_open = timerdriver_open;
         register_driver(TIMER_INT, pTimerDriver);
         register_driver(TIMER_MODE, pTimerDriver);
         register_driver(TIMER, pTimerDriver);

@@ -2,7 +2,10 @@
 #define SRC_DRIVERS_GPIO_DRIVER_REGISTER_GPIOREGISTER_H_
 
 #include <inttypes.h>
-/*CM & PM Defines*/
+/*----------------------------------------------------*
+ *              CM & PM Register                      *
+ *              Clock Mode and Powermanagment         *
+ *----------------------------------------------------*/
 #define PM_PWSTCTRL_PER     0x483070E0
 
 #define CM_ICLKEN_PER       0x48005010
@@ -16,7 +19,11 @@
 
 #define CM_CLKSEL_PER       0x48005040
 
-/* GPIO DEFINES*/
+
+/*----------------------------------------------------*
+ *              GPIO Register                         *
+ *                                                    *
+ *----------------------------------------------------*/
 #define GPIO1 0x48310000
 #define GPIO_BASE 0x49050000
 
@@ -52,7 +59,11 @@ static inline uint32_t GPIOi(uint8_t gpio)
 #define GPIO_CLEARDATAOUT       0x090
 #define GPIO_SETDATAOUT         0x094
 
-/* GPIO Region*/
+/*----------------------------------------------------*
+ *              GPIO Region                           *
+ *              Helpermethods to specify the          *
+ *              region of a pin                       *
+ *----------------------------------------------------*/
 #define GPIO1_L 0
 #define GPIO1_H 31
 #define GPIO2_L 34
@@ -122,14 +133,23 @@ static inline uint8_t GPIO_PIN_ON_REGION(pin)
     }
     return pin;
 }
-/*MUX Mode*/
+
+/*----------------------------------------------------*
+ *              MUX Mode                              *
+ *              Page 2448 and following               *
+ *              PDF: sprgn4.pdf                       *
+ *----------------------------------------------------*/
 #define PAD_CONF_BASE_PIN130_PIN166 0x48002158
+#define PAD_CONF_BASE_PIN183 0x480021BC
 
 static inline uint32_t PAD_CONF_ADDRESS(pin)
 {
     if (pin >= 130 && pin <= 166)
     {
         return (PAD_CONF_BASE_PIN130_PIN166 * (pin - 130));
+    }
+    if (pin == 182){
+        return PAD_CONF_BASE_PIN183;
     }
     return 0;
 }
