@@ -11,6 +11,6 @@
  * --------------- Monkey Crew: BEAGLEBONE XM Timer Driver -----------------------*
  *-------------------------------------------------------------------------------*/
 
-void timerdriver_init(void);
+void gptimer_driver_init(void);
 
 #endif /* SRC_DRIVERS_GPIO_DRIVER_TIMER_DRIVER_H_ */

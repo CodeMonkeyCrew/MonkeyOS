@@ -3,10 +3,35 @@
 #include "hal/gpiohal.h"
 #include "../../filesystem/filesystemregister.h"
 #include "../../filesystem/filetypes/gpiotypes.h"
+
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+static int open(generic_file_t* file);
+static int write(const void* buffer, int bufSize, generic_file_t* file);
+static int read(void* buffer, int bufSize, generic_file_t* file);
+static void create_gpioFiles(void);
+
+static void create_gpio_file_bundle(uint8_t pinNumber);
+static void create_gpio_file(uint8_t pinNumber, file_types_t filetype);
+
+
+
+static driver_t gpioDriver = { .driver_open = open, .driver_read = read,
+                               .driver_write = write };
+
+//should be called at boot time
+void gpio_driver_init(void)
+{
+
+    register_driver(GPIO_VAL, &gpioDriver);
+    register_driver(GPIO_DIR, &gpioDriver);
+    create_gpioFiles();
+}
 
 /*TODO: PLS REWORK THIS SWITCH*/
-static int gpiodriver_open(generic_file_t* file)
+static int open(generic_file_t* file)
 {
 
     int number;
@@ -30,8 +55,7 @@ static int gpiodriver_open(generic_file_t* file)
     return 0;
 }
 
-static int gpiodriver_write(const void* buffer, int bufSize,
-                            generic_file_t* file)
+static int write(const void* buffer, int bufSize, generic_file_t* file)
 {
     //cast generic file type to gpio file
     file_types_t fileType = file->f_type;
@@ -58,7 +82,7 @@ static int gpiodriver_write(const void* buffer, int bufSize,
     return 0;
 }
 
-static int gpiodriver_read(void* buffer, int bufSize, generic_file_t* file)
+static int read(void* buffer, int bufSize, generic_file_t* file)
 {
 //cast generic file type to gpio file
     file_types_t fileType = file->f_type;
@@ -76,410 +100,44 @@ static int gpiodriver_read(void* buffer, int bufSize, generic_file_t* file)
     return gpiohal_pinGetValue(pinNumber);
 }
 
-static void add_drivers();
-static void add_files();
-
-//should be called at boot time
-void mos_gpio_driver_init(void)
+static void create_gpioFiles()
 {
-
-    add_drivers();
-    add_files();
+    create_gpio_file_bundle(130);
+    create_gpio_file_bundle(131);
+    create_gpio_file_bundle(132);
+    create_gpio_file_bundle(133);
+    create_gpio_file_bundle(134);
+    create_gpio_file_bundle(135);
+    create_gpio_file_bundle(136);
+    create_gpio_file_bundle(145);
+    create_gpio_file_bundle(149);
+    create_gpio_file_bundle(158);
+    create_gpio_file_bundle(159);
+    create_gpio_file_bundle(161);
+    create_gpio_file_bundle(183);
 }
 
-static void add_drivers()
+static void create_gpio_file_bundle(uint8_t pinNumber)
 {
-//use malloc as it would otherwise be put on the stack,
-//which will be freed when the functions ends.
-//new data will then maybe override the driver
-    driver_t* pGpioDriver = (driver_t*) malloc(sizeof(driver_t));
-    if (pGpioDriver != NULL)
-    {
-        pGpioDriver->driver_read = gpiodriver_read;
-        pGpioDriver->driver_write = gpiodriver_write;
-        pGpioDriver->driver_open = gpiodriver_open;
-        register_driver(GPIO_VAL, pGpioDriver);
-        register_driver(GPIO_DIR, pGpioDriver);
-    }
+    create_gpio_file(pinNumber, GPIO_DIR);
+    create_gpio_file(pinNumber, GPIO_VAL);
 }
-
-static void add_gpio_130();
-static void add_gpio_131();
-static void add_gpio_132();
-static void add_gpio_133();
-static void add_gpio_134();
-static void add_gpio_135();
-static void add_gpio_136();
-static void add_gpio_145();
-static void add_gpio_149();
-static void add_gpio_158();
-static void add_gpio_159();
-static void add_gpio_161();
-static void add_gpio_162();
-static void add_gpio_183();
-
-static void add_files()
+static void create_gpio_file(uint8_t pinNumber, file_types_t filetype)
 {
-    add_gpio_130();
-    add_gpio_131();
-    add_gpio_132();
-    add_gpio_133();
-    add_gpio_134();
-    add_gpio_135();
-    add_gpio_136();
-    add_gpio_145();
-    add_gpio_149();
-    add_gpio_158();
-    add_gpio_159();
-    add_gpio_161();
-    add_gpio_162();
-    add_gpio_183();
-}
-
-static void add_gpio_130()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
+    gpio_direction_file_t* gpioDir;
+    if (GPIO_DIR)
     {
-        strcpy(pGpioDir->header.name, "gpio130_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
+        gpioDir = (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
+        gpioDir->header.f_type = GPIO_DIR;
     }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
+    else if(GPIO_VAL)
     {
-        strcpy(pGpioVal->header.name, "gpio130_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
+        gpioDir = (gpio_direction_file_t*) mos_fs_create_file(GPIO_VAL);
+        gpioDir->header.f_type = GPIO_VAL;
     }
-}
-
-static void add_gpio_131()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio131_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio131_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-    }
-}
-
-static void add_gpio_132()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio132_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio132_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-    }
-}
-
-static void add_gpio_133()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio133_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio133_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-
-    }
-}
-
-static void add_gpio_134()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio134_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio134_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-    }
-}
-
-static void add_gpio_135()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio135_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio135_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-    }
-}
-
-static void add_gpio_136()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio136_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio136_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-
-    }
-}
-
-static void add_gpio_145()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio145_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio145_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-
-    }
-}
-
-static void add_gpio_149()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio149_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio149_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-
-    }
-}
-
-static void add_gpio_158()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio158_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio158_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-
-    }
-}
-
-static void add_gpio_159()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio159_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio159_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-
-    }
-}
-
-static void add_gpio_161()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio161_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio161_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-
-    }
-}
-
-static void add_gpio_162()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio162_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio162_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-
-    }
-}
-
-static void add_gpio_183()
-{
-    gpio_direction_file_t* pGpioDir =
-            (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
-    if (pGpioDir != NULL)
-    {
-        strcpy(pGpioDir->header.name, "gpio183_dir");
-        pGpioDir->header.is_open = false;
-        pGpioDir->header.f_type = GPIO_DIR;
-        pGpioDir->header.size = 0;
-
-    }
-
-    gpio_value_file_t* pGpioVal = (gpio_value_file_t*) mos_fs_create_file(
-            GPIO_VAL);
-    if (pGpioVal != NULL)
-    {
-        strcpy(pGpioVal->header.name, "gpio183_val");
-        pGpioVal->header.is_open = false;
-        pGpioVal->header.f_type = GPIO_VAL;
-        pGpioVal->header.size = 0;
-        gpio_value_file_t* pGpio149_val =
-                (gpio_value_file_t*) mos_fs_create_file(GPIO_VAL);
-        if (pGpio149_val != NULL)
-        {
-            strcpy(pGpio149_val->header.name, "gpio149_val");
-            pGpio149_val->header.is_open = false;
-            pGpio149_val->header.f_type = GPIO_VAL;
-            pGpio149_val->header.size = 0;
-        }
-    }
+    char strBuffer[12];
+    sprintf(strBuffer, "gpio%i_dir", pinNumber);
+    strcpy(gpioDir->header.name, strBuffer);
+    gpioDir->header.is_open = false;
+    gpioDir->header.size = 0;
 }
