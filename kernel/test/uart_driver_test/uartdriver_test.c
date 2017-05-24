@@ -1,5 +1,6 @@
 #include "uartdriver_test.h"
-
+#include "../../drivers/uart/uartdriver.h"
+#include "../../filesystem/filesystem.h"
 static void test_uart3();
 static char monkey[] = "                 __,__\r\n"
            "        .--.  .-\"     \"-.  .--.\r\n"

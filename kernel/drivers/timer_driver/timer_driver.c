@@ -14,7 +14,7 @@ static void create_gptimerFiles(void);
 static driver_t gptimerDriver = { .driver_open = open, .driver_read = read,
                                   .driver_write = write };
 
-static void gptimer_driver_init()
+void gptimer_driver_init()
 {
     register_driver(TIMER_INT, &gptimerDriver);
     register_driver(TIMER_MODE, &gptimerDriver);

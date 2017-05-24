@@ -1,4 +1,7 @@
 #include "timerdriver_test.h"
+#include "../../filesystem/filesystem.h"
+#include "../../drivers/timer_driver/timer_driver.h"
+
 static void test_GPTimer2(void);
 
 void test_timerdriver(void){
@@ -10,7 +13,7 @@ static void test_GPTimer2(void)
     _disable_interrupts();
 
     mos_fs_init();
-    timerdriver_init(); //creates and registers drivers and files
+    gptimerdriver_init(); //creates and registers drivers and files
 
     int fd_timer2_int = mos_fs_open("GPTimer_2_INT");
     mos_fs_write(fd_timer2_int, 0, 0); //enables interrupt

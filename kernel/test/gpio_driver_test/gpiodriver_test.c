@@ -1,3 +1,6 @@
+#include "../../drivers/gpio_driver/gpiodriver.h"
+#include "../../filesystem/filesystem.h"
+
 static void blinkLED();
 static int dir_fd;
 static int val_fd;
@@ -5,6 +8,7 @@ static int val_1 = 1;
 static void* pVal_1 = &val_1;
 static int val_0 = 0;
 static void* pVal_0 = &val_0;
+
 void test_gpiodriver()
 {
     blinkLED();
