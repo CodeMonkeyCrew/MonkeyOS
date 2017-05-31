@@ -5,4 +5,6 @@
 
 void dispatcher_switchContext(ProcContext_t* oldContext, ProcContext_t* newContext);
 
+void dispatcher_saveContext(ProcContext_t* context);
+
 #endif

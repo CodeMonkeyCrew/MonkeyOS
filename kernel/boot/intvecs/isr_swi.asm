@@ -2,23 +2,29 @@
 		.asg mos_fs_open, C_FS_OPEN
 		.asg mos_fs_close, C_FS_CLOSE
 		.asg mos_fs_write, C_FS_WRITE
+		.asg mos_fs_read, C_FS_READ
+		.asg scheduler_fork, C_SCHEDULER_FORK
     	.else
     	.asg _mos_fs_open, C_FS_OPEN
     	.asg _mos_fs_close, C_FS_CLOSE
     	.asg _mos_fs_write, C_FS_WRITE
+    	.asg _mos_fs_read, C_FS_READ
+    	.asg _scheduler_fork, C_SCHEDULER_FORK
 		.endif
 
 	.global _ISR_SWI
 	.global C_FS_OPEN
 	.global C_FS_CLOSE
 	.global C_FS_WRITE
+	.global C_FS_READ
+	.global C_SCHEDULER_FORK
 
 ; ACTIVESWI bit field mask to get only the bit field
 ACTIVESWI_MASK .equ 0x3F
 
 _ISR_SWI:
 	; Save the critical context
-	STMFD SP!, {R1-R12, LR}				; Save working registers and the Link register
+	STMFD SP!, {R0-R12, LR}				; Save working registers and the Link register
 	MRS R11, SPSR						; Save the SPSR into R11
 
 	; Get the number of SWI
@@ -36,8 +42,8 @@ _ISR_SWI:
 	.word C_FS_OPEN						; for SWI0
 	.word C_FS_CLOSE					; for SWI1
 	.word C_FS_WRITE					; for SWI2
-	.word SWIDefaultHandler				; for SWI3
-	.word SWIDefaultHandler				; for SWI4
+	.word C_FS_READ         			; for SWI3
+	.word C_SCHEDULER_FORK				; for SWI4
 	.word SWIDefaultHandler				; for SWI5
 	.word SWIDefaultHandler				; for SWI6
 	.word SWIDefaultHandler				; for SWI7
@@ -104,6 +110,7 @@ SWIDefaultHandler:
 ISR_SWI_end:
     ; restore critical context
     MSR SPSR_cf, R11					; Restore the SPSR from R11
+    LDMFD SP!, {R1}						; Pop R0 value from stack
     LDMFD SP!, {R1-R12, LR}				; Restore working registers and Link register (do not restore R0 to preserve return value)
 
     ; Return after handling the interrupt

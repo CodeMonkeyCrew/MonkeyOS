@@ -32,13 +32,16 @@ static int scheduler_getFreeProcSlot(void)
 static uint8_t scheduler_findNextProc(void)
 {
     uint8_t pid = runningPid;
-    do {
+    do
+    {
         pid = (pid + 1) % MAX_PROC_COUNT;
-        if (procs[pid].state == PROC_STATE_READY) {
+        if (procs[pid].state == PROC_STATE_READY)
+        {
             // found next ready process
             return pid;
         }
-    } while (pid != runningPid);
+    }
+    while (pid != runningPid);
 
     // no other ready process
     return runningPid;
@@ -122,6 +125,7 @@ void scheduler_run(void)
 }
 
 int scheduler_initProc(ProcEntryPoint_t entryPoint, Priority_t priority)
+//add int argc, char* argv as parameter
 {
     int pid = scheduler_getFreeProcSlot();
     if (pid > 0)
@@ -135,8 +139,25 @@ int scheduler_initProc(ProcEntryPoint_t entryPoint, Priority_t priority)
         procs[pid].context.sp = 0x90000000 - ((pid - 1) * 0xFF);
         procs[pid].priority = priority;
         return pid;
+        //write argc in context.R0 and argv in context.R1 (oder anders rum)
     }
 
     // failed to initialize process
     return -1;
 }
+
+int scheduler_fork(void)
+{
+    int pid = scheduler_getFreeProcSlot();
+    if (pid >= 0)
+    {
+        dispatcher_saveContext(&procs[runningPid].context);
+        memcpy(&procs[pid], &procs[runningPid], sizeof(PCB_t));
+
+        procs[pid].state = PROC_STATE_READY;
+        procs[pid].context.r0 = 0;
+        procs[pid].parentPid = runningPid;
+    }
+    return pid;
+}
+

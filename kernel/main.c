@@ -1,22 +1,22 @@
-#include <inttypes.h>
 #include "proc/proc.h"
 #include "proc/scheduler.h"
 #include "proc/mode.h"
-#include <kernel/drivers/gpio_driver/gpiodriver.h>
-#include <kernel/drivers/uart/uartdriver.h>
-#include <kernel/drivers/timer_driver/timer_driver.h>
-#include <kernel/drivers/register/intcps_register.h>
-#include <kernel/drivers/timer_driver/hal/timer_hal.h>
-#include <kernel/drivers/util/registerutil.h>
-#include <kernel/filesystem/filesystem.h>
-#include "console/console.h"
+#include "Apps/Console/console.h"
+#include "kernel/drivers/gpio_driver/gpiodriver.h"
+#include "kernel/drivers/uart/uartdriver.h"
+#include "kernel/drivers/timer_driver/timer_driver.h"
+#include "kernel/drivers/register/intcps_register.h"
+#include "kernel/drivers/timer_driver/hal/timer_hal.h"
+#include "kernel/drivers/util/registerutil.h"
+#include "kernel/filesystem/filesystem.h"
+#include <inttypes.h>
 #include <stdio.h>
+
 
 #define PM_PWSTCTRL_PER (volatile uint32_t*)0x483070E0
 
 void testFromFSToDrivers();
 void testTimerFromFS();
-void testUARTDriverFromFS();
 
 int dir_fd;
 int val_fd;
@@ -43,24 +43,28 @@ void process2()
         printf("process 2: %i \n", ++i);
     }
 }
+void console(){
+    console_run();
+}
 
 void main(void)
 {
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
-    testUARTDriverFromFS();
 
     /*Blink LED*/
-  /*  mos_fs_init();
-    mos_gpio_driver_init();
+    mos_fs_init();
+    uartdriver_init();
+  //  mos_gpio_driver_init();
 
-    dir_fd = mos_fs_open("gpio149_dir");
-    val_fd = mos_fs_open("gpio149_val");
-    mos_fs_write(dir_fd, pVal_1, 1);
+   // dir_fd = mos_fs_open("gpio149_dir");
+   // val_fd = mos_fs_open("gpio149_val");
+   // mos_fs_write(dir_fd, pVal_1, 1);
 
     /*Scheduler*/
-   /* scheduler_init();
-    scheduler_initProc(process1, PROC_PRIO_MIDDLE);
-    //scheduler_initProc(process2, PROC_PRIO_MIDDLE);
+    scheduler_init();
+   // scheduler_initProc(process1, PROC_PRIO_MIDDLE);
+   // scheduler_initProc(process2, PROC_PRIO_MIDDLE);
+    scheduler_initProc(console, PROC_PRIO_MIDDLE);
     scheduler_start();
     // set user mode and enable interrupts
     mode_setUserMode();
@@ -69,7 +73,7 @@ void main(void)
     while (1)
     {
         printf("idle loop\n");
-    }*/
+    }
 }
 
 void testFromFSToDrivers()
@@ -149,10 +153,4 @@ void testTimerFromFS()
     }
 }
 
-void testUARTDriverFromFS()
-{
-    mos_fs_init();
-    uartdriver_init();
-    console_run();
 
-}
