@@ -22,7 +22,7 @@ static driver_t gpioDriver = { .driver_open = open, .driver_read = read,
                                .driver_write = write };
 
 //should be called at boot time
-void gpio_driver_init(void)
+void gpiodriver_init(void)
 {
 
     register_driver(GPIO_VAL, &gpioDriver);

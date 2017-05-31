@@ -59,7 +59,7 @@ void gpiohal_pinSetValue(const uint8_t pinNumber, const uint8_t value){
     if(value){
         set_bit(get_address(GPIOi(GPIO_REGION(pinNumber)), GPIO_DATAOUT), pinNr_on_regio);
     }else{
-        set_bit(get_address(GPIOi(GPIO_REGION(pinNumber)), GPIO_CLEARDATAOUT), pinNr_on_regio);
+        clear_bit(get_address(GPIOi(GPIO_REGION(pinNumber)), GPIO_DATAOUT), pinNr_on_regio);
     }
 }
 

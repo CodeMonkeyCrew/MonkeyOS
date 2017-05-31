@@ -3,7 +3,8 @@
 #include "proc/scheduler.h"
 #include "proc/mode.h"
 #include <stdio.h>
-#include "test/gpio_driver_test/gpiodriver_test.h"
+#include "test/timer_driver_test/timerdriver_test.h"
+#include "drivers/gpio_driver/gpiodriver.h"
 #define PM_PWSTCTRL_PER (volatile uint32_t*)0x483070E0
 
 void process1()
@@ -28,8 +29,9 @@ void main(void)
 {
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
+    test_timerdriver();
 
-    test_gpiodriver();
+    //test_gpiodriver();
     /*Scheduler*/
     /*    scheduler_init();
     scheduler_initProc(process1, PROC_PRIO_MIDDLE);

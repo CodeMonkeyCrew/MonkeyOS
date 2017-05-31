@@ -2,9 +2,8 @@
 #include "../../util/registerutil.h"
 #include "timer_register.h"
 
-uint32_t timer_init(const uint8_t nr)
+void timer_init(const uint8_t nr)
 {
-    uint32_t response = 1;
     //enable
     if (nr == 1)
     {
@@ -12,8 +11,8 @@ uint32_t timer_init(const uint8_t nr)
     }
     else if (nr > 1 && nr < 10)
     {
-        response = set_bit((uint32_t*) CM_FCLKEN_PER, 3);
-        response = set_bit((uint32_t*) CM_ICLKEN_PER, 3);
+        set_bit((uint32_t*) CM_FCLKEN_PER, 3);
+        set_bit((uint32_t*) CM_ICLKEN_PER, 3);
     }
 
     //this is needed as it takes a few CPU-Cycles(?) until CM_FCLKEN_PER & CM_ICLKEN_PER
@@ -27,61 +26,58 @@ uint32_t timer_init(const uint8_t nr)
 
     }
 
-    response = clear_bit(get_address(GPTIMER(nr), TCLR), 0);
-    response = clear_32(get_address(GPTIMER(nr), TCRR));
+    clear_bit(get_address(GPTIMER(nr), TCLR), 0);
+    clear_32(get_address(GPTIMER(nr), TCRR));
 
-    return response;
 }
 
-uint32_t timer_enable_compare_mode(const uint8_t nr, const uint32_t value)
+void timer_enable_compare_mode(const uint8_t nr, const uint32_t value)
 {
-    uint32_t response = 1;
-    response = set_bit(get_address(GPTIMER(nr), TCLR), 6); //compare enable
-    response = set_bit(get_address(GPTIMER(nr), TIER), 0); //enable Compare (Match) Interrupt
-    response = set_value_32(get_address(GPTIMER(nr), TMAR), value); //set value to which the timer is compared
-    return response;    //compare mode enable
+
+    set_bit(get_address(GPTIMER(nr), TCLR), 6); //compare enable
+    set_bit(get_address(GPTIMER(nr), TIER), 0); //enable Compare (Match) Interrupt
+    set_value_32(get_address(GPTIMER(nr), TMAR), value); //set value to which the timer is compared
+                                                        //compare mode enable
 }
 
-uint32_t timer_set_interrupt_mode(const uint8_t nr, const uint8_t mode)
+void timer_set_interrupt_mode(const uint8_t nr, const uint8_t mode)
 {
-    uint8_t response = 1;
+
     if (mode < 3)
     {
         clear_bit(get_address(GPTIMER(nr), TIER), 0);
         clear_bit(get_address(GPTIMER(nr), TIER), 1);
         clear_bit(get_address(GPTIMER(nr), TIER), 2);
-        response = set_bit(get_address(GPTIMER(nr), TIER), mode);
-        return response;
+        set_bit(get_address(GPTIMER(nr), TIER), mode);
     }
-    return 0;
+
 }
 
-uint32_t timer_enable_interrupt(const uint8_t nr, const uint8_t autoreload)
+void timer_enable_interrupt(const uint8_t nr, const uint8_t autoreload)
 {
-    uint8_t response = 1;
     //96 possible interrups, 0 - Bit0-31, 1 - Bit 32-63 -> n = 1
 
     //clear interrupt bits
-    response = set_bit(get_address(GPTIMER(nr), TISR), 0);
-    response = set_bit(get_address(GPTIMER(nr), TISR), 1);
-    response = set_bit(get_address(GPTIMER(nr), TISR), 2);
+    set_bit(get_address(GPTIMER(nr), TISR), 0);
+    set_bit(get_address(GPTIMER(nr), TISR), 1);
+    set_bit(get_address(GPTIMER(nr), TISR), 2);
 
     if (autoreload)
     {
-        response = set_bit(get_address(GPTIMER(nr), TCLR), 1);
+        set_bit(get_address(GPTIMER(nr), TCLR), 1);
     }
     switch (nr)
     {
     case 1:
         break;
     case 2:
-        response = clear_bit((uint32_t*) MIRn(1), 6);
+        clear_bit((uint32_t*) MIRn(1), 6);
         break;
     case 3:
-        response = clear_bit((uint32_t*) MIRn(1), 7);
+        clear_bit((uint32_t*) MIRn(1), 7);
         break;
     case 4:
-        response = clear_bit((uint32_t*) MIRn(1), 8);
+        clear_bit((uint32_t*) MIRn(1), 8);
         break;
     case 5:
         break;
@@ -98,24 +94,22 @@ uint32_t timer_enable_interrupt(const uint8_t nr, const uint8_t autoreload)
     case 11:
         break;
     }
-    return response;
 }
 
-uint32_t timer_disable_interrupt(const uint8_t nr)
+void timer_disable_interrupt(const uint8_t nr)
 {
-    uint32_t response = 1;
     switch (nr)
     {
     case 1:
         break;
     case 2:
-        response = set_bit((uint32_t*) MIRn(1), 7);
+        set_bit((uint32_t*) MIRn(1), 7);
         break;
     case 3:
-        response = set_bit((uint32_t*) MIRn(1), 8);
+        set_bit((uint32_t*) MIRn(1), 8);
         break;
     case 4:
-        response = set_bit((uint32_t*) MIRn(1), 9);
+        set_bit((uint32_t*) MIRn(1), 9);
         break;
     case 5:
         break;
@@ -133,9 +127,9 @@ uint32_t timer_disable_interrupt(const uint8_t nr)
         break;
     }
 
-    return response;
+
 }
-uint32_t timer_clear_interrupt(const uint8_t nr)
+void timer_clear_interrupt(const uint8_t nr)
 {
     //clear interrupt bits
     set_bit(get_address(GPTIMER(nr), TISR), 0);
@@ -143,36 +137,31 @@ uint32_t timer_clear_interrupt(const uint8_t nr)
     set_bit(get_address(GPTIMER(nr), TISR), 2);
     timer_stop(nr);
     timer_start(nr);
-    return 1;
 }
 
-uint32_t timer_start(const uint8_t nr)
+void timer_start(const uint8_t nr)
 {
-    uint32_t respone = 1;
     clear_bit(get_address(GPTIMER(nr), TCLR), 0);
     set_bit(get_address(GPTIMER(nr), TCLR), 0);
 
-    return respone;
 }
 
-uint32_t timer_stop(const uint8_t nr)
+void timer_stop(const uint8_t nr)
 {
     clear_bit(get_address(GPTIMER(nr), TCLR), 0);
     clear_32(get_address(GPTIMER(nr), TCRR));
-    return 1;
 }
-uint32_t timer_set_clock(const uint8_t nr, const uint8_t clock_mode)
+void timer_set_clock(const uint8_t nr, const uint8_t clock_mode)
 {
     if (nr >= 2 && nr <= 9)
     {
         if (clock_mode)
         {
-            return set_bit((uint32_t*)CM_CLKSEL_PER, (nr - 2));
+            set_bit((uint32_t*) CM_CLKSEL_PER, (nr - 2));
         }
         else
         {
-            return clear_bit((uint32_t*)CM_CLKSEL_PER, (nr - 2));
+            clear_bit((uint32_t*) CM_CLKSEL_PER, (nr - 2));
         }
     }
-    return 0;
 }

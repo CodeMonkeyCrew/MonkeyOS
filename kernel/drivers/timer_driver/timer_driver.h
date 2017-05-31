@@ -1,4 +1,3 @@
-
 #ifndef SRC_DRIVERS_GPIO_DRIVER_TIMER_DRIVER_H_
 #define SRC_DRIVERS_GPIO_DRIVER_TIMER_DRIVER_H_
 /*-------------------------------------------------------------------------------*
