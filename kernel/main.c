@@ -3,15 +3,52 @@
 #include "proc/scheduler.h"
 #include "proc/mode.h"
 #include <kernel/drivers/gpio_driver/gpiodriver.h>
+#include <kernel/drivers/uart/uartdriver.h>
+#include <kernel/drivers/timer_driver/timer_driver.h>
 #include <kernel/drivers/register/intcps_register.h>
 #include <kernel/drivers/timer_driver/hal/timer_hal.h>
-#include <kernel/drivers/timer_driver/timer_driver.h>
 #include <kernel/drivers/matrix_driver/matrix_driver.h>
 #include <kernel/drivers/util/registerutil.h>
 #include <kernel/filesystem/filesystem.h>
 #include <stdio.h>
 
 #define PM_PWSTCTRL_PER (volatile uint32_t*)0x483070E0
+
+    char monkey[] = "                 __,__\r\n"
+            "        .--.  .-\"     \"-.  .--.\r\n"
+            "       / .. \\/  .-. .-.  \\/ .. \\\r\n"
+            "      | |  '|  /   Y   \\  |'  | |\r\n"
+            "      | |  '|  /   Y   \\  |'  | |\r\n"
+            "      | \\   \\  \\ 0 | 0 /  /   / |\r\n"
+            "       \\ '- ,\\.-\"`` ``\"-./, -' /\r\n"
+            "        `'-' /_   ^ ^   _\\ '-'`\r\n"
+            "        .--'|  \\._ _ _./  |'--. \r\n"
+            "      /`    \\   \\.-.  /   /    `\\\r\n"
+            "     /       '._/  |-' _.'       \\\r\n"
+            "    /          ;  /--~'   |       \\\r\n"
+            "   /        .'\\|.-\\--.     \\       \\\r\n"
+            "   /   .'-. /.-.;\\  |\\|'~'-.|\\       \\\r\n"
+            "  \\       -./`|_\\_/      `\\'.      \\\r\n"
+            "   '.      ;     ___)        '.`;    /\r\n"
+            "     '-.,_ ;     ___)          \\/   /\r\n"
+            "      \\   `'------'\\       \\     /\r\n"
+            "       '.    \\       '.      |   ;/_\r\n"
+            "     ___>     '.       \\_ _ _/   ,  '--.\r\n"
+            "   .'   '.   .-~~~~~-. /     |--'`~~-.  \\\r\n"
+            "  // / .---'/  .-~~-._/ / / /---..__.'  /\r\n"
+            " ((_(_/    /  /      (_(_(_(---.__    .'\r\n"
+            "           | |     _              `~~`\r\n"
+            "           | |     \\'.\r\n"
+            "            \\ '....' |\r\n"
+            "             '.,___.'\r\n"
+            "\r\n"
+            " ____    ____                  __                        ___     ______   \r\n"
+            "|_   \\  /   _|                [  |  _                  .'   `. .' ____ \\  \r\n"
+            "  |   \\/   |   .--.   _ .--.   | | / ] .---.   _   __ /  .-.  \\| (___ \\_| \r\n"
+            "  | |\\  /| | / .'`\\ \\[ .-. |  | '' < / /__\\\\ [ \\ [  ]| |   | | _.____.  \r\n"
+            " _| |_\\/_| |_| \\__. | | | | |  | |`\\ \\| \\__.,  \\ '/ / \\  `-'  /| \\____) | \r\n"
+            "|_____||_____|'.__.' [___||__][__|  \\_]'.__.'[\\_:  /   `.___.'  \\______.' \r\n"
+            "                                              \\__.'                       \r\n";
 
 void testFromFSToDrivers();
 void testTimerFromFS();
@@ -102,24 +139,25 @@ void testFromFSToDrivers()
         }
     }
 }
-/*
- void testTimer() {
- _disable_interrupts();
- *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
- init_gptimer(2);
- enable_compare_mode(2, 0xfffff);
- //set_interrupt_mode(2, 0);
- enable_timer_interrupt(2,0);
+//void testTimer()
+//{
+//    _disable_interrupts();
+//    *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
+//
+//    init_gptimer(2);
+//    enable_compare_mode(2, 0, 0xfffff);
+//    enable_interrupt(2);
+//
+//    _enable_interrupts();
+//    _enable_IRQ();
+//    gptimer_start(2);
+//    while (1)
+//    {
+//
+//    }
+//}
 
- _enable_interrupts();
- _enable_IRQ();
- gptimer_start(2);
- while(1){
-
- }
- }
- */
 void testTimerFromFS()
 {
     _disable_interrupts();
@@ -147,7 +185,6 @@ void testTimerFromFS()
     {
     }
 }
-
 
 #define BUFFER_SIZE 512
 static uint8_t buffer[BUFFER_SIZE];
@@ -189,5 +226,23 @@ void gpioPerformanceTest(void) {
         mos_fs_write(valFd, pVal_0, 1);
         //*DATA_OUT |= (1 << 7);
         //*DATA_OUT &= ~(1 << 7);
+    }
+}
+
+void testUARTDriverFromFS()
+{
+    mos_fs_init();
+    uartdriver_init();
+
+    int uart_fd = mos_fs_open("uart3");
+
+    char writeSign[1] = ">";
+    mos_fs_write(uart_fd, monkey, strlen(monkey));
+    mos_fs_write(uart_fd, writeSign, 1);
+
+    char readBuff[50];
+    while(1){
+        mos_fs_read(uart_fd, readBuff, 50);
+        volatile int i;
     }
 }

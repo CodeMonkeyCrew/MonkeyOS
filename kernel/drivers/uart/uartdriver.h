@@ -1,0 +1,8 @@
+#ifndef KERNEL_DRIVERS_UART_UARTDRIVER_H_
+#define KERNEL_DRIVERS_UART_UARTDRIVER_H_
+
+
+void uartdriver_init(void);
+
+
+#endif /* KERNEL_DRIVERS_UART_UARTDRIVER_H_ */

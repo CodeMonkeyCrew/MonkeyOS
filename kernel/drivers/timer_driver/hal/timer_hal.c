@@ -163,3 +163,18 @@ uint32_t timer_stop(const uint8_t nr)
     clear_32(get_address(GPTIMER(nr), TCRR));
     return 1;
 }
+uint32_t timer_set_clock(const uint8_t nr, const uint8_t clock_mode)
+{
+    if (nr >= 2 && nr <= 9)
+    {
+        if (clock_mode)
+        {
+            return set_bit(CM_CLKSEL_PER, (nr - 2));
+        }
+        else
+        {
+            return clear_bit(CM_CLKSEL_PER, (nr - 2));
+        }
+    }
+    return 0;
+}

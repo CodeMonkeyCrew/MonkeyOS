@@ -1,9 +1,9 @@
 #ifndef KERNEL_FILESYSTEM_FILETYPES_GENERICTYPE_H_
 #define KERNEL_FILESYSTEM_FILETYPES_GENERICTYPE_H_
 
-typedef enum {GPIO_DIR, GPIO_VAL, TIMER, TIMER_INT, TIMER_MODE, MATRIX} file_types_t;
-#define NO_OF_FILE_TYPES 6
+typedef enum {GPIO_DIR, GPIO_VAL, TIMER, TIMER_INT, TIMER_MODE, UART, MATRIX} file_types_t;
 
+#define NO_OF_FILE_TYPES 7
 #define FILE_NAME_SIZE 16
 
 typedef enum { false, true } bool;
