@@ -306,8 +306,8 @@ static void updateDisplay(Matrix_t* matrix)
             }
         }
         // pulse clock
-        setGPIOVal(&matrix->controlPins.clk, LOW);
         setGPIOVal(&matrix->controlPins.clk, HIGH);
+        setGPIOVal(&matrix->controlPins.clk, LOW);
     }
 }
 

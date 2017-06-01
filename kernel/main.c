@@ -43,35 +43,33 @@ void process2()
 }
 
 void matrixDriverTest(void);
+void gpioPerformanceTest(void);
 
 void main(void)
 {
+    *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
-//    *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
-//
-//    /*Blink LED*/
-//    mos_fs_init();
-//    mos_gpio_driver_init();
-//
-//    dir_fd = mos_fs_open("gpio149_dir");
-//    val_fd = mos_fs_open("gpio149_val");
-//    mos_fs_write(dir_fd, pVal_1, 1);
-//
-//    /*Scheduler*/
-//    scheduler_init();
-//    scheduler_initProc(process1, PROC_PRIO_MIDDLE);
-//    //scheduler_initProc(process2, PROC_PRIO_MIDDLE);
-//    scheduler_start();
-//    // set user mode and enable interrupts
-//    mode_setUserMode();
-//
-//    // idle loop
-//    while (1)
-//    {
-//        printf("idle loop\n");
-//    }
+    /*Blink LED*/
+    mos_fs_init();
+    mos_gpio_driver_init();
 
-    matrixDriverTest();
+    dir_fd = mos_fs_open("gpio149_dir");
+    val_fd = mos_fs_open("gpio149_val");
+    mos_fs_write(dir_fd, pVal_1, 1);
+
+    /*Scheduler*/
+    scheduler_init();
+    scheduler_initProc(process1, PROC_PRIO_MIDDLE);
+    //scheduler_initProc(process2, PROC_PRIO_MIDDLE);
+    scheduler_start();
+    // set user mode and enable interrupts
+    mode_setUserMode();
+
+    // idle loop
+    while (1)
+    {
+        printf("idle loop\n");
+    }
 }
 
 void testFromFSToDrivers()
@@ -161,15 +159,35 @@ void matrixDriverTest(void) {
 
     int matrix0Fd = mos_fs_open("matrix0");
 
-    int i;
-    for(i = 0; i < BUFFER_SIZE; ++i) {
-        buffer[i] = 0xFF;
-    }
+    buffer[0] = 0x1F;
+    buffer[1] = 0x42;
+    buffer[2] = 0x53;
+    buffer[3] = 0x06;
 
     mos_fs_write(matrix0Fd, buffer, BUFFER_SIZE);
 
-    matrix_driver_update();
-    matrix_driver_update();
+    while (1)
+    {
+        matrix_driver_update();
+    }
+}
 
-    while(1) {}
+int* DATA_OUT = (int*) 0x4905603C;
+
+void gpioPerformanceTest(void) {
+    mos_fs_init();
+    mos_gpio_driver_init();
+
+    int dirFd = mos_fs_open("gpio135_dir");
+    int valFd = mos_fs_open("gpio135_val");
+
+    mos_fs_write(dirFd, pVal_1, 1);
+
+    while (1)
+    {
+        mos_fs_write(valFd, pVal_1, 1);
+        mos_fs_write(valFd, pVal_0, 1);
+        //*DATA_OUT |= (1 << 7);
+        //*DATA_OUT &= ~(1 << 7);
+    }
 }

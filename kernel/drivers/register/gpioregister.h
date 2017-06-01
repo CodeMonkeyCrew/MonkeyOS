@@ -3,12 +3,17 @@
 
 #include <inttypes.h>
 
-#define GPIO1 0x48310000
-#define GPIO_BASE 0x49050000
+#define GPIO1_BASE 0x48310000
+#define GPIOX_BASE 0x49050000
 
-static inline uint32_t get_base_address(uint8_t gpio)
+static inline uint32_t get_base_address(uint8_t port)
 {
-    return GPIO_BASE + ((gpio-2) * (0x2000));
+    if (port == 1) {
+        return GPIO1_BASE;
+    } else if (port > 1) {
+        return GPIOX_BASE + (port - 2) * 0x2000;
+    }
+    return 0;
 }
 
 #define GPIO_REVISION           0x000
