@@ -50,9 +50,9 @@ void mos_gpio_LLD_set_value(uint32_t* gpioDataOut, int port, int shift, int mode
         set_bit(gpioDataOut, shift);
      }else{
          //turn off
-        uint32_t* ptr = (uint32_t*)(get_base_address(port) + GPIO_CLEARDATAOUT);
+        uint32_t* ptr = (uint32_t*)(get_base_address(port) + GPIO_DATAOUT);
         //*ptr |= (1 << shift);
-        set_bit(ptr, shift);
+        clear_bit(ptr, shift);
      }
 }
 

@@ -44,14 +44,14 @@ static int mos_gpio_driver_write(const void* buffer, int bufSize, generic_file_t
             gpio_direction_file_t* directionFile = (gpio_direction_file_t*) file;
             int shift = directionFile->gpio_info.shift;
             uint32_t* gpioOE = directionFile->OE;
-            mos_gpio_LLD_set_direction(gpioOE, shift, *((int*)buffer));
+            mos_gpio_LLD_set_direction(gpioOE, shift, *((int*)buffer) & (1 << 0));
             break; }
         case GPIO_VAL: {
             //cast to value file
             gpio_value_file_t* valueFile = (gpio_value_file_t*) file;
             int shift = valueFile->gpio_info.shift;
             uint32_t* gpioDataOut = valueFile->data_out;
-            mos_gpio_LLD_set_value(gpioDataOut, valueFile->gpio_info.port, shift, *((int*)buffer));
+            mos_gpio_LLD_set_value(gpioDataOut, valueFile->gpio_info.port, shift, *((int*)buffer) & (1 << 0));
             break; }
         default:
             return -1;
