@@ -97,7 +97,7 @@ int mos_fs_open(const char* file_name) {
             }
             int openFileIndex = create_entry(i); //returns the file descriptor; -3 if there is no space for another file
             if (openFileIndex >= 0) {
-                drivers[files[i]->f_type]->driver_open(files[i]);
+                 drivers[files[i]->f_type]->driver_open(files[i]);
             }
             return openFileIndex;
         }

@@ -4,7 +4,8 @@
 #include "proc/mode.h"
 #include <stdio.h>
 #include "test/timer_driver_test/timerdriver_test.h"
-#include "drivers/gpio_driver/gpiodriver.h"
+#include "filesystem/filesystem.h"
+
 #define PM_PWSTCTRL_PER (volatile uint32_t*)0x483070E0
 
 void process1()
@@ -28,26 +29,20 @@ void process2()
 void main(void)
 {
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
-
-    test_timerdriver();
-
+   // test_timerdriver();
     //test_gpiodriver();
     /*Scheduler*/
-    /*    scheduler_init();
-    scheduler_initProc(process1, PROC_PRIO_MIDDLE);
-    //scheduler_initProc(process2, PROC_PRIO_MIDDLE);
-    scheduler_start();
-    // set user mode and enable interrupts
-    mode_setUserMode();
+      scheduler_init();
+     scheduler_initProc(process1, PROC_PRIO_MIDDLE);
+     //scheduler_initProc(process2, PROC_PRIO_MIDDLE);
+     scheduler_start();
+     // set user mode and enable interrupts
+     mode_setUserMode();
 
-    // idle loop
-    while (1)
-    {
-        printf("idle loop\n");
-    }
-*/
+     // idle loop
+     while (1)
+     {
+     printf("idle loop\n");
+     }
 }
-
-
-
 

@@ -90,10 +90,10 @@ static int read(void* buffer, int bufSize, generic_file_t* file)
 }
 static void add_gptimer_2();
 
-static void create_gptimerFiles(){
+static void create_gptimerFiles()
+{
     add_gptimer_2();
 }
-
 
 static void add_gptimer_2()
 {

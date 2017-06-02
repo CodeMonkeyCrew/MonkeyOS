@@ -1,11 +1,16 @@
 #include "timerdriver_test.h"
 #include "../../filesystem/filesystem.h"
 #include "../../drivers/timer_driver/timer_driver.h"
+#include "../../drivers/timer_driver/timer_interrupt.h"
 
 static void test_GPTimer2(void);
 
 void test_timerdriver(void){
     test_GPTimer2();
+}
+
+void INTERRUPT_GPTIMER2(){
+    volatile int i = 0;
 }
 
 static void test_GPTimer2(void)

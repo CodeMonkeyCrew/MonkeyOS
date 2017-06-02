@@ -16,8 +16,6 @@ static void create_gpioFiles(void);
 static void create_gpio_file_bundle(uint8_t pinNumber);
 static void create_gpio_file(uint8_t pinNumber, file_types_t filetype);
 
-
-
 static driver_t gpioDriver = { .driver_open = open, .driver_read = read,
                                .driver_write = write };
 
@@ -34,7 +32,7 @@ void gpiodriver_init(void)
 static int open(generic_file_t* file)
 {
 
-    int number;
+    volatile int number;
 
     switch (file->f_type)
     {
@@ -110,7 +108,9 @@ static void create_gpioFiles()
     create_gpio_file_bundle(135);
     create_gpio_file_bundle(136);
     create_gpio_file_bundle(145);
+    create_gpio_file_bundle(148);
     create_gpio_file_bundle(149);
+    create_gpio_file_bundle(150);
     create_gpio_file_bundle(158);
     create_gpio_file_bundle(159);
     create_gpio_file_bundle(161);
@@ -125,19 +125,22 @@ static void create_gpio_file_bundle(uint8_t pinNumber)
 static void create_gpio_file(uint8_t pinNumber, file_types_t filetype)
 {
     gpio_direction_file_t* gpioDir;
-    if (GPIO_DIR)
+    char strBuffer[12];
+    if (filetype == GPIO_DIR)
     {
         gpioDir = (gpio_direction_file_t*) mos_fs_create_file(GPIO_DIR);
         gpioDir->header.f_type = GPIO_DIR;
+        sprintf(strBuffer, "gpio%i_DIR", pinNumber);
     }
-    else if(GPIO_VAL)
+    else if (filetype == GPIO_VAL)
     {
         gpioDir = (gpio_direction_file_t*) mos_fs_create_file(GPIO_VAL);
         gpioDir->header.f_type = GPIO_VAL;
+        sprintf(strBuffer, "gpio%i_VAL", pinNumber);
     }
-    char strBuffer[12];
-    sprintf(strBuffer, "gpio%i_dir", pinNumber);
+
     strcpy(gpioDir->header.name, strBuffer);
     gpioDir->header.is_open = false;
+    gpioDir->gpio_info.number = pinNumber;
     gpioDir->header.size = 0;
 }

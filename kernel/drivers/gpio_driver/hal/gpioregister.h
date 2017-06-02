@@ -19,7 +19,6 @@
 
 #define CM_CLKSEL_PER       0x48005040
 
-
 /*----------------------------------------------------*
  *              GPIO Register                         *
  *                                                    *
@@ -117,19 +116,19 @@ static inline uint8_t GPIO_PIN_ON_REGION(pin)
     }
     else if (pin <= GPIO3_H)
     {
-        return pin -(GPIO3_H-31);
+        return pin - (GPIO3_H - 31);
     }
     else if (pin <= GPIO4_H)
     {
-        return pin -(GPIO4_H-31);
+        return pin - (GPIO4_H - 31);
     }
     else if (pin <= GPIO5_H)
     {
-        return pin -(GPIO5_H-31);
+        return pin - (GPIO5_H - 31);
     }
     else if (pin <= GPIO6_H)
     {
-        return pin -(GPIO6_H-31);
+        return pin - (GPIO6_H - 31);
     }
     return pin;
 }
@@ -146,9 +145,18 @@ static inline uint32_t PAD_CONF_ADDRESS(pin)
 {
     if (pin >= 130 && pin <= 166)
     {
-        return (PAD_CONF_BASE_PIN130_PIN166 * (pin - 130));
+        if (pin % 2)
+        {
+            return (PAD_CONF_BASE_PIN130_PIN166
+                    + ((((pin - 129) / 2) - 1) * 0x4));
+        }
+        else
+        {
+            return (PAD_CONF_BASE_PIN130_PIN166 + ((((pin - 129) / 2)) * 0x4));
+        }
     }
-    if (pin == 182){
+    if (pin == 182)
+    {
         return PAD_CONF_BASE_PIN183;
     }
     return 0;

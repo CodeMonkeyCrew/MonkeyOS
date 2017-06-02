@@ -37,7 +37,7 @@ void timer_enable_compare_mode(const uint8_t nr, const uint32_t value)
     set_bit(get_address(GPTIMER(nr), TCLR), 6); //compare enable
     set_bit(get_address(GPTIMER(nr), TIER), 0); //enable Compare (Match) Interrupt
     set_value_32(get_address(GPTIMER(nr), TMAR), value); //set value to which the timer is compared
-                                                        //compare mode enable
+                                                         //compare mode enable
 }
 
 void timer_set_interrupt_mode(const uint8_t nr, const uint8_t mode)
@@ -126,7 +126,6 @@ void timer_disable_interrupt(const uint8_t nr)
     case 11:
         break;
     }
-
 
 }
 void timer_clear_interrupt(const uint8_t nr)
