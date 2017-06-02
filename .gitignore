@@ -5,3 +5,6 @@ Release/
 .launches/
 .cproject
 .ccsproject
+.idea/
+CMakeLists.txt
+cmake-build-debug/
