@@ -1,0 +1,6 @@
+#ifndef KERNEL_TEST_DRIVERMATRIX_TEST_H_
+#define KERNEL_TEST_DRIVERMATRIX_TEST_H_
+
+void test_matrixdriver();
+
+#endif /* KERNEL_TEST_DRIVERMATRIX_TEST_H_ */

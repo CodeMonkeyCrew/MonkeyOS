@@ -1,4 +1,3 @@
-#include "../../register/cm_register.h"
 #include "uarthal.h"
 
 #define UART_NUM 4

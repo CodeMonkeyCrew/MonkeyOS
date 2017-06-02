@@ -3,26 +3,22 @@
 
 #include <inttypes.h>
 
-static inline int clear_32(uint32_t* address){
+static inline void clear_32(uint32_t* address){
     uint32_t clear_field = (0 << 31);
     *address &= clear_field;
-    return 0;
 }
 
-static inline int clear_bit(uint32_t* address, uint8_t pos){
+static inline void clear_bit(uint32_t* address, uint8_t pos){
     *address &= ~(1 << pos);
-    return 0;
 }
 
-static inline int set_bit(uint32_t* address, uint8_t pos){
+static inline void set_bit(uint32_t* address, uint8_t pos){
     *address |= (1 << pos);
-     return 0;
 }
 
-static inline uint32_t set_value_32(uint32_t* address, uint32_t value)
+static inline void set_value_32(uint32_t* address, uint32_t value)
 {
     *address = value;
-    return 0;
 }
 
 static inline uint32_t* get_address(uint32_t address, uint32_t offset){
