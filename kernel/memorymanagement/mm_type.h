@@ -18,11 +18,11 @@ typedef struct {
 
 
 typedef struct {
-    unsigned int vAddress;           // starting address of the region in virtual memory
+    unsigned int vAddress;          // starting address of the region in virtual memory
     unsigned int pageSize;          // size of a (virtual) page in this PT
     unsigned int numPages;          // number of pages in this region
     unsigned int AP;                // region access permissions
-    unsigned int CP;                // cache and write buffer attributes for the region
+    unsigned int CB;                // cache and write buffer attributes for the region
     unsigned int pAddress;          // starting address of the region in physical memory. (in the guide it says virtual but I think it's physical)
     page_table_t *PT;               // is a pointer to the page table in which the region resides.
 } region_t;
