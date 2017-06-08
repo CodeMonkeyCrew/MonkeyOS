@@ -4,12 +4,18 @@
 		.asg mos_fs_write, C_FS_WRITE
 		.asg mos_fs_read, C_FS_READ
 		.asg scheduler_fork, C_SCHEDULER_FORK
+		.asg scheduler_execv, C_SCHEDULER_EXECV
+		.asg scheduler_exitProc, C_SCHEDULER_EXITPROC
+		.asg scheduler_waitPid, C_SCHEDULER_WAITPID
     	.else
     	.asg _mos_fs_open, C_FS_OPEN
     	.asg _mos_fs_close, C_FS_CLOSE
     	.asg _mos_fs_write, C_FS_WRITE
     	.asg _mos_fs_read, C_FS_READ
     	.asg _scheduler_fork, C_SCHEDULER_FORK
+    	.asg _scheduler_execv, C_SCHEDULER_EXECV
+    	.asg _scheduler_exitProc, C_SCHEDULER_EXITPROC
+    	.asg _scheduler_waitPid, C_SCHEDULER_WAITPID
 		.endif
 
 	.global _ISR_SWI
@@ -18,6 +24,9 @@
 	.global C_FS_WRITE
 	.global C_FS_READ
 	.global C_SCHEDULER_FORK
+	.global C_SCHEDULER_EXECV
+	.global C_SCHEDULER_EXITPROC
+	.global C_SCHEDULER_WAITPID
 
 ; ACTIVESWI bit field mask to get only the bit field
 ACTIVESWI_MASK .equ 0x3F
@@ -44,9 +53,9 @@ _ISR_SWI:
 	.word C_FS_WRITE					; for SWI2
 	.word C_FS_READ         			; for SWI3
 	.word C_SCHEDULER_FORK				; for SWI4
-	.word SWIDefaultHandler				; for SWI5
-	.word SWIDefaultHandler				; for SWI6
-	.word SWIDefaultHandler				; for SWI7
+	.word C_SCHEDULER_EXECV				; for SWI5
+	.word C_SCHEDULER_EXITPROC			; for SWI6
+	.word C_SCHEDULER_WAITPID			; for SWI7
 	.word SWIDefaultHandler				; for SWI8
 	.word SWIDefaultHandler				; for SWI9
 	.word SWIDefaultHandler				; for SWI10

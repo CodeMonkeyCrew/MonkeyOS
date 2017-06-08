@@ -1,5 +1,7 @@
-#include <kernel/filesystem/filesystem.h>
+#include "filesystem.h"
 #include "filesystemregister.h"
+#include "../../apps/test/test.h"
+#include "../../apps/ps/ps.h"
 #include <stdlib.h>
 
 static int currentFileNo = 0;
@@ -9,6 +11,27 @@ static int open_files[MAX_NO_OF_OPEN_FILES];
 //size depending on number of elements in file_types_t enum in generictype.h!
 static driver_t* drivers[NO_OF_FILE_TYPES];
 
+void createExecutableFile(void){
+    exe_file_t* pExe = (exe_file_t*) mos_fs_create_file(EXE);
+          if (pExe != NULL) {
+             strcpy(pExe->header.name, "test");
+             pExe->header.is_open = false;
+             pExe->header.f_type = EXE;
+             pExe->header.size = 0;
+             pExe->entryPoint = test;
+          }
+}
+void createProcessFile(void){
+    exe_file_t* pExe = (exe_file_t*) mos_fs_create_file(EXE);
+          if (pExe != NULL) {
+             strcpy(pExe->header.name, "ps");
+             pExe->header.is_open = false;
+             pExe->header.f_type = EXE;
+             pExe->header.size = 0;
+             pExe->entryPoint = ps;
+          }
+}
+
 int mos_fs_init(void) {
     int i;
 
@@ -17,13 +40,8 @@ int mos_fs_init(void) {
         open_files[i] = -1;
     }
 
-    //init driver array
-    driver_t dummyDriver;
-    driver_t* pDummyDriver = &dummyDriver;
-    for (i = 0; i < NO_OF_FILE_TYPES; ++i) {
-        drivers[i] = pDummyDriver;
-    }
-
+    createExecutableFile();
+    createProcessFile();
     return 0;
 }
 
@@ -76,6 +94,9 @@ generic_file_t* mos_fs_create_file(file_types_t file_type) {
         case UART:
             pNewFile = (generic_file_t*)malloc(sizeof(uart_file_t));
             break;
+        case EXE:
+            pNewFile = (generic_file_t*)malloc(sizeof(exe_file_t));
+            break;
     }
     return check_if_file_is_valid(pNewFile, file_type);
 }
@@ -91,7 +112,10 @@ int mos_fs_open(const char* file_name) {
             }
             int openFileIndex = create_entry(i); //returns the file descriptor; -3 if there is no space for another file
             if (openFileIndex >= 0) {
-                drivers[files[i]->f_type]->driver_open(files[i]);
+                driver_t* driver = drivers[files[i]->f_type];
+                if(driver != NULL){
+                    driver->driver_open(files[i]);
+                }
             }
             return openFileIndex;
         }
@@ -114,7 +138,7 @@ static int create_entry(int fileIndex) {
 }
 
 int mos_fs_close(int file_descriptor) {
-    generic_file_t* pFile = get_open_file(file_descriptor);
+    generic_file_t* pFile = fs_get_open_file(file_descriptor);
     if (pFile != NULL) {
         pFile->is_open = false;
     }
@@ -122,7 +146,7 @@ int mos_fs_close(int file_descriptor) {
 }
 
 int mos_fs_read(int file_descriptor, void* buf, int buffer_size) {
-    generic_file_t* pFile = get_open_file(file_descriptor);
+    generic_file_t* pFile = fs_get_open_file(file_descriptor);
        if (pFile != NULL) {
            return drivers[pFile->f_type]->driver_read(buf, buffer_size, pFile);
        }
@@ -131,7 +155,7 @@ int mos_fs_read(int file_descriptor, void* buf, int buffer_size) {
 }
 
 int mos_fs_write(int file_descriptor, const void* buf, int buffer_size) {
-    generic_file_t* pFile = get_open_file(file_descriptor);
+    generic_file_t* pFile = fs_get_open_file(file_descriptor);
     if (pFile != NULL) {
         return drivers[pFile->f_type]->driver_write(buf, buffer_size, pFile);
     }
@@ -144,7 +168,7 @@ int register_driver(file_types_t f_type, driver_t* pDriver) {
     return 0;
 }
 
-static generic_file_t* get_open_file(int file_descriptor) {
+generic_file_t* fs_get_open_file(int file_descriptor) {
     if (file_descriptor >= 0 && file_descriptor <= MAX_NO_OF_OPEN_FILES) {
         generic_file_t* pFile = files[open_files[file_descriptor]];
         if (pFile != NULL) {

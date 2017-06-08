@@ -1,5 +1,6 @@
 	.global dispatcher_switchContext
 	.global dispatcher_saveContext
+	.global dispatcher_loadContext
 
 dispatcher_switchContext:
 	; TODO: check if there are any options other than manipulating the stack pointer
@@ -13,7 +14,7 @@ dispatcher_switchContext:
 	STR R14, [R0, #-12]				; store R14_irq, the interrupted process´s restart address
 	STMIA R0, {R2-R14}^				; store user R2-R14
 	; then load the new process´s User mode state and return to it
-	LDMIA R1!, {R12, R14}			; !!! R14 is getting 0 !!!
+	LDMIA R1!, {R12, R14}
 	MSR SPSR_fsxc, R12
 	LDMIA R1, {R0-R14}^
 	NOP
@@ -21,7 +22,7 @@ dispatcher_switchContext:
 
 dispatcher_saveContext:
 	; TODO: check if there are any options other than manipulating the stack pointer
-	ADD R1, R13, #0x08				; stack pointer correction
+	ADD R1, R13, #0x18				; stack pointer correction
 	STMFD SP!, {R4-R12, R14}		; push the Registers R4-R12 and R14 to the Stack
 	; first store the old process´s User mode state to the PCB pointed to by R0
 	MRS R12, SPSR					; get CPSR of interrupted process
@@ -34,3 +35,9 @@ dispatcher_saveContext:
 	LDMFD SP!, {R4-R12, R14}
 	MOV PC, R14
 
+dispatcher_loadContext:
+	LDMIA R0!, {R12, R14}
+	MSR SPSR_fsxc, R12
+	LDMIA R0, {R0-R14}^
+	NOP
+	MOVS PC, R14

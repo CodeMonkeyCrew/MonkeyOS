@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "console.h"
-char monkey[] =
+#define BUFFSIZE 50
+static char readBuff[BUFFSIZE];
+static char monkey[] =
         "                 __,__\r\n"
                 "        .--.  .-\"     \"-.  .--.\r\n"
                 "       / .. \\/  .-. .-.  \\/ .. \\\r\n"
@@ -38,97 +40,41 @@ char monkey[] =
                 "|_____||_____|'.__.' [___||__][__|  \\_]'.__.'[\\_:  /   `.___.'  \\______.' \r\n"
                 "                                              \\__.'                       \r\n";
 
-char writeSign[1] = ">";
-char** split(char* buffer, int bufferSize)
-{
-    char *result[2];
-    char first[10];
+static char writeSign[1] = ">";
 
-    int i;
-    for (i = 0; i < bufferSize; i++)
-    {
-        if (buffer[i] != ' ' && buffer[i] != '\0' && buffer[i] != '\n'
-                && buffer[i] != '\r')
-        {
-            first[i] = buffer[i];
-        }
-        else
-        {
-            break;
-        }
-    }
-    first[i] = '\0';
-    result[0] = first;
-    i++;
-    int k;
-    char second[10];
-    for (k = i; k < bufferSize; k++)
-    {
-        if (buffer[k] != ' ' && buffer[k] != '\0' && buffer[k] != '\n'
-                && buffer[k] != '\r')
-        {
-            second[k] = buffer[k];
-        }
-        else
-        {
-            break;
-        }
-    }
-    second[i] = '\0';
-    result[1] = second;
-    return result;
-}
 void intepretMessage(char* buffer, int bufferSize, int uart_fd)
 {
-    char first[10];
-    int i;
+    char* delimiter = " \n\r\t\0";
+    char* executableName = strtok(buffer, delimiter);
+    char* param1 = strtok(NULL, delimiter);
+    char* param2 = strtok(NULL, delimiter);
+    char* argv[1];
+    argv[0] = param1;
+    // argv[1] = param2;
 
-    for (i = 0; i < bufferSize; i++)
+    // int pid = 0;
+    int pid = fork();
+    if (pid == 0)
     {
-        if (buffer[i] != ' ' && buffer[i] != '\0' && buffer[i] != '\n'
-                && buffer[i] != '\r')
-        {
-            first[i] = buffer[i];
-        }
-        else
-        {
-            break;
-        }
-    }
-    first[i] = '\0';
-    if (strcmp(first, "execute") == 0)
-    {
-        int pid = fork();
-        if (pid == 0)
-        {
-            printf("child process\n");
-            //we are the child process
-            //change its behavior-> call: int execve(const char *filename, char *const argv[], char *const envp[]);
-            //may change signature to: int execve(const char *filename, char *const argv[], int argc);
-            //execve(secondWord, thirdWord, 1);
-        }
-        else if (pid > 0)
-        {
-            //we are parent process. what to do??
-            printf("parent process. New child process has pid: %i\n", pid);
-        }
-        else
-        {
+        //printf("child process\n");
+        //we are the child process
+        int fd = execv(executableName, argv);
 
-            //error occurred!
-        }
-    }
-    else if (strcmp(first, "pc") == 0)
-    {
-        //do show all processes
-        printf("Show all processes\n");
-    }
-    else
-    {
+        //should not come here, only if executable file not existing
         char* notFound = "command not found\n\r";
         write(uart_fd, notFound, strlen(notFound));
         printf(notFound);
+        exitProc(0);
+
     }
+    else if (pid > 0)
+    {
+        //we are parent process. what to do??
+        // printf("parent process. New child process has pid: %i\n", pid);
+        waitPid(pid);
+
+    }
+
     write(uart_fd, writeSign, 1);
 
 }
@@ -139,13 +85,15 @@ void console_run(void)
 
     write(uart_fd, monkey, strlen(monkey));
     write(uart_fd, writeSign, 1);
-    int buffSize = 50;
-    char readBuff[50];
+    int i;
     while (1)
     {
-        read(uart_fd, readBuff, buffSize);
-        intepretMessage(readBuff, buffSize, uart_fd);
-        readBuff[0] = '\0';
+        i = read(uart_fd, readBuff, BUFFSIZE);
+        if (i >= 0)
+        {
+            intepretMessage(readBuff, BUFFSIZE, uart_fd);
+            readBuff[0] = '\0';
+        }
     }
 }
 

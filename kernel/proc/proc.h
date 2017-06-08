@@ -42,16 +42,18 @@ typedef struct
     uint32_t lr;
 } ProcContext_t;
 
-typedef void (*ProcEntryPoint_t)(void);
+typedef void (*ProcEntryPoint_t)();
 
 typedef struct
 {
     uint8_t pid;
     uint8_t parentPid;
+    uint8_t waitForPid;
     Priority_t priority;
     ProcState_t state;
     ProcContext_t context;
     ProcEntryPoint_t entryPoint;
 } PCB_t;
 
+int proc_execve(char* filename, char* argv[]);
 #endif

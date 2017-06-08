@@ -85,27 +85,33 @@ int uarthal_receive(char* buffer, int bufferSize, int uartNumber)
     UART_T uart = uarts[uartNumber];
     int end = 0;
     int i;
-    for (i = 0; ((i < bufferSize - 1) && (!end)); i++)
+    if ((*uart.LSR & (1 << 0)))
     {
-        while (!(*uart.LSR & (1 << 0)))
+        for (i = 0; ((i < bufferSize - 1) && (!end)); i++)
         {
-            //wait until there is something to read
-        }
+            /* while (!(*uart.LSR & (1 << 0)))
+             {
+             //wait until there is something to read
+             }*/
 
-        buffer[i] = *uart.RHR;
-        if (buffer[i] == '\n' || buffer[i] == '\r')
-        {
-            end = 1;
+            buffer[i] = *uart.RHR;
+            if (buffer[i] == '\n' || buffer[i] == '\r')
+            {
+                end = 1;
 
+            }
         }
+        buffer[i] = '\0';
+
+        printf(buffer);
+        printf("\n");
+        return i;
 
     }
-
-    buffer[i] = '\0';
-
-    printf(buffer);
-    printf("\n");
-    return i;
+    else
+    {
+        return -1;
+    }
 
 }
 

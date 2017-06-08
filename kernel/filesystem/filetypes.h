@@ -1,3 +1,4 @@
+/*
 #ifndef KERNEL_FILESYSTEM_FILETYPES_H_
 #define KERNEL_FILESYSTEM_FILETYPES_H_
 #include <inttypes.h>
@@ -42,4 +43,5 @@ typedef struct{
 
 }timer_info_t;
 
-#endif /* KERNEL_FILESYSTEM_FILETYPES_H_ */
+#endif  KERNEL_FILESYSTEM_FILETYPES_H_
+*/

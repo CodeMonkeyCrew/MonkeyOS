@@ -2,7 +2,9 @@
 #include "proc.h"
 #include "dispatcher.h"
 #include "scheduler_timer.h"
+#include "../filesystem/filesystem.h"
 #include <inttypes.h>
+#include <stdio.h>
 
 #define MAX_PROC_COUNT 16
 
@@ -136,7 +138,7 @@ int scheduler_initProc(ProcEntryPoint_t entryPoint, Priority_t priority)
         procs[pid].context.cpsr = 0x10;
         procs[pid].context.restartAddress = (uint32_t) entryPoint;
         // TODO: set proper stack pointer
-        procs[pid].context.sp = 0x90000000 - ((pid - 1) * 0xFF);
+        procs[pid].context.sp = 0x90000000 - ((pid - 1) * 0x100);
         procs[pid].priority = priority;
         return pid;
         //write argc in context.R0 and argv in context.R1 (oder anders rum)
@@ -156,8 +158,63 @@ int scheduler_fork(void)
 
         procs[pid].state = PROC_STATE_READY;
         procs[pid].context.r0 = 0;
+        //TODO: refactor this when MMU stuff done!
+        uint32_t stackStartParent = 0x90000000 - ((runningPid - 1) * 0x100);
+        uint32_t stackStartChild = 0x90000000 - ((pid - 1) * 0x100);
+        uint32_t stackSize = stackStartParent - procs[runningPid].context.sp;
+        procs[pid].context.sp = stackStartChild - stackSize;
+        memcpy((uint32_t*) procs[pid].context.sp,
+               (uint32_t*) procs[runningPid].context.sp, stackSize);
         procs[pid].parentPid = runningPid;
     }
     return pid;
 }
+
+int scheduler_execv(const char *filename, char * const argv[])
+{
+    int fd = mos_fs_open(filename);
+    if (fd >= 0)
+    {
+        generic_file_t* file = fs_get_open_file(fd);
+        exe_file_t* exeFile = (exe_file_t*) file;
+        procs[runningPid].context.restartAddress =
+                (uint32_t) exeFile->entryPoint;
+        procs[runningPid].context.r0 = (uint32_t) argv;
+        dispatcher_loadContext(&procs[runningPid].context);
+    }
+    return fd;
+}
+
+void scheduler_exitProc(int status)
+{
+    procs[runningPid].state = PROC_STATE_EXIT;
+    if (procs[procs[runningPid].parentPid].waitForPid == runningPid)
+    {
+        procs[procs[runningPid].parentPid].state = PROC_STATE_READY;
+        procs[procs[runningPid].parentPid].waitForPid = 0;
+    }
+    int interruptedPid = scheduler_runNextProc();
+    if (interruptedPid >= 0)
+    {
+        dispatcher_loadContext(&procs[runningPid].context);
+    }
+}
+
+void scheduler_waitPid(int pid)
+{
+    if(procs[pid].state == PROC_STATE_EXIT){
+        procs[pid].state = PROC_STATE_INVALID;
+        return;
+    }
+    procs[runningPid].waitForPid = pid;
+    procs[runningPid].state = PROC_STATE_BLOCKED;
+    int interruptedPid = scheduler_runNextProc();
+    if (interruptedPid >= 0)
+    {
+        dispatcher_saveContext(&procs[interruptedPid].context);
+        dispatcher_loadContext(&procs[runningPid].context);
+
+    }
+}
+
 

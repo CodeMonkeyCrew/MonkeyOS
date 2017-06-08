@@ -1,7 +1,7 @@
 #include "proc/proc.h"
 #include "proc/scheduler.h"
 #include "proc/mode.h"
-#include "Apps/Console/console.h"
+#include "apps/console/console.h"
 #include "kernel/drivers/gpio_driver/gpiodriver.h"
 #include "kernel/drivers/uart/uartdriver.h"
 #include "kernel/drivers/timer_driver/timer_driver.h"
@@ -52,8 +52,11 @@ void main(void)
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
     /*Blink LED*/
+
+
     mos_fs_init();
     uartdriver_init();
+    scheduler_init();
   //  mos_gpio_driver_init();
 
    // dir_fd = mos_fs_open("gpio149_dir");
@@ -61,7 +64,6 @@ void main(void)
    // mos_fs_write(dir_fd, pVal_1, 1);
 
     /*Scheduler*/
-    scheduler_init();
    // scheduler_initProc(process1, PROC_PRIO_MIDDLE);
    // scheduler_initProc(process2, PROC_PRIO_MIDDLE);
     scheduler_initProc(console, PROC_PRIO_MIDDLE);

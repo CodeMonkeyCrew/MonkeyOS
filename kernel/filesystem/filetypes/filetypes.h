@@ -4,5 +4,6 @@
 #include "gpiotypes.h"
 #include "timertypes.h"
 #include "uarttype.h"
+#include "exetype.h"
 
 #endif /* KERNEL_FILESYSTEM_FILETYPES_H_ */

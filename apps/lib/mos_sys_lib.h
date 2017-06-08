@@ -45,6 +45,7 @@ int write(int fd, const void *buf, int count);
  */
 #pragma SWI_ALIAS(read, 3)
 int read(int file_descriptor, void* buf, int buffer_size);
+
 /**
  * fork() duplicates a Process an saves its Context. The new Child-Process is set to ready.
  * returns:
@@ -53,4 +54,17 @@ int read(int file_descriptor, void* buf, int buffer_size);
  */
 #pragma SWI_ALIAS(fork, 4)
 int fork(void);
+
+/**
+ * execve() changes the context of an existing Process to a function defined in a file.
+ */
+#pragma SWI_ALIAS(execv, 5)
+int execv(const char *filename, char *const argv[]);
+
+#pragma SWI_ALIAS(exitProc, 6)
+void exitProc(int status);
+
+#pragma SWI_ALIAS(waitPid, 7)
+void waitPid(int pid);
+
 #endif
