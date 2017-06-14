@@ -2,6 +2,7 @@
 #include <string.h>
 #include "console.h"
 #define BUFFSIZE 50
+static FILE* stdoutFile;
 static char readBuff[BUFFSIZE];
 static char monkey[] =
         "                 __,__\r\n"
@@ -60,7 +61,7 @@ void intepretMessage(char* buffer, int bufferSize, int uart_fd)
         //we are the child process
         int fd = execv(executableName, argv);
 
-        //should not come here, only if executable file not existing
+        //if your reach this code, executable file is not existing
         char* notFound = "command not found\n\r";
         write(uart_fd, notFound, strlen(notFound));
         printf(notFound);
@@ -81,7 +82,9 @@ void intepretMessage(char* buffer, int bufferSize, int uart_fd)
 void console_run(void)
 {
     //main function
+    close(1);
     int uart_fd = open("uart3");
+   // stdoutFile->fd = (int) &stdoutBuffer;
 
     write(uart_fd, monkey, strlen(monkey));
     write(uart_fd, writeSign, 1);

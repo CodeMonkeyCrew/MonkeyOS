@@ -67,4 +67,6 @@ void exitProc(int status);
 #pragma SWI_ALIAS(waitPid, 7)
 void waitPid(int pid);
 
+#pragma SWI_ALIAS(getProcs, 8)
+void getProcs(char* procStrings, int size);
 #endif

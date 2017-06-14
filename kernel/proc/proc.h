@@ -55,5 +55,5 @@ typedef struct
     ProcEntryPoint_t entryPoint;
 } PCB_t;
 
-int proc_execve(char* filename, char* argv[]);
+char* proc_stateName(ProcState_t state);
 #endif

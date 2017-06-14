@@ -7,6 +7,7 @@
 		.asg scheduler_execv, C_SCHEDULER_EXECV
 		.asg scheduler_exitProc, C_SCHEDULER_EXITPROC
 		.asg scheduler_waitPid, C_SCHEDULER_WAITPID
+		.asg scheduler_getProcs, C_SCHEDULER_GETPROCS
     	.else
     	.asg _mos_fs_open, C_FS_OPEN
     	.asg _mos_fs_close, C_FS_CLOSE
@@ -16,6 +17,7 @@
     	.asg _scheduler_execv, C_SCHEDULER_EXECV
     	.asg _scheduler_exitProc, C_SCHEDULER_EXITPROC
     	.asg _scheduler_waitPid, C_SCHEDULER_WAITPID
+    	.asg _scheduler_getProcs, C_SCHEDULER_GETPROCS
 		.endif
 
 	.global _ISR_SWI
@@ -27,6 +29,7 @@
 	.global C_SCHEDULER_EXECV
 	.global C_SCHEDULER_EXITPROC
 	.global C_SCHEDULER_WAITPID
+	.global C_SCHEDULER_GETPROCS
 
 ; ACTIVESWI bit field mask to get only the bit field
 ACTIVESWI_MASK .equ 0x3F
@@ -56,7 +59,7 @@ _ISR_SWI:
 	.word C_SCHEDULER_EXECV				; for SWI5
 	.word C_SCHEDULER_EXITPROC			; for SWI6
 	.word C_SCHEDULER_WAITPID			; for SWI7
-	.word SWIDefaultHandler				; for SWI8
+	.word C_SCHEDULER_GETPROCS			; for SWI8
 	.word SWIDefaultHandler				; for SWI9
 	.word SWIDefaultHandler				; for SWI10
 	.word SWIDefaultHandler				; for SWI11

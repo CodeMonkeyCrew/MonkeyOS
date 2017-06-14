@@ -153,7 +153,7 @@ int scheduler_fork(void)
     int pid = scheduler_getFreeProcSlot();
     if (pid >= 0)
     {
-        dispatcher_saveContext(&procs[runningPid].context);
+        dispatcher_saveContextFork(&procs[runningPid].context);
         memcpy(&procs[pid], &procs[runningPid], sizeof(PCB_t));
 
         procs[pid].state = PROC_STATE_READY;
@@ -166,6 +166,7 @@ int scheduler_fork(void)
         memcpy((uint32_t*) procs[pid].context.sp,
                (uint32_t*) procs[runningPid].context.sp, stackSize);
         procs[pid].parentPid = runningPid;
+        procs[pid].pid = pid;
     }
     return pid;
 }
@@ -180,6 +181,7 @@ int scheduler_execv(const char *filename, char * const argv[])
         procs[runningPid].context.restartAddress =
                 (uint32_t) exeFile->entryPoint;
         procs[runningPid].context.r0 = (uint32_t) argv;
+        mos_fs_close(fd);
         dispatcher_loadContext(&procs[runningPid].context);
     }
     return fd;
@@ -187,11 +189,13 @@ int scheduler_execv(const char *filename, char * const argv[])
 
 void scheduler_exitProc(int status)
 {
-    procs[runningPid].state = PROC_STATE_EXIT;
     if (procs[procs[runningPid].parentPid].waitForPid == runningPid)
     {
-        procs[procs[runningPid].parentPid].state = PROC_STATE_READY;
+        procs[runningPid].state = PROC_STATE_INVALID;
         procs[procs[runningPid].parentPid].waitForPid = 0;
+        procs[procs[runningPid].parentPid].state = PROC_STATE_READY;
+    }else{
+        procs[runningPid].state = PROC_STATE_EXIT;
     }
     int interruptedPid = scheduler_runNextProc();
     if (interruptedPid >= 0)
@@ -211,9 +215,22 @@ void scheduler_waitPid(int pid)
     int interruptedPid = scheduler_runNextProc();
     if (interruptedPid >= 0)
     {
-        dispatcher_saveContext(&procs[interruptedPid].context);
+        dispatcher_saveContextWaitPid(&procs[interruptedPid].context);
         dispatcher_loadContext(&procs[runningPid].context);
 
+    }
+}
+
+void scheduler_getProcs(char* procStrings, int size){
+    int i;
+    char* str = "pid: %i\t->\tstate: %s\r\n";
+    int remainingSize = size;
+    int curPos = 0;
+    for(i = 0; i < MAX_PROC_COUNT; i++){
+      remainingSize = size - curPos;
+      if (remainingSize > 0) {
+          curPos += sprintf(procStrings + curPos, "pid: %i\t->\tstate: %s\r\n",  procs[i].pid, proc_stateName(procs[i].state), remainingSize);
+      }
     }
 }
 
