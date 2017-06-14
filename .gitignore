@@ -6,3 +6,4 @@ Release/
 .cproject
 .ccsproject
 /Debug__GNU/
+.idea/

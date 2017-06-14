@@ -2,16 +2,16 @@
 
 // NA = no access, RO = read only, RW = read/write
 //First part is system, second part is user access permissions
-#define NANA 0x00
-#define RWNA 0x01
-#define RWRO 0x02
-#define RWRW 0x03
+#define NANA 0x0
+#define RWNA 0x1
+#define RWRO 0x2
+#define RWRW 0x3
 
 //#if defined(__TARGET_CPU_ARM720T)
-    #define cb 0x0
-    #define cB 0x1
-    #define Cb 0x2
-    #define WT 0x3
+#define cb 0x0
+#define cB 0x1
+#define Cb 0x2
+#define WT 0x3
 //#endif
 /* cb = not cached/not buffered
  * cB = not Cached/Buffered
@@ -97,12 +97,16 @@ int mmu_init(void) {
     peripheralRegion.CB = cb;
     peripheralRegion.pAddress = 0x40000000;
     peripheralRegion.PT = &rootPT;
-
+    //Boot Region page status fehlt
+    //->0x40000000
     bootRegion.vAddress = 0x00000000;
     bootRegion.pageSize = 1024;
     bootRegion.numPages = 1024;
+    //-> RWRW
     bootRegion.AP = RWNA;
+    // -> WT
     bootRegion.CB = cb;
+    // -> 0x40000000
     bootRegion.pAddress = 0x00000000;
     bootRegion.PT = &rootPT;
 
