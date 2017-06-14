@@ -5,5 +5,7 @@
 #include "timertypes.h"
 #include "matrixtype.h"
 #include "uarttype.h"
+#include "exetype.h"
+#include "stdtype.h"
 
 #endif /* KERNEL_FILESYSTEM_FILETYPES_H_ */
