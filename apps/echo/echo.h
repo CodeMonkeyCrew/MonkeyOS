@@ -1,7 +1,7 @@
-#ifndef APPS_TEST_TEST_H_
-#define APPS_TEST_TEST_H_
+#ifndef APPS_ECHO_ECHO_H_
+#define APPS_ECHO_ECHO_H_
 
 
-void test(char* text[]);
+void echo(char* text[]);
 
-#endif /* APPS_TEST_TEST_H_ */
+#endif /* APPS_ECHO_ECHO_H_ */

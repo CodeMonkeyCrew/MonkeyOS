@@ -1,6 +1,6 @@
+#include <apps/echo/echo.h>
 #include "filesystem.h"
 #include "filesystemregister.h"
-#include "../../apps/test/test.h"
 #include "../../apps/ps/ps.h"
 #include <stdlib.h>
 
@@ -16,11 +16,11 @@ void createExecutableFile(void)
     exe_file_t* pExe = (exe_file_t*) mos_fs_create_file(EXE);
     if (pExe != NULL)
     {
-        strcpy(pExe->header.name, "test");
+        strcpy(pExe->header.name, "echo");
         pExe->header.is_open = false;
         pExe->header.f_type = EXE;
         pExe->header.size = 0;
-        pExe->entryPoint = test;
+        pExe->entryPoint = echo;
     }
 }
 void createProcessFile(void)

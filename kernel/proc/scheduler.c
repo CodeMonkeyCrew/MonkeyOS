@@ -224,12 +224,18 @@ void scheduler_waitPid(int pid)
 void scheduler_getProcs(char* procStrings, int size){
     int i;
     char* str = "pid: %i\t->\tstate: %s\r\n";
+    int strSize = 0;
     int remainingSize = size;
     int curPos = 0;
     for(i = 0; i < MAX_PROC_COUNT; i++){
       remainingSize = size - curPos;
       if (remainingSize > 0) {
-          curPos += sprintf(procStrings + curPos, "pid: %i\t->\tstate: %s\r\n",  procs[i].pid, proc_stateName(procs[i].state), remainingSize);
+          strSize = snprintf(NULL, 0, str, procs[i].pid, proc_stateName(procs[i].state));
+          if (strSize < remainingSize) {
+              if (sprintf(procStrings + curPos, str,  procs[i].pid, proc_stateName(procs[i].state)) > 0) {
+                  curPos += strSize;
+              }
+          }
       }
     }
 }

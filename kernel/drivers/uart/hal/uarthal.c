@@ -102,9 +102,6 @@ int uarthal_receive(char* buffer, int bufferSize, int uartNumber)
             }
         }
         buffer[i] = '\0';
-
-        printf(buffer);
-        printf("\n");
         return i;
 
     }

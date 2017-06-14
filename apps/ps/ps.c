@@ -8,14 +8,7 @@ static char procs[SIZE];
 void ps(void)
 {
 
-    printf("show all processes\n");
-
     getProcs(procs, SIZE);
-
-  //  FILE* pstdout = stdout;
-   // stdout->buf = "hello\n";
-    //*stdout->buf = 'h';
-    printf("%s\n", procs);
     print(procs);
 
     exitProc(0);

@@ -2,7 +2,6 @@
 #include <string.h>
 #include "console.h"
 #define BUFFSIZE 50
-static FILE* stdoutFile;
 static char readBuff[BUFFSIZE];
 static char monkey[] =
         "                 __,__\r\n"
@@ -53,25 +52,21 @@ void intepretMessage(char* buffer, int bufferSize, int uart_fd)
     argv[0] = param1;
     // argv[1] = param2;
 
-    // int pid = 0;
     int pid = fork();
     if (pid == 0)
     {
-        //printf("child process\n");
         //we are the child process
         int fd = execv(executableName, argv);
 
         //if your reach this code, executable file is not existing
         char* notFound = "command not found\n\r";
         write(uart_fd, notFound, strlen(notFound));
-        printf(notFound);
         exitProc(0);
 
     }
     else if (pid > 0)
     {
-        //we are parent process. what to do??
-        // printf("parent process. New child process has pid: %i\n", pid);
+        //we are parent process
         waitPid(pid);
 
     }
@@ -84,7 +79,6 @@ void console_run(void)
     //main function
     close(1);
     int uart_fd = open("uart3");
-   // stdoutFile->fd = (int) &stdoutBuffer;
 
     write(uart_fd, monkey, strlen(monkey));
     write(uart_fd, writeSign, 1);

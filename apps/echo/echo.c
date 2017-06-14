@@ -1,11 +1,13 @@
-#include "test.h"
+#include <apps/echo/echo.h>
 #include <stdio.h>
 #include "../lib/mos_sys_lib.h"
-void test(char* text[])
+#include "../lib/mos_std_lib.h"
+
+void echo(char* text[])
 {
 
-    printf(text[0]);
-    printf("\n");
+    print(text[0]);
+    print("\r\n");
 
     exitProc(0);
 }
