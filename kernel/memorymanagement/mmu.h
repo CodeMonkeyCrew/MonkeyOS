@@ -3,7 +3,6 @@
 
 #include "mm_type.h"
 
-#define ROOT_PT_V_ADDRESS 0x80090000
 
 //page tables
 static page_table_t rootPT;
@@ -17,6 +16,8 @@ static page_table_t task1PT;
 static region_t kernelRegion;
 static region_t sharedRegion;
 static region_t PTRegion;
+static region_t peripheralRegion;
+static region_t bootRegion;
 
 
 /*
@@ -56,5 +57,41 @@ int mmuMapCoarseTableRegion(region_t *region);
  */
 int mmuAttachPT (page_table_t *pPT);
 
+/*
+ * sets the access bits of all domains
+int setDomainAccess(unsigned int value, unsigned int mask);
+*/
+
+/*
+ * sets control bits of the mmu
+
+int setMMURegister(unsigned int value, unsigned int mask);
+*/
+
+/*
+ * assembler function to set the root pagetable
+ */
+void set_root_pt_register(unsigned int* pRootPT);
+
+
+/*
+ * assembler function to set the access permission to all domains
+ */
+void set_domain(void);
+
+/*
+ * assembler function set intvects base address for mmu
+ */
+void set_intvecs_base_address(unsigned int* pIntvecsBaseAddress);
+
+/*
+ * assembler function that clears instruction and data TLB. If not clears there may be overlapping virtual addresses
+ */
+void clear_tlb(void);
+
+/*
+ * assembler function that sets enabled data and instruction cache, enables alignment checking and enables mmu
+ */
+void set_mmu_config_register_and_enable_mmu(void);
 
 #endif /* KERNEL_MEMORYMANAGEMENT_MMU_H_ */

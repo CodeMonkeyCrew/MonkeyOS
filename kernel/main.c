@@ -9,6 +9,7 @@
 #include <kernel/drivers/timer_driver/hal/timer_hal.h>
 #include <kernel/drivers/util/registerutil.h>
 #include <kernel/filesystem/filesystem.h>
+#include "kernel/memorymanagement/mmu.h"
 #include <stdio.h>
 
 #define PM_PWSTCTRL_PER (volatile uint32_t*)0x483070E0
@@ -80,6 +81,7 @@ void process2()
 
 void main(void)
 {
+    mmu_init();
 
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 

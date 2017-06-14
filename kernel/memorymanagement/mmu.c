@@ -1,7 +1,36 @@
 #include "mmu.h"
 
+// NA = no access, RO = read only, RW = read/write
+//First part is system, second part is user access permissions
+#define NANA 0x00
+#define RWNA 0x01
+#define RWRO 0x02
+#define RWRW 0x03
 
-int init(void) {
+//#if defined(__TARGET_CPU_ARM720T)
+    #define cb 0x0
+    #define cB 0x1
+    #define Cb 0x2
+    #define WT 0x3
+//#endif
+/* cb = not cached/not buffered
+ * cB = not Cached/Buffered
+ * Cb = Cached/not Buffered
+ * WT = write through cache
+ */
+
+#define DOMAIN3 0x00000040
+#define CHANGEALLREGIONS 0xFFFFFFFF
+
+#define ENABLEMMU 1
+#define ENABLEALIGNING 2
+#define ENABLEDCACHE 3
+#define ENABLEICACHE 12
+
+#define ROOT_PT_V_ADDRESS 0x80090000
+#define INTVECS_BASE_ADDRESS 0x4020FFC0
+
+int mmu_init(void) {
 
     //defining page tables
 
@@ -12,7 +41,7 @@ int init(void) {
     rootPT.ptAddress = ROOT_PT_V_ADDRESS;
     rootPT.rootPTAddress = ROOT_PT_V_ADDRESS;
     rootPT.type = ROOT;
-    rootPT.domain = 3; //reread what domain does...
+    rootPT.domain = 3;
 
     //coarse page table size: 1 kB
     //up to 256 entries, each covering a 4 kB memory
@@ -38,8 +67,8 @@ int init(void) {
     kernelRegion.vAddress = 0x8000000;
     kernelRegion.pageSize = 4;
     kernelRegion.numPages = 128;
-    kernelRegion.AP;
-    kernelRegion.CB;
+    kernelRegion.AP = RWNA;
+    kernelRegion.CB = WT;
     kernelRegion.pAddress = 0x8000000;
     kernelRegion.PT = &systemPT;
 
@@ -47,8 +76,8 @@ int init(void) {
     sharedRegion.vAddress = 0x80080000;
     sharedRegion.pageSize = 4;
     sharedRegion.numPages = 16;
-    sharedRegion.AP;
-    sharedRegion.CB;
+    sharedRegion.AP = RWRW;
+    sharedRegion.CB = WT;
     sharedRegion.pAddress = 0x80080000;
     sharedRegion.PT = &systemPT;
 
@@ -56,11 +85,26 @@ int init(void) {
     PTRegion.vAddress = ROOT_PT_V_ADDRESS;
     PTRegion.pageSize = 4;
     PTRegion.numPages = 8;
-    PTRegion.AP;
-    PTRegion.CB;
+    PTRegion.AP = RWNA;
+    PTRegion.CB = WT;
     PTRegion.pAddress = ROOT_PT_V_ADDRESS;
     PTRegion.PT = &systemPT;
 
+    peripheralRegion.vAddress = 0x40000000;
+    peripheralRegion.pageSize = 1024;
+    peripheralRegion.numPages = 1024;
+    peripheralRegion.AP = RWRW;
+    peripheralRegion.CB = cb;
+    peripheralRegion.pAddress = 0x40000000;
+    peripheralRegion.PT = &rootPT;
+
+    bootRegion.vAddress = 0x00000000;
+    bootRegion.pageSize = 1024;
+    bootRegion.numPages = 1024;
+    bootRegion.AP = RWNA;
+    bootRegion.CB = cb;
+    bootRegion.pAddress = 0x00000000;
+    bootRegion.PT = &rootPT;
 
     //init page tables
     if (!mmuInitPT(&rootPT) ||
@@ -70,9 +114,11 @@ int init(void) {
     }
 
     //map fixed regions
-    if (!mmuMapRegion(&kernelRegion) ||
-        !mmuMapRegion(&sharedRegion) ||
-        !mmuMapRegion(&PTRegion))
+    if (!mmuMapRegion(&kernelRegion)     ||
+        !mmuMapRegion(&sharedRegion)     ||
+        !mmuMapRegion(&PTRegion)         ||
+        !mmuMapRegion(&peripheralRegion) ||
+        !mmuMapRegion(&bootRegion))
     {
         return -1;
     }
@@ -83,7 +129,25 @@ int init(void) {
     //attach PTs for tasks...
 
 
+    //set all domains to 3 which means they all have equal domain access
+    //active access permissions are set in regions and thus in pages
+    //setDomainAccess(DOMAIN3, CHANGEALLREGIONS);
+    set_domain();
 
+
+    //set mmu control register
+/*  unsigned int enable = 0x0;
+    enable |= (1 << ENABLEMMU);
+    enable |= (1 << ENABLEALIGNING);
+    enable |= (1 << ENABLEDCACHE);
+    enable |= (1 << ENABLEICACHE);
+
+    //enable = ENABLEMMU | ENABLEALIGNING | ENABLEDCACHE | ENABLEICACHE;
+    setMMURegister(enable, enable);
+*/
+    set_intvecs_base_address((unsigned int *)INTVECS_BASE_ADDRESS);
+    clear_tlb();
+    set_mmu_config_register_and_enable_mmu();
     return 1;
 }
 
@@ -167,7 +231,7 @@ int mmuMapCoarseTableRegion(region_t *region) {
 
     int i;
     for (i = 0; i < region->numPages; ++i) {
-        *pPTE = PTEntryValue + (i << 12);
+        *pPTE = PTEntryValue + (i << 12);                    // i as index, always +4 kB
         ++pPTE;
     }
     return 1;
@@ -175,13 +239,22 @@ int mmuMapCoarseTableRegion(region_t *region) {
 
 
 int mmuAttachPT (page_table_t *pPT) {
+
     unsigned int* pTTB = (unsigned int*) pPT->rootPTAddress;    // get root PT baseaddress
     unsigned int offset;
     unsigned int PTE;
 
     switch (pPT->type) {
         case ROOT:
-            __asm( "MCR p15, 0, pTTB, c2, c0, 0" );        // write root PT baseaddress to the register so the MMU knows where it lies
+            //code from book that doesn't quite work:
+            //__asm(" MCR p15, 0, pTTB, c2, c0, 0 ") ;
+            //source: http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.faqs/ka11865.html
+            //register unsigned int mmuTTBRegister __asm("p15:#0:c2:c0:#0");      // write root PT baseaddress to the register so the MMU knows where it lies
+            //mmuTTBRegister &= ~mmuTTBRegister; //clear bits
+            //mmuTTBRegister |= pTTB;
+
+            set_root_pt_register(pTTB);
+
             break;
         case COARSE:
             offset = (pPT->vAddress) >> 20;             // find the offset in which this coarse PT resides
@@ -197,12 +270,30 @@ int mmuAttachPT (page_table_t *pPT) {
     return 1;
 }
 
+/*
+int setDomainAccess(unsigned int value, unsigned int mask) {
+    register unsigned int domainRegister;
+
+    asm("   MRC p15, #0, r0, c3, c0, #0");          //read the register
+    domainRegister &= ~mask;                        //clear bits that change
+    domainRegister |= value;                        //set bits that change
+    asm("   MCR p15, #0, r0, c3, c0, #0");          //set domain register
+
+    return 1;
+}
 
 
+int setMMURegister(unsigned int value, unsigned int mask) {
+    register unsigned int mmuControlRegister;
 
+    //asm("   MRC p15, #0, mmuControlRegister, c1, c0, #0");        //read the register
+    //mmuControlRegister &= ~mask;                                    //clear bits that change
+    //mmuControlRegister |= value;                                    //set bits that change
+    //asm("   MCR p15, #0, mmuControlRegister, c1, c0, #0");        //set mmu control register
 
-
-
+    return 1;
+}
+*/
 
 
 
