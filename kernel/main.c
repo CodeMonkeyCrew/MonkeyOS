@@ -1,54 +1,19 @@
-#include <inttypes.h>
 #include "proc/proc.h"
 #include "proc/scheduler.h"
 #include "proc/mode.h"
-#include <kernel/drivers/gpio_driver/gpiodriver.h>
-#include <kernel/drivers/uart/uartdriver.h>
-#include <kernel/drivers/timer_driver/timer_driver.h>
-#include <kernel/drivers/register/intcps_register.h>
-#include <kernel/drivers/timer_driver/hal/timer_hal.h>
-#include <kernel/drivers/util/registerutil.h>
-#include <kernel/filesystem/filesystem.h>
+#include "apps/console/console.h"
+#include "kernel/drivers/gpio_driver/gpiodriver.h"
+#include "kernel/drivers/uart/uartdriver.h"
+#include "kernel/drivers/timer_driver/timer_driver.h"
+#include "kernel/drivers/timer_driver/hal/timer_hal.h"
+#include "kernel/drivers/util/registerutil.h"
+#include "kernel/filesystem/filesystem.h"
+#include "test/gpio_driver_test/gpiodriver_test.h"
+#include <inttypes.h>
 #include "kernel/memorymanagement/mmu.h"
 #include <stdio.h>
 
 #define PM_PWSTCTRL_PER (volatile uint32_t*)0x483070E0
-
-    char monkey[] = "                 __,__\r\n"
-            "        .--.  .-\"     \"-.  .--.\r\n"
-            "       / .. \\/  .-. .-.  \\/ .. \\\r\n"
-            "      | |  '|  /   Y   \\  |'  | |\r\n"
-            "      | |  '|  /   Y   \\  |'  | |\r\n"
-            "      | \\   \\  \\ 0 | 0 /  /   / |\r\n"
-            "       \\ '- ,\\.-\"`` ``\"-./, -' /\r\n"
-            "        `'-' /_   ^ ^   _\\ '-'`\r\n"
-            "        .--'|  \\._ _ _./  |'--. \r\n"
-            "      /`    \\   \\.-.  /   /    `\\\r\n"
-            "     /       '._/  |-' _.'       \\\r\n"
-            "    /          ;  /--~'   |       \\\r\n"
-            "   /        .'\\|.-\\--.     \\       \\\r\n"
-            "   /   .'-. /.-.;\\  |\\|'~'-.|\\       \\\r\n"
-            "  \\       -./`|_\\_/      `\\'.      \\\r\n"
-            "   '.      ;     ___)        '.`;    /\r\n"
-            "     '-.,_ ;     ___)          \\/   /\r\n"
-            "      \\   `'------'\\       \\     /\r\n"
-            "       '.    \\       '.      |   ;/_\r\n"
-            "     ___>     '.       \\_ _ _/   ,  '--.\r\n"
-            "   .'   '.   .-~~~~~-. /     |--'`~~-.  \\\r\n"
-            "  // / .---'/  .-~~-._/ / / /---..__.'  /\r\n"
-            " ((_(_/    /  /      (_(_(_(---.__    .'\r\n"
-            "           | |     _              `~~`\r\n"
-            "           | |     \\'.\r\n"
-            "            \\ '....' |\r\n"
-            "             '.,___.'\r\n"
-            "\r\n"
-            " ____    ____                  __                        ___     ______   \r\n"
-            "|_   \\  /   _|                [  |  _                  .'   `. .' ____ \\  \r\n"
-            "  |   \\/   |   .--.   _ .--.   | | / ] .---.   _   __ /  .-.  \\| (___ \\_| \r\n"
-            "  | |\\  /| | / .'`\\ \\[ .-. |  | '' < / /__\\\\ [ \\ [  ]| |   | | _.____.  \r\n"
-            " _| |_\\/_| |_| \\__. | | | | |  | |`\\ \\| \\__.,  \\ '/ / \\  `-'  /| \\____) | \r\n"
-            "|_____||_____|'.__.' [___||__][__|  \\_]'.__.'[\\_:  /   `.___.'  \\______.' \r\n"
-            "                                              \\__.'                       \r\n";
 
 void testFromFSToDrivers();
 void testTimerFromFS();
@@ -78,26 +43,31 @@ void process2()
         printf("process 2: %i \n", ++i);
     }
 }
+void console(){
+    console_run();
+}
 
 void main(void)
 {
     mmu_init();
-
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
-    /*Blink LED*/
     mos_fs_init();
-    mos_gpio_driver_init();
 
-    dir_fd = mos_fs_open("gpio149_dir");
-    val_fd = mos_fs_open("gpio149_val");
-    mos_fs_write(dir_fd, pVal_1, 1);
+    uartdriver_init();
+    scheduler_init();
+    test_gpiodriver();
+  //  mos_gpio_driver_init();
+
+   // dir_fd = mos_fs_open("gpio149_dir");
+   // val_fd = mos_fs_open("gpio149_val");
+   // mos_fs_write(dir_fd, pVal_1, 1);
     mos_fs_write(val_fd, pVal_1, 1);
 
     /*Scheduler*/
-    scheduler_init();
-    scheduler_initProc(process1, PROC_PRIO_MIDDLE);
-    //scheduler_initProc(process2, PROC_PRIO_MIDDLE);
+   // scheduler_initProc(process1, PROC_PRIO_MIDDLE);
+   // scheduler_initProc(process2, PROC_PRIO_MIDDLE);
+    scheduler_initProc(console, PROC_PRIO_MIDDLE);
     scheduler_start();
     // set user mode and enable interrupts
     mode_setUserMode();
@@ -112,15 +82,15 @@ void main(void)
 void testFromFSToDrivers()
 {
     mos_fs_init();
-    mos_gpio_driver_init();
+    gpiodriver_init();
 
-    int dir_fd = mos_fs_open("gpio149_dir");
-    int val_fd = mos_fs_open("gpio149_val");
+    int dir_fd = mos_fs_open("gpio149_DIR");
+    int val_fd = mos_fs_open("gpio149_VAL");
 
     int val_1 = 1;
     void* pVal_1 = &val_1;
 
-    mos_fs_write(dir_fd, pVal_1, 1);
+    mos_fs_write(dir_fd, pVal_0, 1);
 
     int val_0 = 0;
     void* pVal_0 = &val_0;
@@ -164,7 +134,7 @@ void testTimerFromFS()
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
     mos_fs_init();
-    mos_timer_driver_init(); //creates and registers drivers and files
+    gptimerdriver_init(); //creates and registers drivers and files
 
     int fd_timer2_int = mos_fs_open("GPTimer_2_INT");
     mos_fs_write(fd_timer2_int, 0, 0); //enables interrupt
@@ -186,21 +156,3 @@ void testTimerFromFS()
     }
 }
 
-void testUARTDriverFromFS()
-{
-    mos_fs_init();
-    uartdriver_init();
-
-    int uart_fd = mos_fs_open("uart3");
-
-    char writeSign[1] = ">";
-    mos_fs_write(uart_fd, monkey, strlen(monkey));
-    mos_fs_write(uart_fd, writeSign, 1);
-
-    char readBuff[50];
-    while(1){
-        mos_fs_read(uart_fd, readBuff, 50);
-        volatile int i;
-
-    }
-}

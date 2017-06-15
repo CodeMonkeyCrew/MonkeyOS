@@ -3,11 +3,36 @@
 
 #include <inttypes.h>
 
-void mos_gpio_LLD_init(int gpioPinNumber, int gpioPort, uint32_t* muxModeAddr, int startBit);
-//direction: IN=1, OUT=0
-void mos_gpio_LLD_set_direction(uint32_t* gpioOE, int shift, int direction);
-//mode: ON=1, OFF=0
-void mos_gpio_LLD_set_value(uint32_t* gpioDataOut, int shift, int mode);
-int mos_gpio_LLD_get_value(int gpioPinNumber);
+/* ---------------------------------------------------- *
+ * GPIO - HAL                                           *
+ * ATTENTION: ONLY WORKS FOR specific GPIO PINs:        *
+ *      - Pin130 to Pin166                              *
+ *      - Pin183                                        *
+ * ---------------------------------------------------- */
+
+/**
+ * Set the mux mode of the gpio pin to 4 and enable the power and necessary clocks
+ * @param pinNumber number of the pin on the board
+ */
+void gpiohal_pinInit(const uint8_t pinNumber);
+/**
+ * Set pin to input or output
+ * @param pinNumber number of the pin on the board
+ * @param direction:
+ *          1 - in
+ *          0 - out
+ */
+void gpiohal_pinSetDirection(const uint8_t pinNumber,const uint8_t direction);
+/**
+ * Set the value of a pin
+ * @param pinNumber number of the pin on the board
+ * @param value value to be set (1 or 0)
+ */
+void gpiohal_pinSetValue(const uint8_t pinNumber, const uint8_t value);
+/**
+ * Read the current state of the gpio pin
+ * @param pinNumber number of the pin on the board
+ */
+uint8_t gpiohal_pinGetValue(const uint8_t pinNumber);
 
 #endif

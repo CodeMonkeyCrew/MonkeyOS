@@ -60,6 +60,6 @@ static int add_new_file(generic_file_t* file);
 /*
  * Searches for a file with the given file_descriptor and returns the file.
  */
-static generic_file_t* get_open_file(int file_descriptor);
+generic_file_t* fs_get_open_file(int file_descriptor);
 
 #endif /* KERNEL_FILESYSTEM_FILESYSTEM_H_ */

@@ -1,11 +1,11 @@
 #ifndef SRC_DRIVERS_HAL_TIMER_HAL_TIMER_HAL_H_
 #define SRC_DRIVERS_HAL_TIMER_HAL_TIMER_HAL_H_
-
-#include "../../../../kernel/drivers/register/gptimer_register.h"
+#include <inttypes.h>
 #include "../timer_modes.h"
 
-/*      Methode Definition           */
-
+/* ---------------------------------------------------- *
+ * GTIMER - HAL                                         *
+ * ---------------------------------------------------- */
 /**
  * Initialize a timer:
  *  1. Power on gptimer register
@@ -16,7 +16,7 @@
  *      0 - a value was not set correctly
  *      1 - everything worked fine
  */
-uint32_t timer_init(const uint8_t nr);
+void timer_init(const uint8_t nr);
 /**
  * Enable compare mode for a GPTimer(n)
  * @param nr number of the gptimer
@@ -26,7 +26,7 @@ uint32_t timer_init(const uint8_t nr);
  *      0 - a value was not set correctly
  *      1 - everything worked fine
  */
-uint32_t timer_enable_compare_mode(const uint8_t nr, const uint32_t value);
+void timer_enable_compare_mode(const uint8_t nr, const uint32_t value);
 /**
  * Set the mode of the interrupt
  * mode:
@@ -37,13 +37,13 @@ uint32_t timer_enable_compare_mode(const uint8_t nr, const uint32_t value);
  *      0 - a value was not set correctly
  *      1 - everything worked fine
  */
-uint32_t timer_set_interrupt_mode(const uint8_t nr, const uint8_t mode);
+void timer_set_interrupt_mode(const uint8_t nr, const uint8_t mode);
 /**
  * Disable interrupt for gtimer
  * @param nr number of the gptimer
  */
 
-uint32_t timer_disable_interrupt(const uint8_t nr);
+void timer_disable_interrupt(const uint8_t nr);
 /**
  * Enable the interrupt for a GPTimer
  * @param nr number of the gptimer
@@ -51,23 +51,23 @@ uint32_t timer_disable_interrupt(const uint8_t nr);
  *  0 - not reset the internal counter
  *  1 - set internal counter to 0
  */
-uint32_t timer_enable_interrupt(const uint8_t nr, const uint8_t autoreload);
+void timer_enable_interrupt(const uint8_t nr, const uint8_t autoreload);
 
 /**
  * clear interrupt bit for gptimer
  * @param nr number of the gptimer
  */
-uint32_t timer_clear_interrupt(const uint8_t nr);
+void timer_clear_interrupt(const uint8_t nr);
 /**
  * Start GPTimer
  * @param nr number of the gptimer
  */
-uint32_t timer_start(const uint8_t nr);
+void timer_start(const uint8_t nr);
 /**
  * Stop GPTimer
  * @param nr number of the gptimer
  */
-uint32_t timer_stop(const uint8_t nr);
+void timer_stop(const uint8_t nr);
 
 
 /**
@@ -77,6 +77,6 @@ uint32_t timer_stop(const uint8_t nr);
  *          0 - 32k
  *          1 - Sys-Clock
  */
-uint32_t timer_set_clock(const uint8_t nr, const uint8_t clock_mode);
+void timer_set_clock(const uint8_t nr, const uint8_t clock_mode);
 
 #endif /* SRC_DRIVERS_HAL_TIMER_HAL_TIMER_HAL_H_ */

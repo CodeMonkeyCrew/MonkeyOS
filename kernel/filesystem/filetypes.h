@@ -1,3 +1,4 @@
+/*
 #ifndef KERNEL_FILESYSTEM_FILETYPES_H_
 #define KERNEL_FILESYSTEM_FILETYPES_H_
 #include <inttypes.h>
@@ -22,19 +23,16 @@ typedef struct {
     int port;
     int start_bit;
     int shift;
-    uint32_t* mux_mode_addr;
 } gpio_info_t;
 
 typedef struct {
     generic_file_t header;
     gpio_info_t* gpio_info;
-    uint32_t* OE;
 } gpio_direction_file_t;
 
 typedef struct {
     generic_file_t header;
     gpio_info_t* gpio_info;
-    uint32_t* data_out;
 } gpio_value_file_t;
 
 typedef struct{
@@ -42,4 +40,5 @@ typedef struct{
 
 }timer_info_t;
 
-#endif /* KERNEL_FILESYSTEM_FILETYPES_H_ */
+#endif  KERNEL_FILESYSTEM_FILETYPES_H_
+*/
