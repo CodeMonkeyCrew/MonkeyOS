@@ -3,7 +3,7 @@
 #include "../../util/registerutil.h"
 
 
-void gpiohal_pinInit(const uint8_t pinNumber)
+void matrix_gpiohal_pinInit(const uint8_t pinNumber)
 {
     /*Clear higher part(bit16-bit32) of 32bit register if its even */
     uint8_t offset = 16;
@@ -35,7 +35,7 @@ void gpiohal_pinInit(const uint8_t pinNumber)
     set_bit(pad_conf_address, offset + 2);
 }
 
-void gpiohal_pinSetDirection(const uint8_t pinNumber,const uint8_t direction)
+void matrix_gpiohal_pinSetDirection(const uint8_t pinNumber,const uint8_t direction)
 {
     uint8_t pinNumber_Region = GPIO_PIN_ON_REGION(pinNumber);
     uint32_t* gpioOE = get_address(GPIOi(GPIO_REGION(pinNumber)),GPIO_OE);
@@ -52,7 +52,7 @@ void gpiohal_pinSetDirection(const uint8_t pinNumber,const uint8_t direction)
     }
 }
 
-void gpiohal_pinSetValue(const uint8_t pinNumber, const uint8_t value){
+void matrix_gpiohal_pinSetValue(const uint8_t pinNumber, const uint8_t value){
     uint8_t pinNr_on_regio = GPIO_PIN_ON_REGION(pinNumber);
     if(value){
         set_bit(get_address(GPIOi(GPIO_REGION(pinNumber)), GPIO_DATAOUT), pinNr_on_regio);
@@ -61,7 +61,7 @@ void gpiohal_pinSetValue(const uint8_t pinNumber, const uint8_t value){
     }
 }
 
-uint8_t gpiohal_pinGetValue(const uint8_t pinNumber){
+uint8_t matrix_gpiohal_pinGetValue(const uint8_t pinNumber){
     uint8_t result = 0;
      if(*get_address(GPIOi(GPIO_REGION(pinNumber)), GPIO_DATAOUT) & (1 << GPIO_PIN_ON_REGION(pinNumber))){
          result = 1;

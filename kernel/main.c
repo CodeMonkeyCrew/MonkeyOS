@@ -8,6 +8,7 @@
 #include "kernel/drivers/timer_driver/hal/timer_hal.h"
 #include "kernel/drivers/util/registerutil.h"
 #include "kernel/filesystem/filesystem.h"
+#include "test/gpio_driver_test/gpiodriver_test.h"
 #include <inttypes.h>
 #include <stdio.h>
 
@@ -50,8 +51,10 @@ void main(void)
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
     mos_fs_init();
+
     uartdriver_init();
     scheduler_init();
+    test_gpiodriver();
   //  mos_gpio_driver_init();
 
    // dir_fd = mos_fs_open("gpio149_dir");
@@ -78,13 +81,13 @@ void testFromFSToDrivers()
     mos_fs_init();
     gpiodriver_init();
 
-    int dir_fd = mos_fs_open("gpio149_dir");
-    int val_fd = mos_fs_open("gpio149_val");
+    int dir_fd = mos_fs_open("gpio149_DIR");
+    int val_fd = mos_fs_open("gpio149_VAL");
 
     int val_1 = 1;
     void* pVal_1 = &val_1;
 
-    mos_fs_write(dir_fd, pVal_1, 1);
+    mos_fs_write(dir_fd, pVal_0, 1);
 
     int val_0 = 0;
     void* pVal_0 = &val_0;

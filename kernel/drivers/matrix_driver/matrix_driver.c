@@ -49,11 +49,11 @@ static void createMatrixFiles(void)
 static void initUsedGpio(uint8_t gpio, uint8_t dir, uint8_t val)
 {
     //set clock and mux
-    gpiohal_pinInit(gpio);
+    matrix_gpiohal_pinInit(gpio);
     //set direction to output
-    gpiohal_pinSetDirection(gpio, dir);
+    matrix_gpiohal_pinSetDirection(gpio, dir);
     //set output value
-    gpiohal_pinSetValue(gpio, val);
+    matrix_gpiohal_pinSetValue(gpio, val);
 
 }
 
@@ -64,57 +64,57 @@ static void selectNextRow(Matrix_t* matrix)
 
     if (matrix->curRow & (1 << 0))
     {
-        gpiohal_pinSetValue(matrix->addressPins.a, HIGH);
+        matrix_gpiohal_pinSetValue(matrix->addressPins.a, HIGH);
     }
     else
     {
-        gpiohal_pinSetValue(matrix->addressPins.a, LOW);
+        matrix_gpiohal_pinSetValue(matrix->addressPins.a, LOW);
     }
 
     if (matrix->curRow & (1 << 1))
     {
-        gpiohal_pinSetValue(matrix->addressPins.b, HIGH);
+        matrix_gpiohal_pinSetValue(matrix->addressPins.b, HIGH);
     }
     else
     {
-        gpiohal_pinSetValue(matrix->addressPins.b, LOW);
+        matrix_gpiohal_pinSetValue(matrix->addressPins.b, LOW);
     }
 
     if (matrix->curRow & (1 << 2))
     {
-        gpiohal_pinSetValue(matrix->addressPins.c, HIGH);
+        matrix_gpiohal_pinSetValue(matrix->addressPins.c, HIGH);
     }
     else
     {
-        gpiohal_pinSetValue(matrix->addressPins.c, LOW);
+        matrix_gpiohal_pinSetValue(matrix->addressPins.c, LOW);
     }
 
     if (matrix->curRow & (1 << 3))
     {
-        gpiohal_pinSetValue(matrix->addressPins.d, HIGH);
+        matrix_gpiohal_pinSetValue(matrix->addressPins.d, HIGH);
     }
     else
     {
-        gpiohal_pinSetValue(matrix->addressPins.d, LOW);
+        matrix_gpiohal_pinSetValue(matrix->addressPins.d, LOW);
     }
 }
 
 static void updateDisplay(Matrix_t* matrix)
 {
     // disable output during section switchover
-    gpiohal_pinSetValue(matrix->controlPins.oe, HIGH);
+    matrix_gpiohal_pinSetValue(matrix->controlPins.oe, HIGH);
 
     // latch data loaded during prior interrupt
-    gpiohal_pinSetValue(matrix->controlPins.lat, HIGH);
+    matrix_gpiohal_pinSetValue(matrix->controlPins.lat, HIGH);
 
     // select next row
     selectNextRow(matrix);
 
     // enable output
-    gpiohal_pinSetValue(matrix->controlPins.oe, LOW);
+    matrix_gpiohal_pinSetValue(matrix->controlPins.oe, LOW);
 
     // latch down
-    gpiohal_pinSetValue(matrix->controlPins.lat, LOW);
+    matrix_gpiohal_pinSetValue(matrix->controlPins.lat, LOW);
 
     int ledIndex;
     int rMask, gMask, bMask;
@@ -145,34 +145,34 @@ static void updateDisplay(Matrix_t* matrix)
 
             if (*ledBuffer & rMask)
             {
-                gpiohal_pinSetValue(matrix->sectionPins[sectionIndex].r, HIGH);
+                matrix_gpiohal_pinSetValue(matrix->sectionPins[sectionIndex].r, HIGH);
             }
             else
             {
-                gpiohal_pinSetValue(matrix->sectionPins[sectionIndex].r, LOW);
+                matrix_gpiohal_pinSetValue(matrix->sectionPins[sectionIndex].r, LOW);
             }
 
             if (*ledBuffer & gMask)
             {
-                gpiohal_pinSetValue(matrix->sectionPins[sectionIndex].g, HIGH);
+                matrix_gpiohal_pinSetValue(matrix->sectionPins[sectionIndex].g, HIGH);
             }
             else
             {
-                gpiohal_pinSetValue(matrix->sectionPins[sectionIndex].g, LOW);
+                matrix_gpiohal_pinSetValue(matrix->sectionPins[sectionIndex].g, LOW);
             }
 
             if (*ledBuffer & bMask)
             {
-                gpiohal_pinSetValue(matrix->sectionPins[sectionIndex].b, HIGH);
+                matrix_gpiohal_pinSetValue(matrix->sectionPins[sectionIndex].b, HIGH);
             }
             else
             {
-                gpiohal_pinSetValue(matrix->sectionPins[sectionIndex].b, LOW);
+                matrix_gpiohal_pinSetValue(matrix->sectionPins[sectionIndex].b, LOW);
             }
         }
         // pulse clock
-        gpiohal_pinSetValue(matrix->controlPins.clk, HIGH);
-        gpiohal_pinSetValue(matrix->controlPins.clk, LOW);
+        matrix_gpiohal_pinSetValue(matrix->controlPins.clk, HIGH);
+        matrix_gpiohal_pinSetValue(matrix->controlPins.clk, LOW);
     }
 }
 
