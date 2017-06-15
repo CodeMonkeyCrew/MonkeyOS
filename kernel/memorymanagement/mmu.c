@@ -8,10 +8,10 @@
 #define RWRW 0x3
 
 //#if defined(__TARGET_CPU_ARM720T)
-    #define cb 0x0
-    #define cB 0x1
-    #define Cb 0x2
-    #define WT 0x3
+#define cb 0x0
+#define cB 0x1
+#define Cb 0x2
+#define WT 0x3
 //#endif
 /* cb = not cached/not buffered
  * cB = not Cached/Buffered
