@@ -132,7 +132,7 @@ int scheduler_initProc(ProcEntryPoint_t entryPoint, Priority_t priority)
         procs[pid].context.cpsr = 0x10;
         procs[pid].context.restartAddress = (uint32_t) entryPoint;
         // TODO: set proper stack pointer
-        procs[pid].context.sp = 0x90000000 - ((pid - 1) * 0xFF);
+        procs[pid].context.sp = 0x80494000 + ((pid - 1) * 0xFFFFF);
         procs[pid].priority = priority;
         return pid;
     }

@@ -92,6 +92,7 @@ void main(void)
     dir_fd = mos_fs_open("gpio149_dir");
     val_fd = mos_fs_open("gpio149_val");
     mos_fs_write(dir_fd, pVal_1, 1);
+    mos_fs_write(val_fd, pVal_1, 1);
 
     /*Scheduler*/
     scheduler_init();

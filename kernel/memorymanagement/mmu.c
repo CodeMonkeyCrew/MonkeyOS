@@ -2,10 +2,10 @@
 
 // NA = no access, RO = read only, RW = read/write
 //First part is system, second part is user access permissions
-#define NANA 0x00
-#define RWNA 0x01
-#define RWRO 0x02
-#define RWRW 0x03
+#define NANA 0x0
+#define RWNA 0x1
+#define RWRO 0x2
+#define RWRW 0x3
 
 //#if defined(__TARGET_CPU_ARM720T)
     #define cb 0x0
@@ -52,13 +52,13 @@ int mmu_init(void) {
     systemPT.type = COARSE;
     systemPT.domain = 3;
 
-    /* no task yet ...
-    task1PT.vAddress = 0x00000000;
-    task1PT.ptAddress;
+    /* no task yet ... */
+    task1PT.vAddress = 0x80494000;
+    task1PT.ptAddress = 0x80094400;
     task1PT.rootPTAddress = ROOT_PT_V_ADDRESS;
     task1PT.type = COARSE;
     task1PT.domain = 3;
-    */
+
 
 
     //defining regions
@@ -67,7 +67,7 @@ int mmu_init(void) {
     kernelRegion.vAddress = 0x8000000;
     kernelRegion.pageSize = 4;
     kernelRegion.numPages = 128;
-    kernelRegion.AP = RWNA;
+    kernelRegion.AP = RWRW;
     kernelRegion.CB = WT;
     kernelRegion.pAddress = 0x8000000;
     kernelRegion.PT = &systemPT;
@@ -85,7 +85,7 @@ int mmu_init(void) {
     PTRegion.vAddress = ROOT_PT_V_ADDRESS;
     PTRegion.pageSize = 4;
     PTRegion.numPages = 8;
-    PTRegion.AP = RWNA;
+    PTRegion.AP = RWRW;
     PTRegion.CB = WT;
     PTRegion.pAddress = ROOT_PT_V_ADDRESS;
     PTRegion.PT = &systemPT;
@@ -94,21 +94,30 @@ int mmu_init(void) {
     peripheralRegion.pageSize = 1024;
     peripheralRegion.numPages = 1024;
     peripheralRegion.AP = RWRW;
-    peripheralRegion.CB = cb;
+    peripheralRegion.CB = WT;
     peripheralRegion.pAddress = 0x40000000;
     peripheralRegion.PT = &rootPT;
 
     bootRegion.vAddress = 0x00000000;
     bootRegion.pageSize = 1024;
     bootRegion.numPages = 1024;
-    bootRegion.AP = RWNA;
-    bootRegion.CB = cb;
+    bootRegion.AP = RWRW;
+    bootRegion.CB = WT;
     bootRegion.pAddress = 0x00000000;
     bootRegion.PT = &rootPT;
 
+    taskRegion.vAddress = 0x80494000;
+    taskRegion.pageSize = 4;
+    taskRegion.numPages = 256;
+    taskRegion.AP = RWRW;
+    taskRegion.CB = WT;
+    taskRegion.pAddress = 0x80494000;
+    taskRegion.PT = &task1PT;
+
     //init page tables
-    if (!mmuInitPT(&rootPT) ||
-        !mmuInitPT(&systemPT))
+    if (!mmuInitPT(&rootPT)     ||
+        !mmuInitPT(&systemPT)   ||
+        !mmuInitPT(&task1PT))
     {
         return -1;
     }
@@ -118,7 +127,8 @@ int mmu_init(void) {
         !mmuMapRegion(&sharedRegion)     ||
         !mmuMapRegion(&PTRegion)         ||
         !mmuMapRegion(&peripheralRegion) ||
-        !mmuMapRegion(&bootRegion))
+        !mmuMapRegion(&bootRegion)       ||
+        !mmuMapRegion(&taskRegion))
     {
         return -1;
     }
@@ -126,25 +136,15 @@ int mmu_init(void) {
     //set root PT as Translation Table Base (TTB) -> the PT in which the MMU searches after it looks in the TLB
     mmuAttachPT(&rootPT);
     mmuAttachPT(&systemPT);
-    //attach PTs for tasks...
+    mmuAttachPT(&task1PT);
 
 
     //set all domains to 3 which means they all have equal domain access
     //active access permissions are set in regions and thus in pages
-    //setDomainAccess(DOMAIN3, CHANGEALLREGIONS);
     set_domain();
 
 
     //set mmu control register
-/*  unsigned int enable = 0x0;
-    enable |= (1 << ENABLEMMU);
-    enable |= (1 << ENABLEALIGNING);
-    enable |= (1 << ENABLEDCACHE);
-    enable |= (1 << ENABLEICACHE);
-
-    //enable = ENABLEMMU | ENABLEALIGNING | ENABLEDCACHE | ENABLEICACHE;
-    setMMURegister(enable, enable);
-*/
     set_intvecs_base_address((unsigned int *)INTVECS_BASE_ADDRESS);
     clear_tlb();
     set_mmu_config_register_and_enable_mmu();
@@ -200,7 +200,7 @@ int mmuMapSectionTableRegion(region_t *region) {
     PTEValue |= (region->AP & 0x3) << 10;               // set Access Permissions
     PTEValue |= region->PT->domain << 5;                // set Domain for section
     PTEValue |= (region->CB & 0x3) << 2;                // set Cache and Write Back attributes
-    PTEValue |= 0x12;                                   // set as section entry
+    PTEValue |= 0x2;                                   // set as section entry
 
     int i;
     for (i = 0; i < region->numPages; ++i) {
@@ -227,7 +227,7 @@ int mmuMapCoarseTableRegion(region_t *region) {
     PTEntryValue |= accessPermissions << 6;                  // ap subpage 1
     PTEntryValue |= accessPermissions << 4;                  // ap subpage 0
     PTEntryValue |= (region->CB & 0x3) << 2;                 // set cache and write back attributes
-    PTEntryValue |= 0x2;                                     // set as small page (4kB)
+    PTEntryValue |= 0x1;                                     // set as small page (4kB)
 
     int i;
     for (i = 0; i < region->numPages; ++i) {

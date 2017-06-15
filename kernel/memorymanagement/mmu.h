@@ -18,6 +18,7 @@ static region_t sharedRegion;
 static region_t PTRegion;
 static region_t peripheralRegion;
 static region_t bootRegion;
+static region_t taskRegion;
 
 
 /*
