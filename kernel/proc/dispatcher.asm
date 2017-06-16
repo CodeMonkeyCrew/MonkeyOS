@@ -2,6 +2,7 @@
 	.global dispatcher_saveContextFork
 	.global dispatcher_saveContextWaitPid
 	.global dispatcher_loadContext
+	.global dispatcher_storeContext
 
 
 

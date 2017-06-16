@@ -121,8 +121,14 @@ void scheduler_run(void)
     int interruptedPid = scheduler_runNextProc();
     if (interruptedPid >= 0 && runningPid != interruptedPid)
     {
-        dispatcher_switchContext(&procs[interruptedPid].context,
-                                 &procs[runningPid].context);
+        //dispatcher_switchContext(&procs[interruptedPid].context,
+             //                    &procs[runningPid].context);
+        //store context
+        dispatcher_saveContext(&procs[runningPid]);
+        //flush
+        //attachPT(peid)
+        //load
+        dispatcher_loadContext(&procs[interruptedPid]);
     }
 }
 
