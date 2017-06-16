@@ -254,7 +254,7 @@ int mmuAttachPT (page_table_t *pPT) {
 
 void mmu_create_task_PT_and_region(int proc_id) {
 
-    static page_table_t taskPT;
+    page_table_t taskPT;
 
     taskPT.vAddress = 0x80494000;
     taskPT.ptAddress = 0x80094400 + (0x400 * proc_id);
@@ -268,8 +268,7 @@ void mmu_create_task_PT_and_region(int proc_id) {
 }
 
 void create_task_region(page_table_t *pTaskPT, int proc_id) {
-
-    static region_t taskRegion;
+    region_t taskRegion;
 
     taskRegion.vAddress = 0x80494000;
     taskRegion.pageSize = 4;
@@ -280,7 +279,6 @@ void create_task_region(page_table_t *pTaskPT, int proc_id) {
     taskRegion.PT = pTaskPT;
 
     mmuMapRegion(&taskRegion);
-
 }
 
 
