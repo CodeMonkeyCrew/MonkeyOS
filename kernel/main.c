@@ -49,25 +49,29 @@ void console(){
 
 void main(void)
 {
+
     mmu_init();
-    *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
-
-    mos_fs_init();
-
-    uartdriver_init();
     scheduler_init();
-    test_gpiodriver();
-  //  mos_gpio_driver_init();
+  //  scheduler_initProc(process1, PROC_PRIO_MIDDLE);
+    //*PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
-   // dir_fd = mos_fs_open("gpio149_dir");
-   // val_fd = mos_fs_open("gpio149_val");
-   // mos_fs_write(dir_fd, pVal_1, 1);
-    mos_fs_write(val_fd, pVal_1, 1);
+    //mos_fs_init();
+
+    //uartdriver_init();
+
+    //test_gpiodriver();
+    //mos_gpio_driver_init();
+
+    //dir_fd = mos_fs_open("gpio149_dir");
+    //val_fd = mos_fs_open("gpio149_val");
+    //mos_fs_write(dir_fd, pVal_1, 1);
+    //mos_fs_write(val_fd, pVal_1, 1);
 
     /*Scheduler*/
    // scheduler_initProc(process1, PROC_PRIO_MIDDLE);
    // scheduler_initProc(process2, PROC_PRIO_MIDDLE);
-    scheduler_initProc(console, PROC_PRIO_MIDDLE);
+    //scheduler_init();
+    //scheduler_initProc(console, PROC_PRIO_MIDDLE);
     scheduler_start();
     // set user mode and enable interrupts
     mode_setUserMode();

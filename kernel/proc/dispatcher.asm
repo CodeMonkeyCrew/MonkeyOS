@@ -3,6 +3,8 @@
 	.global dispatcher_saveContextWaitPid
 	.global dispatcher_loadContext
 
+
+
 dispatcher_switchContext:
 	; TODO: check if there are any options other than manipulating the stack pointer
 	ADD R13, R13, #8				; stack pointer correction
@@ -14,7 +16,13 @@ dispatcher_switchContext:
 	LDMFD R13!, {R2-R12, R14}		; reload remaining stacked values
 	STR R14, [R0, #-12]				; store R14_irq, the interrupted process´s restart address
 	STMIA R0, {R2-R14}^				; store user R2-R14
+
+	;call assembler function for MMU
+	BL mmu_flush_cache
+	BL mmu_flush_tlb
+
 	; then load the new process´s User mode state and return to it
+
 	LDMIA R1!, {R12, R14}
 	MSR SPSR_fsxc, R12
 	LDMIA R1, {R0-R14}^
@@ -57,3 +65,17 @@ dispatcher_loadContext:
 	LDMIA R0, {R0-R14}^
 	NOP
 	MOVS PC, R14
+
+
+mmu_flush_cache:
+	MOV		r0,#0
+	MCR		p15,#0x0,r0,c7,c5,#0		;flush instruction cache
+	MCR		p15,#0x0,r0,c7,c6,#0		;flush data cache
+	MOV		PC, LR
+
+
+mmu_flush_tlb:
+	MOV		r0,#0
+	MCR		p15,#0x0,r0,c8,c5,#0		;invalidates entire instruction TLB
+	MCR		p15,#0x0,r0,c8,c6,#0		;invalidates entire data TLB
+	MOV		PC, LR

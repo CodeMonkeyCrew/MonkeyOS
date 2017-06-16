@@ -86,13 +86,23 @@ void set_domain(void);
 void set_intvecs_base_address(unsigned int* pIntvecsBaseAddress);
 
 /*
- * assembler function that clears instruction and data TLB. If not clears there may be overlapping virtual addresses
+ * assembler function to flush instruction and data TLB. If not clears there may be overlapping virtual addresses
  */
-void clear_tlb(void);
+void mmu_flush_tlb(void);
+
+/*
+ * assembler function to flush data and instruction cache
+ */
+void mmu_flush_cache(void);
+
 
 /*
  * assembler function that sets enabled data and instruction cache, enables alignment checking and enables mmu
  */
 void set_mmu_config_register_and_enable_mmu(void);
+
+void mmu_create_task_PT_and_region(int proc_id);
+
+void create_task_region(page_table_t *pTaskPT, int proc_id);
 
 #endif /* KERNEL_MEMORYMANAGEMENT_MMU_H_ */

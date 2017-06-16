@@ -19,16 +19,10 @@
  * WT = write through cache
  */
 
-#define DOMAIN3 0x00000040
-#define CHANGEALLREGIONS 0xFFFFFFFF
-
-#define ENABLEMMU 1
-#define ENABLEALIGNING 2
-#define ENABLEDCACHE 3
-#define ENABLEICACHE 12
-
 #define ROOT_PT_V_ADDRESS 0x80090000
 #define INTVECS_BASE_ADDRESS 0x4020FFC0
+
+static page_table_t *taskPTs[16];
 
 int mmu_init(void) {
 
@@ -52,14 +46,11 @@ int mmu_init(void) {
     systemPT.type = COARSE;
     systemPT.domain = 3;
 
-    /* no task yet ... */
-    task1PT.vAddress = 0x80494000;
-    task1PT.ptAddress = 0x80094400;
-    task1PT.rootPTAddress = ROOT_PT_V_ADDRESS;
-    task1PT.type = COARSE;
-    task1PT.domain = 3;
-
-
+    //create 16 page tables and task regions for a maximum of 16 tasks
+    int i;
+    for (i = 0; i < 16; ++i) {
+        mmu_create_task_PT_and_region(i);
+    }
 
     //defining regions
 
@@ -116,8 +107,7 @@ int mmu_init(void) {
 
     //init page tables
     if (!mmuInitPT(&rootPT)     ||
-        !mmuInitPT(&systemPT)   ||
-        !mmuInitPT(&task1PT))
+        !mmuInitPT(&systemPT))
     {
         return -1;
     }
@@ -127,8 +117,7 @@ int mmu_init(void) {
         !mmuMapRegion(&sharedRegion)     ||
         !mmuMapRegion(&PTRegion)         ||
         !mmuMapRegion(&peripheralRegion) ||
-        !mmuMapRegion(&bootRegion)       ||
-        !mmuMapRegion(&taskRegion))
+        !mmuMapRegion(&bootRegion))
     {
         return -1;
     }
@@ -136,7 +125,7 @@ int mmu_init(void) {
     //set root PT as Translation Table Base (TTB) -> the PT in which the MMU searches after it looks in the TLB
     mmuAttachPT(&rootPT);
     mmuAttachPT(&systemPT);
-    mmuAttachPT(&task1PT);
+    mmuAttachPT(taskPTs[0]); //set page table of first task
 
 
     //set all domains to 3 which means they all have equal domain access
@@ -146,7 +135,7 @@ int mmu_init(void) {
 
     //set mmu control register
     set_intvecs_base_address((unsigned int *)INTVECS_BASE_ADDRESS);
-    clear_tlb();
+    mmu_flush_tlb();
     set_mmu_config_register_and_enable_mmu();
     return 1;
 }
@@ -246,15 +235,7 @@ int mmuAttachPT (page_table_t *pPT) {
 
     switch (pPT->type) {
         case ROOT:
-            //code from book that doesn't quite work:
-            //__asm(" MCR p15, 0, pTTB, c2, c0, 0 ") ;
-            //source: http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.faqs/ka11865.html
-            //register unsigned int mmuTTBRegister __asm("p15:#0:c2:c0:#0");      // write root PT baseaddress to the register so the MMU knows where it lies
-            //mmuTTBRegister &= ~mmuTTBRegister; //clear bits
-            //mmuTTBRegister |= pTTB;
-
             set_root_pt_register(pTTB);
-
             break;
         case COARSE:
             offset = (pPT->vAddress) >> 20;             // find the offset in which this coarse PT resides
@@ -270,34 +251,37 @@ int mmuAttachPT (page_table_t *pPT) {
     return 1;
 }
 
-/*
-int setDomainAccess(unsigned int value, unsigned int mask) {
-    register unsigned int domainRegister;
 
-    asm("   MRC p15, #0, r0, c3, c0, #0");          //read the register
-    domainRegister &= ~mask;                        //clear bits that change
-    domainRegister |= value;                        //set bits that change
-    asm("   MCR p15, #0, r0, c3, c0, #0");          //set domain register
+void mmu_create_task_PT_and_region(int proc_id) {
 
-    return 1;
+    static page_table_t taskPT;
+
+    taskPT.vAddress = 0x80494000;
+    taskPT.ptAddress = 0x80094400 + (0x400 * proc_id);
+    taskPT.rootPTAddress = ROOT_PT_V_ADDRESS;
+    taskPT.type = COARSE;
+    taskPT.domain = 3;
+
+    mmuInitPT(&taskPT);
+    taskPTs[proc_id] = &taskPT;
+    create_task_region(&taskPT, proc_id);
 }
 
+void create_task_region(page_table_t *pTaskPT, int proc_id) {
 
-int setMMURegister(unsigned int value, unsigned int mask) {
-    register unsigned int mmuControlRegister;
+    static region_t taskRegion;
 
-    //asm("   MRC p15, #0, mmuControlRegister, c1, c0, #0");        //read the register
-    //mmuControlRegister &= ~mask;                                    //clear bits that change
-    //mmuControlRegister |= value;                                    //set bits that change
-    //asm("   MCR p15, #0, mmuControlRegister, c1, c0, #0");        //set mmu control register
+    taskRegion.vAddress = 0x80494000;
+    taskRegion.pageSize = 4;
+    taskRegion.numPages = 256;
+    taskRegion.AP = RWRW;
+    taskRegion.CB = WT;
+    taskRegion.pAddress = 0x80494000 + (0x100000 * proc_id);
+    taskRegion.PT = pTaskPT;
 
-    return 1;
+    mmuMapRegion(&taskRegion);
+
 }
-*/
-
-
-
-
 
 
 

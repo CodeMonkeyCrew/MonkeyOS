@@ -1,7 +1,7 @@
 MEMORY /* ARM memory map */
 {
     SRAM:           o = 0x40200000  l = 0x0000FFC0  /* 64kB - 56B Internal SRAM */    //decreased size by 0x8 as int
-    INTVECS:        o = 0x4020FFC0  l = 0x00000040  /* 56B vector table */
+    INTVECS:        o = 0x4020FFC0  l = 0x0000003F  /* 56B vector table */
     CS0_SDRAM:      o = 0x80000000  l = 0x20000000  /* 512MB of external mDDR in CS0 */
     CS1_SDRAM:      o = 0xA0000000  l = 0x20000000  /* 512MB of external mDDR in CS1 */
 }

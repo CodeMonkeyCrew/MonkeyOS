@@ -119,7 +119,7 @@ void scheduler_run(void)
     *INTCPS_CONTROL |= (1 << 0);
 
     int interruptedPid = scheduler_runNextProc();
-    if (interruptedPid >= 0)
+    if (interruptedPid >= 0 && runningPid != interruptedPid)
     {
         dispatcher_switchContext(&procs[interruptedPid].context,
                                  &procs[runningPid].context);
@@ -139,7 +139,7 @@ int scheduler_initProc(ProcEntryPoint_t entryPoint, Priority_t priority)
         procs[pid].context.restartAddress = (uint32_t) entryPoint;
         // TODO: set proper stack pointer
         procs[pid].context.sp = 0x80494000 + ((pid - 1) * 0xFFFFF);
-        procs[pid].context.sp = 0x90000000 - ((pid - 1) * 0x100);
+      //  procs[pid].context.sp = 0x90000000 - ((pid - 1) * 0x100);
         procs[pid].priority = priority;
         return pid;
         //write argc in context.R0 and argv in context.R1 (oder anders rum)
