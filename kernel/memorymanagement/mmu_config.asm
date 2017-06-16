@@ -5,8 +5,12 @@
 	.global mmu_flush_tlb
 	.global mmu_flush_cache
 
-
+;-------------------------------------------------------------------------------------------
+; 				Enable MMU, Data Cache and Instruction Cache							   -
+;-------------------------------------------------------------------------------------------
 set_mmu_config_register_and_enable_mmu:
+	MOV		r0,#0
+	MCR		p15,#0x0,r0,c7,c5,#0		;flu
 	MRC     p15,#0x0,r0,c1,c0,#0		;read the mmu config register and write into r0
 	AND		r0,r0,#0					;clear register
 	ORR 	r0,r0,#0x1					;enable mmu
