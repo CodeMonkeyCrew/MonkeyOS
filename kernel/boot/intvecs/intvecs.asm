@@ -18,5 +18,4 @@
 	B _ISR_IRQ
 	B _ISR_FIQ
 
-_ISR_RESET:
-	B _ISR_RESET
+
