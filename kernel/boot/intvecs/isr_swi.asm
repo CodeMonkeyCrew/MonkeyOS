@@ -31,6 +31,9 @@
 	.global C_SCHEDULER_WAITPID
 	.global C_SCHEDULER_GETPROCS
 
+	.retain ".isr"
+	.sect ".isr"
+
 ; ACTIVESWI bit field mask to get only the bit field
 ACTIVESWI_MASK .equ 0x3F
 

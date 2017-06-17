@@ -17,7 +17,7 @@ dispatcher_switchContext:
 	LDMFD R13!, {R2-R12, R14}		; reload remaining stacked values
 	STR R14, [R0, #-12]				; store R14_irq, the interrupted process�s restart address
 	STMIA R0, {R2-R14}^				; store user R2-R14
-	; then load the new process�s User mode state and return to it
+	; then load the new process User mode state and return to it
 	LDMIA R1!, {R12, R14}
 	MSR SPSR_fsxc, R12
 	LDMIA R1, {R0-R14}^

@@ -7,6 +7,9 @@
 	.global _ISR_IRQ
 	.global C_SCHEDULER_RUN
 
+	.retain ".isr"
+	.sect ".isr"
+
 ; INTCPS_SIR_IRQ register address
 INTCPS_SIR_IRQ_ADDR .word 0x48200040
 ; ACTIVEIRQ bit field mask to get only the bit field
