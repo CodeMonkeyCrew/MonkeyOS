@@ -4,21 +4,14 @@
 #include "mm_type.h"
 
 
-//page tables
-page_table_t rootPT;
-static page_table_t systemPT;
+
 
 // for each task a new page table
 static page_table_t task1PT;
 
 
 //regions
-static region_t kernelRegion;
-static region_t sharedRegion;
-static region_t PTRegion;
-static region_t peripheralRegion;
-static region_t bootRegion;
-static region_t taskRegion;
+
 
 
 /*
