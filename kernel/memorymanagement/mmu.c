@@ -151,16 +151,17 @@ int mmuMapRegion(region_t *region)
 
 int mmuMapSectionTableRegion(region_t *region)
 {
-    unsigned int firstLevelSectionDescriptor;
+    fld_section_t firstLevelSectionDescriptor;
     unsigned int* pPTE = (unsigned int*) region->PT->ptAddress; //base address of page table = first PT entry
 
     pPTE += region->vAddress >> 20;
 
-    firstLevelSectionDescriptor = region->pAddress & 0xFFF00000;          // set physical address
-    firstLevelSectionDescriptor |= (region->AP & 0x3) << 10;              // set Access Permissions
-    firstLevelSectionDescriptor |= region->PT->domain << 5;               // set Domain for section
-    firstLevelSectionDescriptor |= (region->CB & 0x3) << 2;               // set Cache and Write Back attributes
-    firstLevelSectionDescriptor |= 0x2;                                   // set as section entry
+    //first level descriptor found in ARMv7 architecture - p. B3-1326
+    firstLevelSectionDescriptor.fdl_split.SBA = region->pAddress & 0xFFF00000;          // set physical address
+    firstLevelSectionDescriptor.fdl_split.AP1_0 = region->AP & 0x3;              // set Access Permissions
+    firstLevelSectionDescriptor.fdl_split.DOM = region->PT->domain;               // set Domain for section
+    firstLevelSectionDescriptor.fdl_split.B = (region->CB & 0x3);               // set Cache and Write Back attributes
+    firstLevelSectionDescriptor.fdl_split.TYPE = 0x2;                                   // set as section entry
 
     int i;
     for (i = 0; i < region->numPages; ++i)
