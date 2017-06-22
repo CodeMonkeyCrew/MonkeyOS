@@ -151,22 +151,21 @@ int mmuMapRegion(region_t *region)
 
 int mmuMapSectionTableRegion(region_t *region)
 {
-
-    unsigned int PTEValue;
+    unsigned int firstLevelSectionDescriptor;
     unsigned int* pPTE = (unsigned int*) region->PT->ptAddress; //base address of page table = first PT entry
 
     pPTE += region->vAddress >> 20;
 
-    PTEValue = region->pAddress & 0xFFF00000;           // set physical address
-    PTEValue |= (region->AP & 0x3) << 10;              // set Access Permissions
-    PTEValue |= region->PT->domain << 5;               // set Domain for section
-    PTEValue |= (region->CB & 0x3) << 2;  // set Cache and Write Back attributes
-    PTEValue |= 0x2;                                   // set as section entry
+    firstLevelSectionDescriptor = region->pAddress & 0xFFF00000;          // set physical address
+    firstLevelSectionDescriptor |= (region->AP & 0x3) << 10;              // set Access Permissions
+    firstLevelSectionDescriptor |= region->PT->domain << 5;               // set Domain for section
+    firstLevelSectionDescriptor |= (region->CB & 0x3) << 2;               // set Cache and Write Back attributes
+    firstLevelSectionDescriptor |= 0x2;                                   // set as section entry
 
     int i;
     for (i = 0; i < region->numPages; ++i)
     {
-        *pPTE = PTEValue + (i << 20);                // i as index, always +1 MB
+        *pPTE = firstLevelSectionDescriptor + (i << 20);                // i as index, always +1 MB
         ++pPTE;
     }
 
