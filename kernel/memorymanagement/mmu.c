@@ -85,9 +85,11 @@ int mmu_init(void)
     }
 
     //map fixed regions
-    if (!mmuMapRegion(&kernelRegion) || !mmuMapRegion(&sharedRegion)
-            || !mmuMapRegion(&PTRegion) || !mmuMapRegion(&peripheralRegion)
-            || !mmuMapRegion(&bootRegion))
+    if (!mmuMapRegion(&kernelRegion)    ||
+        !mmuMapRegion(&sharedRegion)    ||
+        !mmuMapRegion(&PTRegion)        ||
+        !mmuMapRegion(&peripheralRegion)||
+        !mmuMapRegion(&bootRegion))
     {
         return -1;
     }
