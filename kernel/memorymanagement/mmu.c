@@ -155,6 +155,14 @@ int mmuMapSectionTableRegion(region_t *region)
 
 int mmuMapCoarseTableRegion(region_t *region)
 {
+    //NOTE: if we were ever to add large pages we would have catch it here and change the code accordingly
+
+    //see ARMv7 architecture reference manual on page B3-1337
+    unsigned int* pPTE = (unsigned int*) region->PT->ptAddress;         //base address of page table = first PT entry
+    unsigned int index = (region->vAddress & 0x000FF000) >> 12;         //get the offset/index to the virtual memory
+    index = index << 2;                                                 //add two zeros on the right side to fulfill the requirements for the pointer
+    pPTE = (unsigned int*)((unsigned int)pPTE + index);                 //add index and recast to pointer
+
     sld_small_page_t secondLevelSmallPageDescriptor;
     secondLevelSmallPageDescriptor.sld_raw = 0;
     secondLevelSmallPageDescriptor.sld_split.SPBA = ((region->pAddress & 0xFFFFF000) >> 12);    // set physical address
@@ -162,14 +170,6 @@ int mmuMapCoarseTableRegion(region_t *region)
     secondLevelSmallPageDescriptor.sld_split.B = (region->CB & 0x1);                            // set Buffer/WriteBack attributes
     secondLevelSmallPageDescriptor.sld_split.C = ((region->CB & 0x2) >> 1);                     // set Cache attribute, shift by one to get the [1]0
     secondLevelSmallPageDescriptor.sld_split.TYPE = 0x2;
-
-
-    //NOTE: if we were ever to add large pages we would have catch it here and change the code accordingly
-    //see ARMv7 architecture reference manual on page B3-1337
-    unsigned int* pPTE = (unsigned int*) region->PT->ptAddress; //base address of page table = first PT entry
-    unsigned int index = (region->vAddress & 0x000FF000) >> 12;
-    index = index << 2;
-    pPTE = (unsigned int*)((unsigned int)pPTE + index);                //adding the index/offset
 
     int i;
     for (i = 0; i < region->numPages; ++i)
@@ -194,9 +194,9 @@ int mmuAttachPT(page_table_t *pPT)
         break;
     case COARSE:
         fld_coarse.fld_raw = 0;
-        fld_coarse.fld_split.CPT = (pPT->ptAddress & 0xFFFFFC00);   // L1 entry of a coarse PT takes 22 bits as base address
-        fld_coarse.fld_split.DOMAIN = pPT->domain;                  // set domain
-        fld_coarse.fld_split.TYPE = 0b01;                           // set as (coarse) page table
+        fld_coarse.fld_split.CPT = ((pPT->ptAddress & 0xFFFFFC00) >> 10);   // L1 entry of a coarse PT takes 22 bits as base address
+        fld_coarse.fld_split.DOMAIN = pPT->domain;                          // set domain
+        fld_coarse.fld_split.TYPE = 0b01;                                   // set as (coarse) page table
 
         offset = (pPT->vAddress) >> 20;                             // find the offset in which this coarse PT resides
         pTTB[offset] = fld_coarse.fld_raw;                          // write the new PTE into the root PT
