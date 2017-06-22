@@ -54,9 +54,8 @@ int setMMURegister(unsigned int value, unsigned int mask);
 /*
  * assembler function to set the root pagetable, needs to clear mask.
  * for TTRB0 it's needed to clear bits [13:0] to create the proper translation table base
- * enableTableWalk = 0x8 = 0b1000 needed to clear bit to enable the walk through
  */
-void set_root_pt_register(unsigned int* pRootPT, unsigned int mask, unsigned int enableTableWalk);
+void set_root_pt_register(unsigned int* pRootPT, unsigned int mask);
 
 
 /*
@@ -84,6 +83,12 @@ void mmu_flush_cache(void);
  * assembler function that sets enabled data and instruction cache, enables alignment checking and enables mmu
  */
 void set_mmu_config_register_and_enable_mmu(void);
+
+
+/*
+ * assembler function to enable translation table walk for TTBR0
+ */
+void mmu_enable_translation_table_walk_ttbr0(void);
 
 void mmu_create_task_PT_and_region(int proc_id);
 
