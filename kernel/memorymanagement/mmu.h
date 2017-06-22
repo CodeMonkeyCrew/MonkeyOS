@@ -2,18 +2,6 @@
 #define KERNEL_MEMORYMANAGEMENT_MMU_H_
 
 #include "mm_type.h"
-
-
-
-
-// for each task a new page table
-static page_table_t task1PT;
-
-
-//regions
-
-
-
 /*
  * Sets the attributes of each page table and region
  */

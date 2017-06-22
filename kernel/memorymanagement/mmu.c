@@ -37,8 +37,7 @@ typedef enum{
  *  -up to 4096 entries, each either a 1 MB section or a Pointer to a L2 PT
  *  -covers 4GB
  */
-page_table_t rootPT = { 0x00000000, ROOT_PT_V_ADDRESS, ROOT_PT_V_ADDRESS, ROOT,
-                        domain3 };
+page_table_t rootPT = { 0x00000000, ROOT_PT_V_ADDRESS, ROOT_PT_V_ADDRESS, ROOT, domain3 };
 /**
  * Coarse Page Table:
  *  -size: 1kB
@@ -61,10 +60,8 @@ region_t kernelRegion = { 0x80000000, page_size_small, 128, RWRW, WT, 0x80000000
 /*shared size: 64kB*/
 region_t sharedRegion = { 0x80080000, page_size_small, 16, RWRW, WT, 0x80080000, &systemPT };
 /*page table size: root PT + system PT = 16kb + 1kb -> 32kB*/
-region_t PTRegion = { ROOT_PT_V_ADDRESS, page_size_small, 8, RWRW, WT, ROOT_PT_V_ADDRESS,
-                      &systemPT };
-region_t peripheralRegion = { 0x40000000, page_size_section, 1024, RWRW, WT, 0x40000000,
-                              &rootPT };
+region_t PTRegion = { ROOT_PT_V_ADDRESS, page_size_small, 8, RWRW, WT, ROOT_PT_V_ADDRESS, &systemPT };
+region_t peripheralRegion = { 0x40000000, page_size_section, 1024, RWRW, WT, 0x40000000, &rootPT };
 region_t bootRegion = { 0x00000000, page_size_section, 1024, RWRW, WT, 0x00000000, &rootPT };
 region_t taskRegion = { 0x80494000, page_size_small, 256, RWRW, WT, 0x80494000, &task1PT };
 
