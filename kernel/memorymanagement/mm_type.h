@@ -6,13 +6,13 @@
  * NOTE: Root Page Table = Master Page Table
  */
 
-typedef enum {FAULT, COARSE, ROOT} page_table_type;
+typedef enum {FAULT, COARSE, ROOT} page_table_type_t;
 
 typedef struct {
     unsigned int vAddress;          // identifies the starting address of a 1 MB section of virtual memory controlled by either a section entry or an L2 page table.
     unsigned int ptAddress;         // is the address where the page table is located in virtual memory
     unsigned int rootPTAddress;     // is the address of the master L1 (root) page table. If it is the root PT the value is the same as ptAddress
-    page_table_type type;           // type of the PT
+    page_table_type_t type;           // type of the PT
     unsigned int domain;            // sets the domain assigned to the 1 MB memory blocks of an L1 table entry
 } page_table_t;
 
