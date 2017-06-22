@@ -136,6 +136,7 @@ int mmu_init(void) {
     //set mmu control register
     set_intvecs_base_address((unsigned int *)INTVECS_BASE_ADDRESS);
     mmu_flush_tlb();
+    mmu_flush_cache();
     set_mmu_config_register_and_enable_mmu();
     return 1;
 }

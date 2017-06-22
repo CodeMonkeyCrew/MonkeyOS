@@ -5,7 +5,7 @@
 
 
 //page tables
-static page_table_t rootPT;
+page_table_t rootPT;
 static page_table_t systemPT;
 
 // for each task a new page table
