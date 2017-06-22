@@ -1,6 +1,7 @@
 #include "proc/proc.h"
 #include "proc/scheduler.h"
 #include "proc/mode.h"
+#include "proc/loader.h"
 #include "apps/console/console.h"
 #include "kernel/drivers/gpio_driver/gpiodriver.h"
 #include "kernel/drivers/uart/uartdriver.h"
@@ -24,34 +25,15 @@ void* pVal_1 = &val_1;
 int val_0 = 0;
 void* pVal_0 = &val_0;
 
-void process1()
-{
-    volatile int i = 0;
-    while (1)
-    {
-        printf("process 1: %i \n", ++i);
-    }
-}
-
-void process2()
-{
-    volatile int i = 0;
-    while (1)
-    {
-        printf("process 2: %i \n", ++i);
-    }
-}
-void console(){
-    console_run();
-}
+extern uint8_t echoExe[];
 
 void main(void)
 {
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
-    mos_fs_init();
-    uartdriver_init();
-    scheduler_init();
+//    mos_fs_init();
+//    uartdriver_init();
+//    scheduler_init();
   //  mos_gpio_driver_init();
 
    // dir_fd = mos_fs_open("gpio149_dir");
@@ -61,16 +43,17 @@ void main(void)
     /*Scheduler*/
    // scheduler_initProc(process1, PROC_PRIO_MIDDLE);
    // scheduler_initProc(process2, PROC_PRIO_MIDDLE);
-    scheduler_initProc(console, PROC_PRIO_MIDDLE);
-    scheduler_start();
-    // set user mode and enable interrupts
-    mode_setUserMode();
-
-    // idle loop
-    while (1)
-    {
-        printf("idle loop\n");
-    }
+    printElf((Elf32_Ehdr*) echoExe);
+//    scheduler_initProc(console_run, PROC_PRIO_MIDDLE);
+//    scheduler_start();
+//    // set user mode and enable interrupts
+//    mode_setUserMode();
+//
+//    // idle loop
+//    while (1)
+//    {
+//        printf("idle loop\n");
+//    }
 }
 
 void testFromFSToDrivers()
