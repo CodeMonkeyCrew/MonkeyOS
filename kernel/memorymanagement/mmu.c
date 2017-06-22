@@ -128,19 +128,22 @@ int mmuMapRegion(region_t *region)
 
 int mmuMapSectionTableRegion(region_t *region)
 {
-    fld_section_t firstLevelSectionDescriptor;
-    firstLevelSectionDescriptor.fld_raw = 0;
-
+    //see ARMv7 architecture reference manual on page B3-1335
     unsigned int* pPTE = (unsigned int*) region->PT->ptAddress; //base address of page table = first PT entry
+    unsigned int index = region->vAddress >> 20;
+    index = index << 2;
 
-    pPTE += region->vAddress >> 20;
+    pPTE = (unsigned int*)((unsigned int)pPTE + index);
 
     //first level descriptor found in ARMv7 architecture - p. B3-1326
-    firstLevelSectionDescriptor.fld_split.SBA = region->pAddress & 0xFFF00000;          // set physical address
-    firstLevelSectionDescriptor.fld_split.AP1_0 = region->AP & 0x3;              // set Access Permissions
-    firstLevelSectionDescriptor.fld_split.DOM = region->PT->domain;               // set Domain for section
-    firstLevelSectionDescriptor.fld_split.B = (region->CB & 0x3);               // set Cache and Write Back attributes
-    firstLevelSectionDescriptor.fld_split.TYPE = 0x2;                                   // set as section entry
+    fld_section_t firstLevelSectionDescriptor;
+    firstLevelSectionDescriptor.fld_raw = 0;
+    firstLevelSectionDescriptor.fld_split.SBA = ((region->pAddress & 0xFFF00000) >> 20);      // set physical address
+    firstLevelSectionDescriptor.fld_split.AP1_0 = region->AP & 0x3;                           // set Access Permissions
+    firstLevelSectionDescriptor.fld_split.DOM = region->PT->domain;                           // set Domain for section
+    firstLevelSectionDescriptor.fld_split.B = (region->CB & 0x1);                             // set Buffer/WriteBack attributes
+    firstLevelSectionDescriptor.fld_split.C = ((region->CB & 0x2) >> 1);                      // set Cache attribute
+    firstLevelSectionDescriptor.fld_split.TYPE = 0x2;                                         // set as section entry
 
     int i;
     for (i = 0; i < region->numPages; ++i)
@@ -154,26 +157,26 @@ int mmuMapSectionTableRegion(region_t *region)
 
 int mmuMapCoarseTableRegion(region_t *region)
 {
+    sld_small_page_t secondLevelSmallPageDescriptor;
+    secondLevelSmallPageDescriptor.sld_raw = 0;
+    secondLevelSmallPageDescriptor.sld_split.SPBA = ((region->pAddress & 0xFFFFF000) >> 12);    // set physical address
+    secondLevelSmallPageDescriptor.sld_split.AP1_0 = region->AP & 0x3;                          // set Domain for section
+    secondLevelSmallPageDescriptor.sld_split.B = (region->CB & 0x1);                            // set Buffer/WriteBack attributes
+    secondLevelSmallPageDescriptor.sld_split.C = ((region->CB & 0x2) >> 1);                     // set Cache attribute, shift by one to get the [1]0
+    secondLevelSmallPageDescriptor.sld_split.TYPE = 0x2;
 
-    unsigned int PTEntryValue;                 //value that is set to each entry
-    unsigned int* pPTE = (unsigned int*) region->PT->ptAddress; //base address of page table = first PT entry
-    unsigned int accessPermissions = region->AP & 0x3;
 
     //NOTE: if we were ever to add large pages we would have catch it here and change the code accordingly
-    pPTE += (region->vAddress & 0x000FF000) >> 12;
-
-    PTEntryValue = region->pAddress & 0xFFFFF000; // the first 20 bits of the PT entry are the physical address base
-    PTEntryValue |= accessPermissions << 10;     // access permissions subpage 3
-    PTEntryValue |= accessPermissions << 8;                  // ap subpage 2
-    PTEntryValue |= accessPermissions << 6;                  // ap subpage 1
-    PTEntryValue |= accessPermissions << 4;                  // ap subpage 0
-    PTEntryValue |= (region->CB & 0x3) << 2; // set cache and write back attributes
-    PTEntryValue |= 0x1;                              // set as small page (4kB)
+    //see ARMv7 architecture reference manual on page B3-1337
+    unsigned int* pPTE = (unsigned int*) region->PT->ptAddress; //base address of page table = first PT entry
+    unsigned int index = (region->vAddress & 0x000FF000) >> 12;
+    index = index << 2;
+    pPTE = (unsigned int*)((unsigned int)pPTE + index);                //adding the index/offset
 
     int i;
     for (i = 0; i < region->numPages; ++i)
     {
-        *pPTE = PTEntryValue + (i << 12);            // i as index, always +4 kB
+        *pPTE = secondLevelSmallPageDescriptor.sld_raw + (i << 12);            // i as index, always +4 kB
         ++pPTE;
     }
     return 1;
@@ -181,22 +184,23 @@ int mmuMapCoarseTableRegion(region_t *region)
 
 int mmuAttachPT(page_table_t *pPT)
 {
-
     unsigned int* pTTB = (unsigned int*) pPT->rootPTAddress; // get root PT baseaddress
     unsigned int offset;
-    unsigned int PTE;
+    fld_coarse_t fld_coarse;
 
     switch (pPT->type)
     {
     case ROOT:
-        set_root_pt_register(pTTB);
+        set_root_pt_register(pTTB, 0x3FFF, 0x8);
         break;
     case COARSE:
-        offset = (pPT->vAddress) >> 20; // find the offset in which this coarse PT resides
-        PTE = (pPT->ptAddress & 0xFFFFFc00); // L1 entry of a coarse PT takes 22 bits as base address
-        PTE |= pPT->domain << 5;                    // set domain
-        PTE |= 0x11;                                // set as coarse PT entry
-        pTTB[offset] = PTE;                // write the new PTE into the root PT
+        fld_coarse.fld_raw = 0;
+        fld_coarse.fld_split.CPT = (pPT->ptAddress & 0xFFFFFC00);   // L1 entry of a coarse PT takes 22 bits as base address
+        fld_coarse.fld_split.DOMAIN = pPT->domain;                  // set domain
+        fld_coarse.fld_split.TYPE = 0b01;                           // set as (coarse) page table
+
+        offset = (pPT->vAddress) >> 20;                             // find the offset in which this coarse PT resides
+        pTTB[offset] = fld_coarse.fld_raw;                          // write the new PTE into the root PT
         break;
     default:
         //unknown PT type
@@ -207,8 +211,6 @@ int mmuAttachPT(page_table_t *pPT)
 
 void mmu_create_task_PT_and_region(int proc_id)
 {
-
-
     unsigned int ptAddress = (0x80094400 + (0x400 * proc_id));
     page_table_t taskPT = {0x80494000, ptAddress, ROOT_PT_V_ADDRESS, COARSE, domain3};
 

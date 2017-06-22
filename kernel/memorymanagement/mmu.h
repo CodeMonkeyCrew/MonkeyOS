@@ -52,9 +52,11 @@ int setMMURegister(unsigned int value, unsigned int mask);
 */
 
 /*
- * assembler function to set the root pagetable
+ * assembler function to set the root pagetable, needs to clear mask.
+ * for TTRB0 it's needed to clear bits [13:0] to create the proper translation table base
+ * enableTableWalk = 0x8 = 0b1000 needed to clear bit to enable the walk through
  */
-void set_root_pt_register(unsigned int* pRootPT);
+void set_root_pt_register(unsigned int* pRootPT, unsigned int mask, unsigned int enableTableWalk);
 
 
 /*

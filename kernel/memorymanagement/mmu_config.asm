@@ -28,6 +28,9 @@ set_domain:
 
 
 set_root_pt_register:
+	BIC		r0, r0, r1					;clear bits [13:0] to create the proper Translation Table Base
+	BIC		r3, r3, r2					;clear bit [4] -> P0 which enables the table walk through of the TTBR0
+	MCR		p15,#0x0,r3,c2,c0,#2		;write them!
 	MCR 	p15,#0x0,r0,c2,c0,#0		;write root pt address into Translation Table Base Register
 	MOV		PC, LR						;jump back to calling func
 

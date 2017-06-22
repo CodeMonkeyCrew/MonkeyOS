@@ -109,4 +109,6 @@ typedef union{
     }sld_split;
     unsigned int sld_raw;
 }sld_small_page_t;
+
+
 #endif /* KERNEL_MEMORYMANAGEMENT_MM_TYPE_H_ */
