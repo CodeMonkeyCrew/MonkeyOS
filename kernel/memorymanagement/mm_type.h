@@ -44,7 +44,7 @@ typedef union{
         unsigned int S      :1;       // shared [16]
         unsigned int AP2    :1;       // access permission [15]
         unsigned int TEX    :3;       // memory region attributes bit[14:12]
-        unsigned int AP1_0  :2        // access permission [11:10]
+        unsigned int AP1_0  :2;       // access permission [11:10]
         unsigned int IMP    :1;       // implementation defined [9]
         unsigned int DOM    :4;       // domain [8:5]
         unsigned int XN     :1;       // execute-never[4]
