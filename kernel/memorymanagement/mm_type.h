@@ -27,5 +27,34 @@ typedef struct {
     volatile page_table_t *PT;               // is a pointer to the page table in which the region resides.
 } region_t;
 
+typedef union{
+    struct{
+        unsigned int IGN : 30;      //Ignored [31:2]
+        unsigned int TYPE : 2;       //type [1:0]
+    }fdl_split;
+    unsigned int fdl_raw;
+}fld_faul_t;
+typedef union{
+    struct{
+        unsigned int SBA : 12;      //section base address [31:20]
+        unsigned int SBZ1 : 8;       //should be zero [19:12]
+        unsigned int AP : 2;        //access persmission [11:10]
+        unsigned int SBZ2 : 1;       //should be zero [9]
+        unsigned int DOMAIN: 4;     //domain [8:5]
+        unsigned int IMP : 3;       //implementation defined [4:2]
+        unsigned int TYPE :2;         //type [1:0]
+    }fdl_split;
+    unsigned int fdl_raw;
+}fld_section_t;
+
+typedef union{
+    struct{
+        unsigned int CPT:22;        //coarse page table base address [31:10]
+        unsigned int SBZ:1;         //should be zero [9]
+        unsigned int DOMAIN:4;      //domain [8:5]
+        unsigned int IMP:3;         //implementation defined [4:2]
+        unsigned int TYPE:2;         //type [1:0]
+    }fdl_split;
+}fld_coarse_t;
 
 #endif /* KERNEL_MEMORYMANAGEMENT_MM_TYPE_H_ */
