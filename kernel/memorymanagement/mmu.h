@@ -2,6 +2,7 @@
 #define KERNEL_MEMORYMANAGEMENT_MMU_H_
 
 #include "mm_type.h"
+
 /*
  * Sets the attributes of each page table and region
  */

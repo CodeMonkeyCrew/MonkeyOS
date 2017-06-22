@@ -53,7 +53,7 @@ page_table_t *taskPTs[16];
  *****************/
 typedef enum{
     page_size_section = 1024, page_size_tiny = 1, page_size_small = 4, page_size_large =64
-};
+}page_size_t;
 /*regio_t x = {vAddress, pageSize, numPages, AP, CB, pAddress, PT}*/
 /*kernel size: 512kB*/
 region_t kernelRegion = { 0x80000000, page_size_small, 128, RWRW, WT, 0x80000000, &systemPT };
@@ -63,7 +63,7 @@ region_t sharedRegion = { 0x80080000, page_size_small, 16, RWRW, WT, 0x80080000,
 region_t PTRegion = { ROOT_PT_V_ADDRESS, page_size_small, 8, RWRW, WT, ROOT_PT_V_ADDRESS, &systemPT };
 region_t peripheralRegion = { 0x40000000, page_size_section, 1024, RWRW, WT, 0x40000000, &rootPT };
 region_t bootRegion = { 0x00000000, page_size_section, 1024, RWRW, WT, 0x00000000, &rootPT };
-region_t taskRegion = { 0x80494000, page_size_small, 256, RWRW, WT, 0x80494000, &task1PT };
+//region_t taskRegion = { 0x80494000, page_size_small, 256, RWRW, WT, 0x80494000, &task1PT };
 
 int mmu_init(void)
 {
@@ -227,13 +227,9 @@ int mmuAttachPT(page_table_t *pPT)
 void mmu_create_task_PT_and_region(int proc_id)
 {
 
-    page_table_t taskPT;
 
-    taskPT.vAddress = 0x80494000;
-    taskPT.ptAddress = 0x80094400 + (0x400 * proc_id);
-    taskPT.rootPTAddress = ROOT_PT_V_ADDRESS;
-    taskPT.type = COARSE;
-    taskPT.domain = 3;
+    unsigned int ptAddress = (0x80094400 + (0x400 * proc_id));
+    page_table_t taskPT = {0x80494000, ptAddress, ROOT_PT_V_ADDRESS, COARSE, domain3};
 
     mmuInitPT(&taskPT);
     taskPTs[proc_id] = &taskPT;
@@ -242,16 +238,8 @@ void mmu_create_task_PT_and_region(int proc_id)
 
 void create_task_region(page_table_t *pTaskPT, int proc_id)
 {
-    region_t taskRegion;
-
-    taskRegion.vAddress = 0x80494000;
-    taskRegion.pageSize = 4;
-    taskRegion.numPages = 256;
-    taskRegion.AP = RWRW;
-    taskRegion.CB = WT;
-    taskRegion.pAddress = 0x80494000 + (0x100000 * proc_id);
-    taskRegion.PT = pTaskPT;
-
+    unsigned int pAddress = (0x80494000 + (0x100000 * proc_id));
+    region_t taskRegion = {0x80494000,page_size_small, 256, RWRW, WT, pAddress, pTaskPT};
     mmuMapRegion(&taskRegion);
 }
 

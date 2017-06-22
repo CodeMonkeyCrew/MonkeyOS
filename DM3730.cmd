@@ -2,8 +2,12 @@ MEMORY /* ARM memory map */
 {
     SRAM:           o = 0x40200000  l = 0x0000FFC0  /* 64kB - 56B Internal SRAM */
     INTVECS:        o = 0x4020FFC0  l = 0x00000040  /* 56B vector table */
-    //CS0_SDRAM:      o = 0x80000000  l = 0x20000000  /* 512MB of external mDDR in CS0 */
-    //CS1_SDRAM:      o = 0xA0000000  l = 0x20000000  /* 512MB of external mDDR in CS1 */
+
+    ;IVASHL2RAM:     o = 0x5C7F8000  l = 0x00008000  /* 32kB Shared IVA L2 RAM */
+    ;IVASHL2RAM_C:   o = 0x5C800000  l = 0x00010000  /* 64kB Shared IVA L2 Cache RAM */
+    ;IVASHL1PRAM:    o = 0x5CE00000  l = 0x00008000  /* 32kB Shared IVA L1 Program RAM */
+    ;IVASHL1DRAM:    o = 0x5CF04000  l = 0x0000C000  /* 48kB Shared IVA L1 Data RAM */
+    ;IVASHL1DRAM_C:  o = 0x5CF10000  l = 0x00008000  /* 32kB Shared IVA L1 Data Cache RAM */
 
     RAM0_OS:		o = 0x80000000	l = 0x80000		// 512 kB for Operating system
     RAM0_SHARED:	o = 0x80080000	l = 0x10000		// 64 kB for shared memory
