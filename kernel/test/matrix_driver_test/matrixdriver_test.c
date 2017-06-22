@@ -20,6 +20,7 @@ static void test_usedGpioPins();
 void test_matrixdriver()
 {
     test_usedGpioPins();
+    matrixDriverTest();
     while(1){
 
     }

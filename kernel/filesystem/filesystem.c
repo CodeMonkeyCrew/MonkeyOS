@@ -6,8 +6,6 @@
 #include "../../apps/ps/ps.h"
 #include <stdlib.h>
 
-#define false 0
-#define true !false
 
 static int currentFileNo = 0;
 static generic_file_t* files[MAX_NO_OF_FILES];
