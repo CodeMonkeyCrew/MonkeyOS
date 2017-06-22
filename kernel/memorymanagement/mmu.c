@@ -1,25 +1,4 @@
 #include "mmu.h"
-/*
- * NA = no access, RO = read only, RW = read/write
- * First part is system, second part is user access permissions
- */
-typedef enum
-{
-    NANA = 0x0, RWNA = 0x1, RWRO = 0x2, RWRW = 0x3
-} rr_permissions_t;
-
-/*
- * Cache and Buffer settings
- * cb = not cached/not buffered
- * cB = not Cached/Buffered
- * Cb = Cached/not Buffered
- * WT = write through cache
- *
- */
-typedef enum
-{
-    cb = 0x0, cB = 0x1, Cb = 0x2, WT = 0x3
-} cache_settings_t;
 
 #define  ROOT_PT_V_ADDRESS      0x80090000
 #define INTVECS_BASE_ADDRESS    0x4020FFC0
@@ -27,9 +6,7 @@ typedef enum
 /*****************
  *  Page Tables  *
  *****************/
-typedef enum{
-    domain1=1,domain2=2,domain3=3
-}domain_t;
+
 /*page_table_t c = {vAddress, ptAddress, rootPTAddress, type, domain}*/
 /**
  * Root Page Table:
@@ -151,21 +128,24 @@ int mmuMapRegion(region_t *region)
 
 int mmuMapSectionTableRegion(region_t *region)
 {
-    unsigned int firstLevelSectionDescriptor;
+    fld_section_t firstLevelSectionDescriptor;
+    firstLevelSectionDescriptor.fld_raw = 0;
+
     unsigned int* pPTE = (unsigned int*) region->PT->ptAddress; //base address of page table = first PT entry
 
     pPTE += region->vAddress >> 20;
 
-    firstLevelSectionDescriptor = region->pAddress & 0xFFF00000;          // set physical address
-    firstLevelSectionDescriptor |= (region->AP & 0x3) << 10;              // set Access Permissions
-    firstLevelSectionDescriptor |= region->PT->domain << 5;               // set Domain for section
-    firstLevelSectionDescriptor |= (region->CB & 0x3) << 2;               // set Cache and Write Back attributes
-    firstLevelSectionDescriptor |= 0x2;                                   // set as section entry
+    //first level descriptor found in ARMv7 architecture - p. B3-1326
+    firstLevelSectionDescriptor.fld_split.SBA = region->pAddress & 0xFFF00000;          // set physical address
+    firstLevelSectionDescriptor.fld_split.AP1_0 = region->AP & 0x3;              // set Access Permissions
+    firstLevelSectionDescriptor.fld_split.DOM = region->PT->domain;               // set Domain for section
+    firstLevelSectionDescriptor.fld_split.B = (region->CB & 0x3);               // set Cache and Write Back attributes
+    firstLevelSectionDescriptor.fld_split.TYPE = 0x2;                                   // set as section entry
 
     int i;
     for (i = 0; i < region->numPages; ++i)
     {
-        *pPTE = firstLevelSectionDescriptor + (i << 20);                // i as index, always +1 MB
+        *pPTE = firstLevelSectionDescriptor.fld_raw + (i << 20);                // i as index, always +1 MB
         ++pPTE;
     }
 
