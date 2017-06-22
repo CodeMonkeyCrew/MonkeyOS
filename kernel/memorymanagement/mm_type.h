@@ -29,31 +29,40 @@ typedef struct {
 
 typedef union{
     struct{
-        unsigned int IGN : 30;      //Ignored [31:2]
-        unsigned int TYPE : 2;       //type [1:0]
+        unsigned int IGN    :30;     //Ignored [31:2]
+        unsigned int TYPE   :2;      //type [1:0]
     }fdl_split;
     unsigned int fdl_raw;
 }fld_faul_t;
 typedef union{
     struct{
-        unsigned int SBA : 12;      //section base address [31:20]
-        unsigned int SBZ1 : 8;       //should be zero [19:12]
-        unsigned int AP : 2;        //access persmission [11:10]
-        unsigned int SBZ2 : 1;       //should be zero [9]
-        unsigned int DOMAIN: 4;     //domain [8:5]
-        unsigned int IMP : 3;       //implementation defined [4:2]
-        unsigned int TYPE :2;         //type [1:0]
+        unsigned int SBA    :12;      // section base address [31:20]
+        unsigned int NS     :1;       // non-secure [19]
+        unsigned int SBZ    :1;       // should be zero [18]
+        unsigned int nG     :1;       // not global [17]
+        unsigned int S      :1;       // shared [16]
+        unsigned int AP2    :1;       // access persmission [15]
+        unsigned int TEX    :3;       // memmory region attributes bit[14:12]
+        unsigned int AP1_0  :2        // access permission [11:10]
+        unsigned int IMP    :1;       // implementation defined [9]
+        unsigned int DOM    :4;       // domain [8:5]
+        unsigned int XN     :1;       // execute-never[4]
+        unsigned int C      :1;       // cachable [3]
+        unsigned int B      :1;       // bufferable[2]
+        unsigned int TYPE   :2;       // type [1:0]
     }fdl_split;
     unsigned int fdl_raw;
 }fld_section_t;
 
 typedef union{
     struct{
-        unsigned int CPT:22;        //coarse page table base address [31:10]
-        unsigned int SBZ:1;         //should be zero [9]
-        unsigned int DOMAIN:4;      //domain [8:5]
-        unsigned int IMP:3;         //implementation defined [4:2]
-        unsigned int TYPE:2;         //type [1:0]
+        unsigned int CPT    :22;      //coarse page table base address [31:10]
+        unsigned int IMP    :1;       //implementation defined [9]
+        unsigned int DOMAIN :4;       //domain [8:5]
+        unsigned int SBZ    :1;       //should be zero [4]
+        unsigned int NS     :1;       //non-secure [3]
+        unsigned int PXN    :1;       //priveleged execute never [2]
+        unsigned int TYPE   :2;       //type [1:0]
     }fdl_split;
 }fld_coarse_t;
 
