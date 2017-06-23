@@ -127,8 +127,8 @@ int mmuMapRegion(region_t *region)
 int mmuMapSectionTableRegion(region_t *region)
 {
     //see ARMv7 architecture reference manual on page B3-1335
-    unsigned int* pPTE = (unsigned int*) region->PT->ptAddress; //base address of page table = first PT entry
-    unsigned int index = region->vAddress >> 20;                //get the offset/index to the virtual memory
+    unsigned int* pPTE = (unsigned int*) region->PT->ptAddress; //base address of page table
+    unsigned int index = region->vAddress >> 20;                //get the offset/index to the virtual memory for first entry address
     index = index << 2;                                         //add two zeros on the right side to fulfill the requirements for the pointer
 
     pPTE = (unsigned int*)((unsigned int)pPTE + index);         //add them and recast to pointer
