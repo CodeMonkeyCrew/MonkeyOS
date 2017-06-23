@@ -94,6 +94,14 @@ void mmu_create_task_PT_and_region(int proc_id);
 
 void create_task_region(page_table_t *pTaskPT, int proc_id);
 
+/*
+ * load the page table of the given process ID
+ */
 void mmu_load_task_region(int proc_id);
+
+/*
+ * clears caches and TLB, then switches the task to the given process ID
+ */
+void mmu_switch_task(int proc_id);
 
 #endif /* KERNEL_MEMORYMANAGEMENT_MMU_H_ */

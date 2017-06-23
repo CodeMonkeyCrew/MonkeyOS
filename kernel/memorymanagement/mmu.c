@@ -228,3 +228,10 @@ void create_task_region(page_table_t *pTaskPT, int proc_id)
 void mmu_load_task_region(int proc_id) {
     mmuAttachPT(&taskPTs[proc_id]);
 }
+
+
+void mmu_switch_task(int proc_id) {
+    mmu_flush_tlb();
+    mmu_flush_cache();
+    mmuAttachPT(&taskPTs[proc_id]);
+}
