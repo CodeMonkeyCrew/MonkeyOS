@@ -1,5 +1,6 @@
 #include "loader.h"
 #include "proc.h"
+#include "../memorymanagement/mmu.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -160,7 +161,7 @@ int loadElf(PCB_t* proc, const Elf32_Ehdr* elfHeader)
     if (isValid >= 0)
     {
         // set pid on mmu
-        // proc->pid
+        mmu_load_task_region(proc->pid);
 
         // load data from elf file into main memory
         int sectionIndex = 0;

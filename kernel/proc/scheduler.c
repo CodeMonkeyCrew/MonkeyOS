@@ -4,6 +4,7 @@
 #include "loader.h"
 #include "scheduler_timer.h"
 #include "../filesystem/filesystem.h"
+#include "../memorymanagement/mmu.h"
 #include <inttypes.h>
 #include <stdio.h>
 
@@ -12,7 +13,6 @@
 #define PROC_IMG_VADDR 0x80494000
 #define MAX_PROC_IMG_SIZE 0x10000
 
-// TODO: change this as soon as the timer is in place
 // needed to set interrupt status and new interrupt agreement flags
 static uint32_t* INTCPS_CONTROL = (uint32_t*) 0x48200048;
 
@@ -174,7 +174,7 @@ int scheduler_fork(void)
         memcpy(procImgBuffer, (uint8_t*) PROC_IMG_VADDR, MAX_PROC_IMG_SIZE);
 
         // set pid on mmu
-        // procs[pid].pid
+        mmu_load_task_region(procs[pid].pid);
 
         // load process image from buffer
         memcpy((uint8_t*) PROC_IMG_VADDR, procImgBuffer, MAX_PROC_IMG_SIZE);
@@ -197,7 +197,6 @@ int scheduler_execv(const char *filename, char * const argv[])
         if (isLoaded >= 0)
         {
             procs[runningPid].context.r0 = (uint32_t) argv;
-            procs[runningPid].context.lr = (uint32_t) scheduler_exitProc;
             dispatcher_loadContext(&procs[runningPid].context);
         }
         return isLoaded;

@@ -94,4 +94,6 @@ void mmu_create_task_PT_and_region(int proc_id);
 
 void create_task_region(page_table_t *pTaskPT, int proc_id);
 
+void mmu_load_task_region(int proc_id);
+
 #endif /* KERNEL_MEMORYMANAGEMENT_MMU_H_ */

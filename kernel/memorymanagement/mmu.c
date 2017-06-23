@@ -14,16 +14,16 @@
  *  -up to 4096 entries, each either a 1 MB section or a Pointer to a L2 PT
  *  -covers 4GB
  */
-page_table_t rootPT = { 0x00000000, ROOT_PT_V_ADDRESS, ROOT_PT_V_ADDRESS, ROOT, domain3 };
+static page_table_t rootPT = { 0x00000000, ROOT_PT_V_ADDRESS, ROOT_PT_V_ADDRESS, ROOT, domain3 };
 /**
  * Coarse Page Table:
  *  -size: 1kB
  *  -up to 256 entries, each covering a 4kb memory
  *  -covers 1MB
  */
-page_table_t systemPT = { 0x80000000, 0x80094000, ROOT_PT_V_ADDRESS, COARSE, domain3 };
+static page_table_t systemPT = { 0x80000000, 0x80094000, ROOT_PT_V_ADDRESS, COARSE, domain3 };
 
-page_table_t *taskPTs[16];
+static page_table_t taskPTs[16];
 
 /*****************
  * Regions       *
@@ -46,11 +46,11 @@ int mmu_init(void)
 {
 
     //create 16 page tables and task regions for a maximum of 16 tasks
-    /*volatile int i;
+    volatile int i;
     for (i = 0; i < 16; ++i)
     {
         mmu_create_task_PT_and_region(i);
-    } */
+    }
 
     //init page tables with fault entries
     mmuInitPT(&rootPT);
@@ -214,7 +214,7 @@ void mmu_create_task_PT_and_region(int proc_id)
     page_table_t taskPT = {0x80494000, ptAddress, ROOT_PT_V_ADDRESS, COARSE, domain3};
 
     mmuInitPT(&taskPT);
-    taskPTs[proc_id] = &taskPT;
+    taskPTs[proc_id] = taskPT;
     create_task_region(&taskPT, proc_id);
 }
 
@@ -225,3 +225,6 @@ void create_task_region(page_table_t *pTaskPT, int proc_id)
     mmuMapRegion(&taskRegion);
 }
 
+void mmu_load_task_region(int proc_id) {
+    mmuAttachPT(&taskPTs[proc_id]);
+}

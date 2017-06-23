@@ -1,8 +1,9 @@
 #include "proc/scheduler.h"
-#include "kernel/filesystem/filesystem.h"
-#include "kernel/drivers/uart/uartdriver.h"
-#include "kernel/drivers/gpio_driver/gpiodriver.h"
-#include "kernel/drivers/timer_driver/timer_driver.h"
+#include "memorymanagement/mmu.h"
+#include "filesystem/filesystem.h"
+#include "drivers/uart/uartdriver.h"
+#include "drivers/gpio_driver/gpiodriver.h"
+#include "drivers/timer_driver/timer_driver.h"
 
 #define PM_PWSTCTRL_PER (uint32_t*) 0x483070E0
 
@@ -13,6 +14,7 @@ void main(void)
 {
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
+    mmu_init();
     filesystem_init();
     uartdriver_init();
     gpiodriver_init();
