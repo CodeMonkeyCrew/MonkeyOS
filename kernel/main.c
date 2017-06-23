@@ -43,16 +43,17 @@ void process2()
         printf("process 2: %i \n", ++i);
     }
 }
-void console(){
+void console()
+{
     console_run();
 }
-
+#include "apps/lib/matrix_lib/matrix_draw.h"
 void main(void)
 {
 
     mmu_init();
     scheduler_init();
-  //  scheduler_initProc(process1, PROC_PRIO_MIDDLE);
+    //  scheduler_initProc(process1, PROC_PRIO_MIDDLE);
     //*PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
 
     //mos_fs_init();
@@ -67,10 +68,11 @@ void main(void)
     //mos_fs_write(dir_fd, pVal_1, 1);
     //mos_fs_write(val_fd, pVal_1, 1);
 
+
     /*Scheduler*/
-   // scheduler_initProc(process1, PROC_PRIO_MIDDLE);
-   // scheduler_initProc(process2, PROC_PRIO_MIDDLE);
-    //scheduler_init();
+    scheduler_initProc(process1, PROC_PRIO_MIDDLE);
+    scheduler_initProc(process2, PROC_PRIO_MIDDLE);
+
     //scheduler_initProc(console, PROC_PRIO_MIDDLE);
     scheduler_start();
     // set user mode and enable interrupts
@@ -81,6 +83,9 @@ void main(void)
     {
         printf("idle loop\n");
     }
+
+
+
 }
 
 void testFromFSToDrivers()

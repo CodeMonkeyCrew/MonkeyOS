@@ -1,0 +1,6 @@
+#ifndef APPS_SINKTHESHIP_SINK_THE_SHIP_H_
+#define APPS_SINKTHESHIP_SINK_THE_SHIP_H_
+
+void start_game();
+
+#endif /* APPS_SINKTHESHIP_SINK_THE_SHIP_H_ */
