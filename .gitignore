@@ -5,6 +5,11 @@ Release/
 .launches/
 .cproject
 .ccsproject
+<<<<<<< HEAD
+/Debug__GNU/
+.idea/
+=======
 .idea/
 CMakeLists.txt
 cmake-build-debug/
+>>>>>>> master
