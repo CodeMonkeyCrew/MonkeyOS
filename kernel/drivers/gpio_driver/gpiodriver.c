@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#define false 0
+#define true !false
+
 static int open(generic_file_t* file);
 static int write(const void* buffer, int bufSize, generic_file_t* file);
 static int read(void* buffer, int bufSize, generic_file_t* file);

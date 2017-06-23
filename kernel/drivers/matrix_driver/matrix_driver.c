@@ -10,6 +10,9 @@
 #include <inttypes.h>
 #include <kernel/filesystem/filetypes/matrixtype.h>
 
+#define false 0
+#define true !false
+
 static void createMatrixFiles(void);
 static void selectNextRow(Matrix_t* matrix);
 static void updateDisplay(Matrix_t* matrix);

@@ -6,6 +6,12 @@
 void scheduler_init(void);
 void scheduler_run(void);
 void scheduler_start(void);
-int scheduler_initProc(ProcEntryPoint_t entryPoint, Priority_t priority);
+
+void scheduler_exitProc(int status);
+int scheduler_fork(void);
+int scheduler_execv(const char *filename, char * const argv[]);
+void scheduler_waitPid(int pid);
+void scheduler_getProcs(char* procStrings, int size);
+
 
 #endif

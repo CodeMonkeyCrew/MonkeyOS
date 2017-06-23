@@ -44,7 +44,7 @@ void test_uartdriver(void){
 
 static void test_uart3()
 {
-    mos_fs_init();
+    filesystem_init();
     uartdriver_init();
 
     int uart_fd = mos_fs_open("uart3");

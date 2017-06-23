@@ -1,9 +1,14 @@
 #ifndef KERNEL_PROC_LOADER_H_
 #define KERNEL_PROC_LOADER_H_
 
+#include "proc.h"
 #include <inttypes.h>
 
 #define ELF_NIDENT 16
+#define ELFMAG0 0x7F    // e_ident[EI_MAG0]
+#define ELFMAG1 'E'     // e_ident[EI_MAG1]
+#define ELFMAG2 'L'     // e_ident[EI_MAG2]
+#define ELFMAG3 'F'     // e_ident[EI_MAG3]
 
 enum Elf_Ident
 {
@@ -70,5 +75,6 @@ typedef struct
 } Elf32_Phdr;
 
 void printElf(const Elf32_Ehdr* elfHeader);
+int loadElf(PCB_t* proc, const Elf32_Ehdr* elfHeader);
 
 #endif /* KERNEL_PROC_LOADER_H_ */

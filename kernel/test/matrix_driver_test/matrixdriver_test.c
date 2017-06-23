@@ -30,7 +30,7 @@ void test_matrixdriver()
  * */
 static void test_usedGpioPins()
 {
-    mos_fs_init();
+    filesystem_init();
     gpiodriver_init();
 
     dir_fd = mos_fs_open("gpio133_dir");
@@ -89,7 +89,7 @@ static void test_usedGpioPins()
 
 static void matrixDriverTest(void)
 {
-    mos_fs_init();
+    filesystem_init();
     gpiodriver_init();
     matrix_driver_init();
 

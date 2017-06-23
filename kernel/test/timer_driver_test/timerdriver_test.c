@@ -17,7 +17,7 @@ static void test_GPTimer2(void)
 {
     _disable_interrupts();
 
-    mos_fs_init();
+    filesystem_init();
     gptimerdriver_init(); //creates and registers drivers and files
 
     int fd_timer2_int = mos_fs_open("GPTimer_2_INT");

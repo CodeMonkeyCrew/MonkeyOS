@@ -1,5 +1,36 @@
 #include "loader.h"
+#include "proc.h"
 #include <stdio.h>
+#include <string.h>
+
+static int checkElf(const Elf32_Ehdr* elfHeader)
+{
+    if (elfHeader == NULL)
+    {
+        return -1;
+    }
+    if (elfHeader->e_ident[EI_MAG0] != ELFMAG0)
+    {
+        printf("ELF Header EI_MAG0 incorrect\n");
+        return -1;
+    }
+    if (elfHeader->e_ident[EI_MAG1] != ELFMAG1)
+    {
+        printf("ELF Header EI_MAG1 incorrect\n");
+        return -1;
+    }
+    if (elfHeader->e_ident[EI_MAG2] != ELFMAG2)
+    {
+        printf("ELF Header EI_MAG2 incorrect\n");
+        return -1;
+    }
+    if (elfHeader->e_ident[EI_MAG3] != ELFMAG3)
+    {
+        printf("ELF Header EI_MAG3 incorrect\n");
+        return -1;
+    }
+    return 0;
+}
 
 static uint8_t* getSectionHeaderTable(const Elf32_Ehdr* elfHeader)
 {
@@ -121,4 +152,55 @@ void printElf(const Elf32_Ehdr* elfHeader)
     printElfHeader(elfHeader);
     printSectionHeaderTable(elfHeader);
     printProgramHeaderTable(elfHeader);
+}
+
+int loadElf(PCB_t* proc, const Elf32_Ehdr* elfHeader)
+{
+    int isValid = checkElf(elfHeader);
+    if (isValid >= 0)
+    {
+        // set pid on mmu
+        // proc->pid
+
+        // load data from elf file into main memory
+        int sectionIndex = 0;
+        for (sectionIndex = 0; sectionIndex < elfHeader->e_shnum;
+                ++sectionIndex)
+        {
+            Elf32_Shdr* sectionHeader = getSectionHeader(elfHeader,
+                                                         sectionIndex);
+            if (sectionHeader->sh_size > 0)
+            {
+                char* sectionName = getSectionName(elfHeader,
+                                                   sectionHeader->sh_name);
+                uint8_t* section = ((uint8_t*) elfHeader)
+                        + sectionHeader->sh_offset;
+
+                if (strcmp(sectionName, ".text") == 0
+                        || strcmp(sectionName, ".data") == 0)
+                {
+                    // copy text and data segments into main memory
+                    memcpy((uint8_t*) sectionHeader->sh_addr, section,
+                           sectionHeader->sh_size);
+                }
+                if (strcmp(sectionName, ".bss") == 0)
+                {
+                    // set non-initialized data to 0
+                    uint8_t* sectionEnd = section + sectionHeader->sh_size;
+                    while (section != sectionEnd)
+                    {
+                        *section++ = 0;
+                    }
+                }
+                if (strcmp(sectionName, ".stack") == 0)
+                {
+                    // set stack pointer
+                    proc->context.sp = sectionHeader->sh_addr;
+                }
+            }
+        }
+        // set restartAddress to entry point
+        proc->context.restartAddress = elfHeader->e_entry;
+    }
+    return isValid;
 }

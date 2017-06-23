@@ -12,7 +12,7 @@ void test_gpiodriver()
 
 static void blinkLED()
 {
-    mos_fs_init();
+    filesystem_init();
     gpiodriver_init();
 
       int dirFd = mos_fs_open("gpio150_DIR");

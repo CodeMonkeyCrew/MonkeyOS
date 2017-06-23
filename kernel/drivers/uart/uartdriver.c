@@ -6,6 +6,9 @@
 #include "../../filesystem/filetypes/uarttype.h"
 #include "../../filesystem/filesystemregister.h"
 
+#define false 0
+#define true !false
+
 static int uartdriver_open(generic_file_t* file){
     uart_file_t* uartfile = (uart_file_t*)file;
     uarthal_init(uartfile->uartNumber);

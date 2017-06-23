@@ -16,7 +16,7 @@
 /*
  * Initializes the file system. Should be called at boot time.
  */
-int mos_fs_init(void);
+int filesystem_init(void);
 
 //actual system calls
 /*
