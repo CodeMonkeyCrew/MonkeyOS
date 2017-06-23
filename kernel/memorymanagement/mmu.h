@@ -94,4 +94,12 @@ void mmu_create_task_PT_and_region(int proc_id);
 
 void create_task_region(page_table_t *pTaskPT, int proc_id);
 
+/*
+ * function to be called by the dispatcher to switch context
+ * clears TLB cache, data cache, instruction cache
+ * and replaces the old task PT with the new task PT
+ */
+void mmu_switch_context(int PID);
+
+
 #endif /* KERNEL_MEMORYMANAGEMENT_MMU_H_ */

@@ -225,3 +225,10 @@ void create_task_region(page_table_t *pTaskPT, int proc_id)
     mmuMapRegion(&taskRegion);
 }
 
+
+void mmu_switch_context(int PID) {
+    mmu_flush_tlb();
+    mmu_flush_cache();
+    mmu_attach_pt(taskPTs[PID]);
+}
+
