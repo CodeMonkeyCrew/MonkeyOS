@@ -72,7 +72,7 @@ void main(void)
    // scheduler_initProc(process2, PROC_PRIO_MIDDLE);
     //scheduler_init();
     //scheduler_initProc(console, PROC_PRIO_MIDDLE);
-    scheduler_start();
+    //scheduler_start();
     // set user mode and enable interrupts
     mode_setUserMode();
 

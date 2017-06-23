@@ -198,7 +198,7 @@ int mmuAttachPT(page_table_t *pPT)
         fld_coarse.fld_split.DOMAIN = pPT->domain;                          // set domain
         fld_coarse.fld_split.TYPE = 0b01;                                   // set as (coarse) page table
 
-        offset = (pPT->vAddress) >> 20;                             // find the offset in which this coarse PT resides
+        offset = (pPT->vAddress) >> 20;                             // find the offset for the new coarse page table entry
         pTTB[offset] = fld_coarse.fld_raw;                          // write the new PTE into the root PT
         break;
     default:
