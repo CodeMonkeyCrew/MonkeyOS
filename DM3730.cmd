@@ -1,7 +1,7 @@
 MEMORY /* ARM memory map */
 {
     SRAM:           o = 0x40200000  l = 0x0000FFC0  /* 64kB - 56B Internal SRAM */
-    INTVECS:        o = 0x4020FFC0  l = 0x00000040  /* 56B vector table */
+    INTVECS:        o = 0x4020FFC0  l = 0x00000040  /* 64B vector table */
 
     //IVASHL2RAM:     o = 0x5C7F8000  l = 0x00008000  /* 32kB Shared IVA L2 RAM */
     //IVASHL2RAM_C:   o = 0x5C800000  l = 0x00010000  /* 64kB Shared IVA L2 Cache RAM */

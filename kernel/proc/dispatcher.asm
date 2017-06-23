@@ -4,8 +4,6 @@
 	.global dispatcher_loadContext
 	.global dispatcher_storeContext
 
-
-
 dispatcher_switchContext:
 	; TODO: check if there are any options other than manipulating the stack pointer
 	ADD R13, R13, #8				; stack pointer correction
@@ -48,7 +46,7 @@ dispatcher_loadContext:
 
 dispatcher_saveContextFork:
 	; TODO: check if there are any options other than manipulating the stack pointer
-	ADD R1, R13, #0x18				; stack pointer correction
+	ADD R1, R13, #0x8				; stack pointer correction
 	STMFD SP!, {R4-R12, R14}		; push the Registers R4-R12 and R14 to the Stack
 	; first store the old process�s User mode state to the PCB pointed to by R0
 	MRS R12, SPSR					; get CPSR of interrupted process

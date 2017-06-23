@@ -3,7 +3,7 @@
 
 #include "proc.h"
 
-void dispatcher_switchContext(ProcContext_t* oldContext, ProcContext_t* newContext, int newPID);
+void dispatcher_switchContext(ProcContext_t* oldContext, ProcContext_t* newContext);
 
 void dispatcher_saveContextFork(ProcContext_t* context);
 

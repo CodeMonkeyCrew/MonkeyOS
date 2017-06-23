@@ -1,4 +1,3 @@
-	.global _ISR_RESET
 	.global _ISR_UNDEF
 	.global _ISR_SWI
 	.global _ISR_PREFETCH
@@ -9,7 +8,7 @@
 
 	.retain ".intvecs"
 	.sect ".intvecs"
-	B _ISR_RESET
+	.word 0
 	B _ISR_UNDEF
 	B _ISR_SWI
 	B _ISR_PREFETCH

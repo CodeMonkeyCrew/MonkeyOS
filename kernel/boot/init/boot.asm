@@ -239,7 +239,7 @@ _c_int00: .asmfunc stack_usage(0)
         ;*------------------------------------------------------
         MRS     r0, cpsr
         BIC     r0, r0, #0x1F  ; CLEAR MODES
-        ORR     r0, r0, #0x12  ; SET IRQ MODE
+        ORR     r0, r0, #0xD2  ; SET IRQ MODE
         MSR     cpsr_cf, r0
 
         ;*------------------------------------------------------
@@ -261,7 +261,7 @@ _c_int00: .asmfunc stack_usage(0)
         ;*------------------------------------------------------
         MRS     r0, cpsr
         BIC     r0, r0, #0x1F  ; CLEAR MODES
-        ORR     r0, r0, #0x13  ; SET SUPERVISOR MODE
+        ORR     r0, r0, #0xD3  ; SET SUPERVISOR MODE
         MSR     cpsr_cf, r0
 
         ;*------------------------------------------------------
@@ -285,7 +285,7 @@ _c_int00: .asmfunc stack_usage(0)
         ;*------------------------------------------------------
         MRS     r0, cpsr
         BIC     r0, r0, #0x1F  ; CLEAR MODES
-        ORR     r0, r0, #0x1F  ; SET SYSTEM MODE
+        ORR     r0, r0, #0xDF  ; SET SYSTEM MODE
         MSR     cpsr_cf, r0
 
         ;*------------------------------------------------------
@@ -325,10 +325,9 @@ _c_int00: .asmfunc stack_usage(0)
         STR     sp, [r0]
 
         ;*------------------------------------------------------
-	;* Call the __mpu_init hook function.
+		;* Call the __mpu_init hook function.
         ;*------------------------------------------------------
         BL      __mpu_init
-		;BL		C_MMU_INIT
 
 
         ;*------------------------------------------------------

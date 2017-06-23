@@ -11,7 +11,7 @@
 #define MAX_PROC_COUNT 16
 
 #define PROC_IMG_VADDR 0x80494000
-#define MAX_PROC_IMG_SIZE 0x10000
+#define MAX_PROC_IMG_SIZE 0x100000
 
 // needed to set interrupt status and new interrupt agreement flags
 static uint32_t* INTCPS_CONTROL = (uint32_t*) 0x48200048;
@@ -129,14 +129,11 @@ void scheduler_run(void)
     int interruptedPid = scheduler_runNextProc();
     if (interruptedPid >= 0 && runningPid != interruptedPid)
     {
-        //dispatcher_switchContext(&procs[interruptedPid].context,
-        //                    &procs[runningPid].context);
-        //store context
-        dispatcher_storeContext(&procs[runningPid].context);
-        //flush
-        //attachPT(peid)
-        //load
-        dispatcher_loadContext(&procs[interruptedPid].context);
+        mmu_flush_tlb();
+        mmu_flush_cache();
+        mmu_load_task_region(runningPid);
+        dispatcher_switchContext(&procs[interruptedPid].context,
+                                 &procs[runningPid].context);
     }
 }
 
@@ -178,6 +175,9 @@ int scheduler_fork(void)
 
         // load process image from buffer
         memcpy((uint8_t*) PROC_IMG_VADDR, procImgBuffer, MAX_PROC_IMG_SIZE);
+
+        // set pid on mmu
+        mmu_load_task_region(procs[runningPid].pid);
 
         procs[pid].parentPid = runningPid;
         procs[pid].pid = pid;
