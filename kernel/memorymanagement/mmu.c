@@ -127,8 +127,8 @@ int mmuMapRegion(region_t *region)
 int mmuMapSectionTableRegion(region_t *region)
 {
     //see ARMv7 architecture reference manual on page B3-1335
-    unsigned int* pPTE = (unsigned int*) region->PT->ptAddress; //base address of page table = first PT entry
-    unsigned int index = region->vAddress >> 20;                //get the offset/index to the virtual memory
+    unsigned int* pPTE = (unsigned int*) region->PT->ptAddress; //base address of page table
+    unsigned int index = region->vAddress >> 20;                //get the offset/index to the virtual memory for first entry address
     index = index << 2;                                         //add two zeros on the right side to fulfill the requirements for the pointer
 
     pPTE = (unsigned int*)((unsigned int)pPTE + index);         //add them and recast to pointer
@@ -198,7 +198,7 @@ int mmuAttachPT(page_table_t *pPT)
         fld_coarse.fld_split.DOMAIN = pPT->domain;                          // set domain
         fld_coarse.fld_split.TYPE = 0b01;                                   // set as (coarse) page table
 
-        offset = (pPT->vAddress) >> 20;                             // find the offset in which this coarse PT resides
+        offset = (pPT->vAddress) >> 20;                             // find the offset for the new coarse page table entry
         pTTB[offset] = fld_coarse.fld_raw;                          // write the new PTE into the root PT
         break;
     default:

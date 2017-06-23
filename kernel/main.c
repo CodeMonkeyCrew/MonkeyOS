@@ -52,6 +52,7 @@ void main(void)
 {
 
     mmu_init();
+
     scheduler_init();
     //  scheduler_initProc(process1, PROC_PRIO_MIDDLE);
     //*PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));
@@ -70,11 +71,12 @@ void main(void)
 
 
     /*Scheduler*/
-    scheduler_initProc(process1, PROC_PRIO_MIDDLE);
-    scheduler_initProc(process2, PROC_PRIO_MIDDLE);
 
+    //scheduler_initProc(process1, PROC_PRIO_MIDDLE);
+    //scheduler_initProc(process2, PROC_PRIO_MIDDLE);
+    //scheduler_init();
     //scheduler_initProc(console, PROC_PRIO_MIDDLE);
-    scheduler_start();
+    //scheduler_start();
     // set user mode and enable interrupts
     mode_setUserMode();
 
