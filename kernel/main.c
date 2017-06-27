@@ -10,6 +10,20 @@
 #pragma SWI_ALIAS(execv, 5)
 int execv(const char *filename, char *const argv[]);
 
+
+void process2()
+{
+    volatile int i = 0;
+    while (1)
+    {
+        printf("process 2: %i \n", ++i);
+    }
+}
+void console()
+{
+    console_run();
+}
+#include "apps/lib/matrix_lib/matrix_draw.h"
 void main(void)
 {
     *PM_PWSTCTRL_PER |= ((1 << 0) | (1 << 1));

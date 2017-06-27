@@ -132,11 +132,11 @@ void scheduler_run(void)
         //dispatcher_switchContext(&procs[interruptedPid].context,
         //                    &procs[runningPid].context);
         //store context
-        dispatcher_storeContext(&procs[runningPid].context);
+        dispatcher_storeContext(&procs[interruptedPid].context);
         //flush
         //attachPT(peid)
-        //load
-        dispatcher_loadContext(&procs[interruptedPid].context);
+        //load context
+        dispatcher_loadContext(&procs[runningPid].context);
     }
 }
 
