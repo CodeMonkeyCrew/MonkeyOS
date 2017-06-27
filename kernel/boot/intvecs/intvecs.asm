@@ -16,5 +16,3 @@
 	B _ISR_UNUSED
 	B _ISR_IRQ
 	B _ISR_FIQ
-
-

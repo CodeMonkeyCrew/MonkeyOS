@@ -19,6 +19,7 @@ static uint32_t* INTCPS_CONTROL = (uint32_t*) 0x48200048;
 static PCB_t procs[MAX_PROC_COUNT];
 static uint8_t runningPid;
 
+#pragma DATA_SECTION(procImgBuffer, ".proc_img")
 static uint8_t procImgBuffer[MAX_PROC_IMG_SIZE];
 
 static int scheduler_getFreeProcSlot(void)

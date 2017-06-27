@@ -20,12 +20,14 @@ MEMORY /* ARM memory map */
 	RAM0_TASK_2:	o = 0x80694000	l = 0x100000	// 1 MB for process 2
 	RAM0_TASK_3:	o = 0x80794000	l = 0x100000	// 1 MB for process 3
 	//keep going up until 16 tasks
+
+	PROC_IMG:		o = 0x90000000	l = 0x100000
+
 }
 
 SECTIONS
 {
-
-DSP_CORE   /* ARM memory map */
+	.proc_img	   >  PROC_IMG
 	.intvecs	   >  INTVECS
 	.isr		   >  SRAM
     .text          >  RAM0_OS

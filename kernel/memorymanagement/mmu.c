@@ -25,22 +25,23 @@ static page_table_t systemPT = { 0x80000000, 0x80094000, ROOT_PT_V_ADDRESS, COAR
 
 static page_table_t taskPTs[16];
 
+static page_table_t bufferPT = { 0x9000000, 0x80098400, ROOT_PT_V_ADDRESS, COARSE, domain3 };
+
 /*****************
  * Regions       *
  *****************/
 typedef enum{
     page_size_section = 1024, page_size_tiny = 1, page_size_small = 4, page_size_large =64
 }page_size_t;
+
 /*regio_t x = {vAddress, pageSize, numPages, AP, CB, pAddress, PT}*/
-/*kernel size: 512kB*/
-region_t kernelRegion = { 0x80000000, page_size_small, 128, RWRW, WT, 0x80000000, &systemPT };
-/*shared size: 64kB*/
-region_t sharedRegion = { 0x80080000, page_size_small, 16, RWRW, WT, 0x80080000, &systemPT };
-/*page table size: root PT + system PT = 16kb + 1kb -> 32kB*/
-region_t PTRegion = { ROOT_PT_V_ADDRESS, page_size_small, 8, RWRW, WT, ROOT_PT_V_ADDRESS, &systemPT };
-region_t peripheralRegion = { 0x40000000, page_size_section, 1024, RWRW, WT, 0x40000000, &rootPT };
-region_t bootRegion = { 0x00000000, page_size_section, 1024, RWRW, WT, 0x00000000, &rootPT };
-//region_t taskRegion = { 0x80494000, page_size_small, 256, RWRW, WT, 0x80494000, &task1PT };
+region_t bootRegion = { 0x00000000, page_size_section, 1024, RWRW, WT, 0x00000000, &rootPT };               //boot size: 1GB
+region_t peripheralRegion = { 0x40000000, page_size_section, 1024, RWRW, WT, 0x40000000, &rootPT };         //peripheral size: 1GB
+
+region_t kernelRegion = { 0x80000000, page_size_small, 128, RWRW, WT, 0x80000000, &systemPT };              //kernel size: 512kB
+region_t sharedRegion = { 0x80080000, page_size_small, 16, RWRW, WT, 0x80080000, &systemPT };               //shared size: 64kB
+region_t PTRegion = { ROOT_PT_V_ADDRESS, page_size_small, 8, RWRW, WT, ROOT_PT_V_ADDRESS, &systemPT };      //page table size: root PT + system PT = 16kb + 1kb -> 32kB
+region_t bufferRegion = {0x9000000, page_size_small, 256, RWRW, WT, 0x90000000, &bufferPT};
 
 int mmu_init(void)
 {
@@ -55,6 +56,7 @@ int mmu_init(void)
     //init page tables with fault entries
     mmuInitPT(&rootPT);
     mmuInitPT(&systemPT);
+    mmuInitPT(&bufferPT);
 
     //fill page tables with proper entries
     mmuMapRegion(&bootRegion);
@@ -62,10 +64,11 @@ int mmu_init(void)
     mmuMapRegion(&kernelRegion);
     mmuMapRegion(&sharedRegion);
     mmuMapRegion(&PTRegion);
+    mmuMapRegion(&bufferRegion);
 
     mmuAttachPT(&rootPT);       // sets the first level page table (root/master PT) for the MMU
     mmuAttachPT(&systemPT);     // creates a first level page table entry and adds it to the root PT
-    //mmuAttachPT(taskPTs[0]); //set page table of first task
+    mmuAttachPT(&bufferPT);
 
     //set all domains to 3 which means they all have equal domain access
     //active access permissions are set in regions and thus in pages
